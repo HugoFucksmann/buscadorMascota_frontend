@@ -1,73 +1,84 @@
 import React, { Component } from 'react';
-import {
-  ActivityIndicator,
-  SafeAreaView,
-  ImageBackground,
-  StyleSheet,
-  View,
-  Text,
-} from "react-native";
-import { Root, Button, Content, Footer, FooterTab, Icon  } from 'native-base';
+import { View, SafeAreaView, StyleSheet, ImageBackground, Text } from "react-native";
+import { Root, Button, Footer, FooterTab, Icon, Header } from "native-base";
 import * as Font from "expo-font";
-import * as Location from 'expo-location';
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
-import Auth from './helpers/auth'
-import NavBar from './sharedComp/navBar'
+import { SocialIcon } from "react-native-elements";
+import Auth from "./helpers/auth";
 import Feed from './views/feed'
-import Login from './views/login'
-import Formulario from './views/Formularios';
+import LoadingView from './views/pagCarga'
 import FormMascota from './Components/form';
-
-import perroNegro from './assets/fondos/perro_negro.jpg'
+import perroGris from "./assets/fondos/perro_gris.jpg";
+import Botonera from './views/botonera';
 
 export default class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { loading: true, selectedTab: "feed", };
-    
+
+    this.state = { loading: true, selectedTab: "feed" };
+    //AsyncStorage.removeItem('user')
   }
   async componentDidMount() {
     await Font.loadAsync({
       Roboto: require("native-base/Fonts/Roboto.ttf"),
       Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf"),
     });
-    this.setState({ loading: false });
+    let isAuth = await Auth.isAuthenticated();
+    this.setState({ loading: false, isAuth: isAuth });
   }
-  
+
+  async googleAuth() {
+    let isAuth = await Auth.googleLogin();
+    this.setState({ isAuth: isAuth });
+    console.log(this.state);
+  }
+
   renderSelectedTab() {
     switch (this.state.selectedTab) {
       case "feed":
         return <Feed />;
         break;
       case "formulario":
-       return <FormMascota />;
+        if (this.state.isAuth) return <FormMascota />;
+        return (
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: "blue",
+            }}
+          >
+            <ImageBackground source={perroGris} style={styles.image}>
+              <Text style={styles.text}>LOGIN</Text>
+              <SocialIcon
+                title={"Inicia sesion con Google"}
+                button={true}
+                type="google"
+                iconSize={30}
+                light
+                onPress={() => this.googleAuth()}
+              />
+            </ImageBackground>
+          </View>
+        );
         break;
       case "perfil":
-        return <Login />;
+        return <Botonera />;
         break;
       default:
     }
   }
+
   render() {
     if (this.state.loading) {
-      return (
-        <View style={styles.container}>
-          <ImageBackground source={perroNegro} style={styles.image}>
-            <Text style={styles.text}>BusCan</Text>
-            <Text />
-            <ActivityIndicator size="large" color="#fff" />
-          </ImageBackground>
-        </View>
-      );
+      return <LoadingView />;
     } else {
       return (
         <Root>
+          <Header style={{ height: 0 }} />
           <SafeAreaView style={{ flex: 6 }}>
             {this.renderSelectedTab()}
           </SafeAreaView>
           <Footer>
-            <FooterTab>
+            <FooterTab style={{ backgroundColor: "#7da7dbde", height: 50 }}>
               <Button
                 active={this.state.selectedTab === "formulario"}
                 onPress={() => this.setState({ selectedTab: "formulario" })}
@@ -95,9 +106,10 @@ export default class App extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  centeredView: {
     flex: 1,
-    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
   },
   image: {
     flex: 1,
@@ -106,23 +118,9 @@ const styles = StyleSheet.create({
   },
   text: {
     color: "white",
-    fontSize: 38,
+    fontSize: 42,
     fontWeight: "bold",
     textAlign: "center",
-    backgroundColor: "#ffffff20",
+    backgroundColor: "#00000030",
   },
 });
-
-/*   async function myLocation() {
-    try {
-      let { status } = await Location.requestPermissionsAsync();
-      if (status !== "granted") {
-        setErrorMsg("acceso denegado a localizacion");
-        return;
-      }
-      const location = await Location.getCurrentPositionAsync();
-      const { latitude, longitude } = location.coords;
-    } catch (e) {
-      console.log(e);
-    }
-  } */

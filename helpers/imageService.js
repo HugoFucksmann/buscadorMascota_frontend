@@ -1,5 +1,4 @@
-import * as ImagePicker from "expo-image-picker";
-
+import { BASE_URL } from "@env";
 export async function uploadFoto(uri) {
 
   let localUri = uri;
@@ -19,4 +18,17 @@ export async function uploadFoto(uri) {
     },
   })
   .catch(e => console.log(e));
+}
+
+export function mostrarFoto(img){
+
+   if (!img) {
+     return `${BASE_URL}/upload/imgMascota/no-image`;
+   } else if (img.includes("https")) {
+     return img;
+   } else if (img) {
+     return `${BASE_URL}/upload/imgMascota/${img}`;
+   } else {
+     return `${BASE_URL}/upload/noticias/no-image`;
+   }
 }

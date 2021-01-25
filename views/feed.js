@@ -1,36 +1,34 @@
 import React, { useState, useEffect } from 'react';
+import { BASE_URL } from "@env";
 import { FlatList, ActivityIndicator, SafeAreaView } from "react-native";
-import Cardd from '../Components/card'
+import CardFeed from '../Components/card'
+import LoadingView from './pagCarga';
 
 const Feed = () => {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   useEffect(() => {
-    console.log('gg');
-    fetch("http://192.168.0.102:3011/api/mascotas")
+   
+    fetch(`${BASE_URL}/mascotas`)
       .then((response) => response.json())
       .then(({ mascotas }) => {
-        setData(mascotas);
+        setData(mascotas.reverse());
         setLoading(false);
       })
       .catch((error) => console.error(error));
   }, []);
   
   const RenderItem = ({item}) => {
-    return <Cardd mascotas={item} />
+    return <CardFeed mascota={item} />
   };
 
 
   if (isLoading)
     return (
-      <ActivityIndicator
-        size="large"
-        color="black"
-        style={{ marginTop: 100 }}
-      />
+     <LoadingView />
     );
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#ededed" }}>
       <FlatList
         data={data}
         renderItem={RenderItem}
