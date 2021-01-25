@@ -27,9 +27,6 @@ export default function InfoPerro( {mascota} ) {
     return (
       <>
         <Chat mascotaId={mascota._id} />
-        <Button small block info onPress={() => setActiveChat(false)}>
-          <Text>Retroceder</Text>
-        </Button>
       </>
     );
   }

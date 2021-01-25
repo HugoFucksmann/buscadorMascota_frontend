@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BASE_URL } from "@env";
+import { BASE_URL, PROD_URL } from "@env";
 import { FlatList, ActivityIndicator, SafeAreaView } from "react-native";
 import CardFeed from '../Components/card'
 import LoadingView from './pagCarga';
@@ -9,7 +9,7 @@ const Feed = () => {
   const [data, setData] = useState([]);
   useEffect(() => {
    
-    fetch(`${BASE_URL}/mascotas`)
+    fetch(`${PROD_URL}/mascotas`)
       .then((response) => response.json())
       .then(({ mascotas }) => {
         setData(mascotas.reverse());
