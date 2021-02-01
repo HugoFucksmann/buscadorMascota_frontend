@@ -1,17 +1,24 @@
-import React, { Component } from 'react';
-import { View, SafeAreaView, StyleSheet, ImageBackground, Text } from "react-native";
+import React, { Component, useState } from 'react';
+import { View, SafeAreaView, StyleSheet, ImageBackground, Text, TouchableHighlight} from "react-native";
 import { Root, Button, Footer, FooterTab, Icon, Header } from "native-base";
 import * as Font from "expo-font";
 import { SocialIcon } from "react-native-elements";
 import { googleLogin, isAuthenticated } from "./helpers/auth";
-import Feed from './views/feed'
+import Feed from './views/feed';
 import LoadingView from './views/pagCarga'
 import FormMascota from './Components/form';
-import perroGris from "./assets/fondos/perro_gris.jpg";
+import perroGris from "./assets/fondos/curi_verde_01.png";
+import banner from './assets/banner.png';
 import Botonera from './views/botonera';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import colores from './Components/colorPalette';
+import { StatusBar } from 'expo-status-bar';
+
+  
+
 
 export default class App extends Component {
+  
   constructor(props) {
     super(props);
     this.state = { loading: true, selectedTab: "feed" };
@@ -24,7 +31,7 @@ export default class App extends Component {
       Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf"),
     });
     let isAuth = await isAuthenticated();
-    this.setState({ loading: false, isAuth: isAuth });
+    this.setState({ loading: false, isAuth: true });
   }
 
   async googleAuth() {
@@ -46,13 +53,13 @@ export default class App extends Component {
           <View
             style={{
               flex: 1,
-              backgroundColor: "blue",
+              backgroundColor: '#EEF4D7',
             }}
           >
             <ImageBackground source={perroGris} style={styles.image}>
               <Text style={styles.text}>LOGIN</Text>
               <SocialIcon
-                title={"Inicia sesion con Google"}
+                title={"Inicia sesión con Google"}
                 button={true}
                 type="google"
                 iconSize={30}
@@ -70,35 +77,60 @@ export default class App extends Component {
     }
   }
 
+
+  
+
   render() {
     if (this.state.loading) {
       return <LoadingView />;
     } else {
-      return (
-        <Root>
-          <Header style={{ height: 0 }} />
+      return ( 
+        <Root>    
+          <Header
+          style={{
+            height: 50 ,
+            backgroundColor:'white',
+            borderBottomColor:colores.mild,
+            borderBottomWidth:2,
+            padding: 10,
+            marginTop: 25
+            }} >
+              <ImageBackground source={banner} style={{flex:0.8, resizeMode:'cover', justifyContent:'center'}}>
+              </ImageBackground>
+              {/* <Text style={{color:colores.main, fontSize:20, paddingTop:3}}>
+                {(this.state.selectedTab=="feed")?'Animales Perdidos':(this.state.selectedTab=="perfil")?'Perfil':'Cargar Animal'}
+              </Text> */}
+            </Header>
+            <View>
+            <StatusBar style="dark" backgroundColor='#fff'/>
+          </View>
           <SafeAreaView style={{ flex: 6 }}>
             {this.renderSelectedTab()}
           </SafeAreaView>
-          <Footer>
-            <FooterTab style={{ backgroundColor: "#7da7dbde", height: 50 }}>
-              <Button
+          <Footer style={styles.footer}>    
+          <FooterTab style={{backgroundColor:colores.mild}}>
+              <Button  style={styles.button}
                 active={this.state.selectedTab === "formulario"}
                 onPress={() => this.setState({ selectedTab: "formulario" })}
               >
-                <Icon type="AntDesign" name="form" />
-              </Button>
-              <Button
+                <Icon type="FontAwesome" name="plus"
+                style={{color: (this.state.selectedTab=="formulario")?colores.main:colores.mild}}
+                />
+               </Button>
+              <Button style={styles.button}
                 active={this.state.selectedTab === "feed"}
-                onPress={() => this.setState({ selectedTab: "feed" })}
+                onPress={() => {this.setState({ selectedTab: "feed" })}}
               >
-                <Icon type="FontAwesome5" name="dog" />
+                <Icon type="FontAwesome5" name="paw"
+                style={{color: (this.state.selectedTab=="feed")?colores.main:colores.mild}}/>
               </Button>
-              <Button
+              <Button style={styles.button}
                 active={this.state.selectedTab === "perfil"}
                 onPress={() => this.setState({ selectedTab: "perfil" })}
               >
-                <Icon type="FontAwesome" name="angellist" />
+                <Icon type="FontAwesome" name="user"
+                style={{color: (this.state.selectedTab=="perfil")?colores.main:colores.mild}}/>
+                
               </Button>
             </FooterTab>
           </Footer>
@@ -126,4 +158,15 @@ const styles = StyleSheet.create({
     textAlign: "center",
     backgroundColor: "#00000030",
   },
+  button: {
+    backgroundColor: 'white',
+    borderRadius: 0
+  },
+  footer:{
+    backgroundColor: null,
+    flexDirection:'row',
+    color:colores.main,
+    borderTopWidth: 3,
+    borderTopColor: colores.mild
+  }
 });
