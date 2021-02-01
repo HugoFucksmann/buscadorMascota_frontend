@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from 'react'
-import { Image, Platform, Text, ScrollView, StyleSheet } from "react-native";
+import { Image, Platform, Text, ScrollView, StyleSheet, Dimensions } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as ImagePicker from "expo-image-picker";
-import {  Picker,  Item,  Label,  Input,  Textarea,  Form,  Left,  Card,  Button,  Icon,  H3 } from "native-base";
+import {  Picker,  Item,  Label,  Input,  Textarea,  Form,  Left,  Card,  Button,  Icon,  H3, Right } from "native-base";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SwitchSelector from "react-native-switch-selector";
 
-import noImagen from '../assets/default-image.png'
+import noImagen from '../assets/default_plus.png'
 
 import {myLocation} from '../helpers/getLocation'
 import {crearMascota, actualizarArchivo} from '../helpers/mascotaService';
 import LoadingView from '../views/pagCarga';
+import colores from '../Components/colorPalette';
+import { color } from 'react-native-reanimated';
+
+const lightBackColor = 'rgba(236,242,213,255)';
+const strongMainColor = 'rgba(78,120,81,255)';
+
 
 const FormMascota = () => {
   const [image, setImage] = useState(null);
@@ -97,18 +103,21 @@ return (
         style={styles.state}
         initial={0}
         onPress={(value) => setPerro({ ...perro, petState: value })}
-        textColor={"#ff8254"}
-        selectedColor={"black"}
-        buttonColor={"#7f78ff"}
+        textColor={colores.main}
+        selectedColor={colores.light}
+        buttonColor={colores.main}
         hasPadding
+        fontSize = {15}
+        borderRadius = {20}
+        borderWidth = {0}
         options={[
-          { label: "Se perdio mi perro", value: "perdido" },
-          { label: "Encontre un perro perdido", value: "encontrado" },
+          { label: "Se perdió mi mascota", value: "perdido" },
+          { label: "Encontré animal perdido", value: "encontrado" },
         ]}
       />
       {perro.petState === "perdido" && (
-        <Item floatingLabel style={styles.itemForm}>
-          <Label>nombre del perro</Label>
+        <Item floatingLabel style={[styles.itemForm, {borderBottomWidth: 2}]}>
+          <Label>Nombre del animal</Label>
           <Input
             value={perro.petName}
             onChangeText={(nombre) => setPerro({ ...perro, petName: nombre })}
@@ -116,17 +125,29 @@ return (
         </Item>
       )}
 
-      <Button block bordered info small onPress={pickImage}>
+      {/* <Button block bordered={false} info small onPress={pickImage} >
         <Icon type="AntDesign" name="downcircleo" />
-        <Text>cargar imagen del perro</Text>
+        <Text >Cargar foto</Text>
       </Button>
       {image ? (
         <Image source={{ uri: image }} style={styles.imagen} />
       ) : (
         <Image source={noImagen} style={styles.imagen} />
+      )} */}
+
+      <Button block bordered={false} onPress={pickImage} info 
+      style={{height:150, width: 300, shadowRadius:0, backgroundColor:'rgba(0,0,0,0)',padding:0,margin:30}}>
+        {/* <Icon type="AntDesign" name="downcircleo" />  */}
+      {image ? (
+        <Image source={{ uri: image }} style={styles.imagen} />
+      ) : (
+        <Image source={noImagen} style={styles.imagen} />
       )}
+      </Button>
+
+
       <H3 style={{ marginLeft: "auto", marginRight: "auto", fontSize: 16 }}>
-        Selecciona donde se perdio
+        Selecciona dónde se perdió
       </H3>
 
       <MapView
@@ -139,7 +160,7 @@ return (
 
       <Item picker style={styles.itemForm}>
         <Left>
-          <Text>Sexo</Text>
+          <Text>Sexo:</Text>
         </Left>
         <Picker
           mode="dropdown"
@@ -153,7 +174,7 @@ return (
 
       <Item picker style={styles.itemForm}>
         <Left>
-          <Text>Tamaño</Text>
+          <Text>Tamaño:</Text>
         </Left>
 
         <Picker
@@ -168,10 +189,14 @@ return (
       </Item>
 
       <Item picker style={styles.itemForm}>
-        <Text>Color de pelo</Text>
+        <Left>
+        <Text>Color:</Text>
+        </Left>
+        <Right>
         <SwitchSelector
           initial={2}
           hasPadding
+          borderWidth={0}
           options={[
             {
               label: "Blanco",
@@ -184,7 +209,7 @@ return (
               activeColor: "black",
               textColor: "white",
             },
-            { label: "Marron", value: "marron", activeColor: "#6e2b0c" },
+            { label: "Marrón", value: "marron", activeColor: "#6e2b0c" },
             {
               label: "Gris",
               value: "gris",
@@ -195,13 +220,15 @@ return (
           onPress={(value) => setPerro({ ...perro, petColor: value })}
           style={styles.swSelector}
         />
+        </Right>
       </Item>
 
       <Form>
         <Textarea
           rowSpan={3}
           bordered
-          placeholder="Descripcion"
+          style={{borderColor: colores.light, borderWidth:4}}
+          placeholder="Descripción"
           value={perro.petDescription}
           onChangeText={(value) =>
             setPerro({ ...perro, petDescription: value })
@@ -210,7 +237,7 @@ return (
       </Form>
 
       <Button block info style={styles.btnFinal} onPress={() => uploadPerro()}>
-        <Label>Cargar Perro al feed !</Label>
+        <Label style={{color: colores.light, fontSize:20}}>CARGAR</Label>
       </Button>
     </Card>
   </ScrollView>
@@ -221,6 +248,10 @@ const styles = StyleSheet.create({
   state: { marginTop: 20, marginBottom: 5 },
   itemForm: {
     marginBottom: 15,
+    borderBottomWidth: 2,
+    borderTopWidth: 0,
+    borderColor: colores.light,
+    padding: 5
   },
   imagen: {
     height: 150,
@@ -234,6 +265,8 @@ const styles = StyleSheet.create({
   btnFinal: {
     marginTop: 20,
     elevation: 10,
+    backgroundColor: colores.main,
+    borderRadius: 5,
   },
   map: {
     height: 150,
