@@ -77,7 +77,7 @@ function CardFeed({mascota}) {
       >
         <InfoPerro mascota={mascota} />
         <Button full small info onPress={() => setBool(false)}
-        style={{backgroundColor:colores.main}}>
+        style={{backgroundColor:colores.mainFill}}>
           <Text>Volver al feed</Text>
         </Button>
       </Modal>
@@ -97,7 +97,7 @@ function CardFeed({mascota}) {
             <Text style={{color:'grey'}}>{tiempoTranscurrido(mascota.date)}</Text>
           </Left>
           <Right>
-            <Button small style={{backgroundColor:colores.mild}}
+            <Button small style={{backgroundColor:colores.mainFill}}
               onPress={() => petInfo(mascota)}>
               <Text style={{color:'white'}} >+ Info</Text>
             </Button>
