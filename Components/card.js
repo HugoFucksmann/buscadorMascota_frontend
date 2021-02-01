@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { View, StyleSheet, Image, Modal } from "react-native";
+import { View, StyleSheet, Image, Modal, Dimensions } from "react-native";
 import { Card, CardItem, Body, Right, Left, Thumbnail, Button, Icon, Text, Title } from "native-base";
 import perro1 from '../assets/perros/perro1.jpg'
 import InfoPerro from './InfoPerro';
 import { mostrarFoto } from '../helpers/imageService';
+import { FontDisplay } from 'expo-font';
+import colores from '../Components/colorPalette';
 
 function CardFeed({mascota}) {
   const [bool, setBool] = useState(false);
@@ -63,6 +65,7 @@ function CardFeed({mascota}) {
       </Modal>
     );
   }
+
   
   return (
     <>
@@ -73,30 +76,30 @@ function CardFeed({mascota}) {
         presentationStyle="pageSheet"
       >
         <InfoPerro mascota={mascota} />
-        <Button full small info onPress={() => setBool(false)}>
+        <Button full small info onPress={() => setBool(false)}
+        style={{backgroundColor:colores.main}}>
           <Text>Volver al feed</Text>
         </Button>
       </Modal>
-      <Card style={{marginBottom: 10, padding: 10, elevation: 6}}>
+      <Card style={styles.card}>
         <CardItem header style={{ height: 20 }}>
-          <Left />
-          <Title style={{ color: "black" }}>{mascota.petName}</Title>
-          <Right />
+          <Title style={{ color: colores.main}}>{mascota.petName}</Title>
         </CardItem>
-        <CardItem cardBody>
+        <CardItem cardBody >
           <Image
             source={{uri: foto}}
-            style={{ height: 200, width: null, flex: 1 }}
+            style={{ height: 250, width: null, flex: 1 }}
           />
         </CardItem>
         <CardItem>
           <Left>
-            <Icon active name="date" type="Fontisto" />
-            <Text>{tiempoTranscurrido(mascota.date)}</Text>
+            <Icon active name="date" type="Fontisto" style={{color:colores.main}}/>
+            <Text style={{color:'grey'}}>{tiempoTranscurrido(mascota.date)}</Text>
           </Left>
           <Right>
-            <Button bordered small onPress={() => petInfo(mascota)}>
-              <Text>+ Info</Text>
+            <Button small style={{backgroundColor:colores.mild}}
+              onPress={() => petInfo(mascota)}>
+              <Text style={{color:'white'}} >+ Info</Text>
             </Button>
           </Right>
         </CardItem>
@@ -110,8 +113,20 @@ const styles = StyleSheet.create({
     marginBottom: 5
   },
   contTarjeta: {
-   backgroundColor: 'blue'
+   backgroundColor: 'red'
   },
+  button: {
+    color: colores.main,
+    textAlign: "center"
+  },
+  card: {
+    marginBottom: 15, 
+    padding: 0, 
+    elevation: 6, 
+    width: Dimensions.get('window').width-10, 
+    borderRadius:5,
+    backgroundColor: colores.light 
+  }
 });
 
 

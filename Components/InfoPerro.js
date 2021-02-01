@@ -15,6 +15,7 @@ import {
 import perro1 from "../assets/perros/perro1.jpg";
 import { mostrarFoto } from "../helpers/imageService";
 import Chat from "../views/chat";
+import colores from '../Components/colorPalette';
 
 export default function InfoPerro( {mascota} ) {
   const [activeChat, setActiveChat] = useState(false)
@@ -73,6 +74,7 @@ export default function InfoPerro( {mascota} ) {
                   width: 0,
                   height: 4,
                 },
+                backgroundColor: colores.main,
                 shadowOpacity: 0.3,
                 shadowRadius: 4.65,
                 elevation: 8,
@@ -93,6 +95,7 @@ export default function InfoPerro( {mascota} ) {
                   width: 0,
                   height: 4,
                 },
+                backgroundColor: colores.main,
                 shadowOpacity: 0.3,
                 shadowRadius: 4.65,
 

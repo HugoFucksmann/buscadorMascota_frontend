@@ -28,7 +28,7 @@ const Feed = () => {
      <LoadingView />
     );
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#ededed" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'rgba(242,246,239,255)' }}>
       <FlatList
         data={data}
         renderItem={RenderItem}
