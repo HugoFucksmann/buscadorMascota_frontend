@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import MapView, { Marker } from "react-native-maps";
-import { View } from "react-native";
+import { View, StyleSheet} from "react-native";
 import { getMapLocation } from "../helpers/getLocation";
 import {
   Button,
@@ -60,145 +60,95 @@ export default function InfoPerro( {mascota} ) {
             }}
           />
 
+          <View style={{flexDirection: "row", justifyContent:'center'}}>
+              <Text style={{ color: colores.main, fontSize: 25, padding:15}} >
+                {mascota.petName}
+              </Text>
+          </View>
+          <View style={{ marginTop: 15, marginBottom: 25 }}>
+            <CardItem header style={{ marginBottom: -15 }}>
+              <Text style={{color:'grey'}}> Descripción</Text>
+            </CardItem>
+            <CardItem>
+              <Text style={{color:'grey'}}>{mascota.petDescription}</Text>
+            </CardItem>
+          </View>
+          <View style={{ flexDirection: "row", justifyContent:'center' }}>
+            <Card style={styles.charCard} >
+              <Text style={styles.cardText} >
+                {mascota.petSex}
+              </Text>
+            </Card>
+            <Card style={styles.charCard} >
+              <Text style={styles.cardText} >
+                {mascota.petSize}
+              </Text>
+            </Card>
+            <Card style={styles.charCard} >
+              <Text style={styles.cardText} >
+                {mascota.petColor}
+              </Text>
+            </Card>
+          </View>
+          
+
           <View style={{ flexDirection: "row" }}>
             <Button
               info
               block
               onPress={() => setActiveChat(true)}
-              style={{
-                borderRadius: 10,
-                width: "40%",
-                margin: "5%",
-                shadowColor: "#000",
-                shadowOffset: {
-                  width: 0,
-                  height: 4,
-                },
-                backgroundColor: colores.main,
-                shadowOpacity: 0.3,
-                shadowRadius: 4.65,
-                elevation: 8,
-              }}
-            >
+              style={styles.mainButtons}
+              >
               <Text>Mensajes</Text>
               <Icon name="message1" type="AntDesign" />
             </Button>
             <Button
               info
               block
-              style={{
-                borderRadius: 10,
-                width: "40%",
-                margin: 20,
-                shadowColor: "#000",
-                shadowOffset: {
-                  width: 0,
-                  height: 4,
-                },
-                backgroundColor: colores.main,
-                shadowOpacity: 0.3,
-                shadowRadius: 4.65,
-
-                elevation: 8,
-              }}
+              style={styles.mainButtons}
             >
               <Text>Compartir</Text>
               <Icon name="share" type="Entypo" />
             </Button>
-          </View>
-
-          <View style={{ flexDirection: "row" }}>
-            <Card
-              style={{
-                height: 60,
-                width: 80,
-                elevation: 10,
-                borderRadius: 15,
-                marginLeft: 10,
-              }}
-            >
-              <Text
-                style={{
-                  textAlign: "center",
-                  marginTop: "auto",
-                  marginBottom: "auto",
-                  letterSpacing: 1.5,
-                }}
-              >
-                {mascota.petName}
-              </Text>
-            </Card>
-            <Card
-              style={{
-                height: 60,
-                width: 80,
-                elevation: 10,
-                borderRadius: 15,
-                marginLeft: 20,
-              }}
-            >
-              <Text
-                style={{
-                  textAlign: "center",
-                  marginTop: "auto",
-                  marginBottom: "auto",
-                  letterSpacing: 1.5,
-                }}
-              >
-                {mascota.petSex}
-              </Text>
-            </Card>
-            <Card
-              style={{
-                height: 60,
-                width: 80,
-                elevation: 10,
-                borderRadius: 15,
-                marginLeft: 20,
-              }}
-            >
-              <Text
-                style={{
-                  textAlign: "center",
-                  marginTop: "auto",
-                  marginBottom: "auto",
-                  letterSpacing: 1.5,
-                }}
-              >
-                {mascota.petSize}
-              </Text>
-            </Card>
-            <Card
-              style={{
-                height: 60,
-                width: 80,
-                elevation: 10,
-                borderRadius: 15,
-                marginLeft: 20,
-              }}
-            >
-              <Text
-                style={{
-                  textAlign: "center",
-                  marginTop: "auto",
-                  marginBottom: "auto",
-                  letterSpacing: 1.5,
-                }}
-              >
-                {mascota.petColor}
-              </Text>
-            </Card>
-          </View>
-          <View style={{ marginTop: 15, marginBottom: 25 }}>
-            <CardItem header style={{ marginBottom: -15 }}>
-              <H3>Descripcion</H3>
-            </CardItem>
-            <CardItem>
-              <Text>{mascota.petDescription}</Text>
-            </CardItem>
           </View>
         </Card>
       </View>
     );
 
 }
+
+
+const styles = StyleSheet.create({
+  charCard : {
+    height: 40,
+    width: 110,
+    elevation: 10,
+    borderRadius: 5,
+    marginLeft: 8,
+    marginRight: 8,
+    shadowColor: 'rgba(255,255,255,255)',
+    borderColor: 'rgba(255,255,255,255)',
+  },
+  cardText: {
+    textAlign: "center",
+    marginTop: "auto",
+    marginBottom: "auto",
+    letterSpacing: 1,
+    color: colores.main
+  },
+  mainButtons: {
+    borderRadius: 5,
+    width: "40%",
+    margin: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    backgroundColor: colores.mainFill,
+    shadowOpacity: 0.3,
+    shadowRadius: 4.65,
+
+    elevation: 8,
+  }
+});

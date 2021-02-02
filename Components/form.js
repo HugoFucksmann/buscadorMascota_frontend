@@ -105,7 +105,7 @@ return (
         onPress={(value) => setPerro({ ...perro, petState: value })}
         textColor={colores.main}
         selectedColor={colores.light}
-        buttonColor={colores.main}
+        buttonColor={colores.mainFill}
         hasPadding
         fontSize = {15}
         borderRadius = {20}
@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
   btnFinal: {
     marginTop: 20,
     elevation: 10,
-    backgroundColor: colores.main,
+    backgroundColor: colores.mainFill,
     borderRadius: 5,
   },
   map: {
