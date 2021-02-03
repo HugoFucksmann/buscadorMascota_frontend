@@ -5,9 +5,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StyleSheet, TextInput, View, Button } from "react-native";
 import firebaseConfig from '../firebaseConfig'
 
-
-
-
 export default function Chat({mascotaId}) {
   console.log(mascotaId);
   const chatsRef = firebaseConfig().collection(mascotaId);

@@ -1,19 +1,19 @@
 import React, { Component, useState } from 'react';
-import { View, SafeAreaView, StyleSheet, ImageBackground, Text, TouchableHighlight} from "react-native";
+import { View, SafeAreaView, StyleSheet, ImageBackground, Text } from "react-native";
 import { Root, Button, Footer, FooterTab, Icon, Header } from "native-base";
 import * as Font from "expo-font";
 import { SocialIcon } from "react-native-elements";
-import { googleLogin, isAuthenticated } from "./helpers/auth";
+import { googleLogin, isAuthenticated, usuarioRandom } from "./helpers/auth";
 import Feed from './views/feed';
 import LoadingView from './views/pagCarga'
 import FormMascota from './Components/form';
-import perroGris from "./assets/fondos/curi_verde_01.png";
+import curiVerde from "./assets/fondos/curi_verde_01.png";
 import banner from './assets/banner.png';
 import Botonera from './views/botonera';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import colores from './Components/colorPalette';
 import { StatusBar } from 'expo-status-bar';
-
+import { log } from 'react-native-reanimated';
   
 
 
@@ -22,23 +22,31 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = { loading: true, selectedTab: "feed" };
-    //AsyncStorage.removeItem('user')
     
   }
   async componentDidMount() {
+    
+    const ac = new AbortController();
+    let user = await AsyncStorage.getItem("user");
+    let isAuth = false;
     await Font.loadAsync({
       Roboto: require("native-base/Fonts/Roboto.ttf"),
       Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf"),
     });
-    let isAuth = await isAuthenticated();
-    this.setState({ loading: false, isAuth: true });
+    if (!user) await usuarioRandom().finally(() => ac.abort());
+    else if (JSON.parse(user).google) isAuth = await isAuthenticated(user).finally(() => ac.abort());
+    
+    this.setState({ loading: false, isAuth: isAuth, user: JSON.parse(user) });
+    
   }
 
   async googleAuth() {
     
-    await googleLogin();
-    let isAuth = await isAuthenticated();
-    this.setState({ isAuth: isAuth });    
+    let isAuth = await googleLogin();
+    if (isAuth) {
+      let user = await AsyncStorage.getItem("user");
+      this.setState({ isAuth: isAuth, user: user });
+    };
   }
   
   renderSelectedTab() {
@@ -56,7 +64,7 @@ export default class App extends Component {
               backgroundColor: '#EEF4D7',
             }}
           >
-            <ImageBackground source={perroGris} style={styles.image}>
+            <ImageBackground source={curiVerde} style={styles.image}>
               <Text style={styles.text}>LOGIN</Text>
               <SocialIcon
                 title={"Inicia sesión con Google"}
@@ -86,6 +94,7 @@ export default class App extends Component {
     } else {
       return ( 
         <Root>    
+          <StatusBar style="dark" backgroundColor='#fff'/>
           <Header
           style={{
             height: 50 ,
@@ -97,12 +106,9 @@ export default class App extends Component {
             }} >
               <ImageBackground source={banner} style={{flex:0.8, resizeMode:'cover', justifyContent:'center'}}>
               </ImageBackground>
-              {/* <Text style={{color:colores.main, fontSize:20, paddingTop:3}}>
-                {(this.state.selectedTab=="feed")?'Animales Perdidos':(this.state.selectedTab=="perfil")?'Perfil':'Cargar Animal'}
-              </Text> */}
             </Header>
             <View>
-            <StatusBar style="dark" backgroundColor='#fff'/>
+           
           </View>
           <SafeAreaView style={{ flex: 6 }}>
             {this.renderSelectedTab()}
@@ -150,6 +156,7 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: "cover",
     justifyContent: "center",
+    paddingBottom: 80
   },
   text: {
     color: "white",
@@ -159,14 +166,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#00000030",
   },
   button: {
-    backgroundColor: 'white',
-    borderRadius: 0
+    backgroundColor: "white",
+    borderRadius: 0,
   },
-  footer:{
+  footer: {
     backgroundColor: null,
-    flexDirection:'row',
-    color:colores.main,
+    flexDirection: "row",
+    color: colores.main,
     borderTopWidth: 3,
-    borderTopColor: colores.mild
-  }
+    borderTopColor: colores.mild,
+  },
 });
