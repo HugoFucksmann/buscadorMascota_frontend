@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import MapView, { Marker } from "react-native-maps";
-import { View, StyleSheet} from "react-native";
+import { View, StyleSheet } from "react-native";
 import { getMapLocation } from "../helpers/getLocation";
 import {
   Button,
@@ -11,8 +11,6 @@ import {
   H3,
   Thumbnail,
 } from "native-base";
-
-import perro1 from "../assets/perros/perro1.jpg";
 import { mostrarFoto } from "../helpers/imageService";
 import Chat from "../views/chat";
 import colores from '../Components/colorPalette';
@@ -20,9 +18,8 @@ import colores from '../Components/colorPalette';
 export default function InfoPerro( {mascota} ) {
   const [activeChat, setActiveChat] = useState(false)
   const [ubi] = useState(getMapLocation(mascota.location));
-  const [foto] = useState(mostrarFoto(mascota.petPicture));
+  const [foto] = useState(mostrarFoto(mascota.petPicture));  
 
-  
   if(activeChat){
 
     return (
@@ -33,7 +30,7 @@ export default function InfoPerro( {mascota} ) {
   }
     return (
       <View>
-        <MapView style={{ height: 300, width: null }} initialRegion={ubi}>
+        <MapView style={{ height: 315, width: null }} initialRegion={ubi}>
           <Marker
             coordinate={{
               longitude: mascota.location.longitude[0],
@@ -44,9 +41,9 @@ export default function InfoPerro( {mascota} ) {
 
         <Card
           style={{
-            borderTopRightRadius: 30,
-            borderTopLeftRadius: 30,
-            marginTop: -50,
+            borderTopRightRadius: 40,
+            borderTopLeftRadius: 40,
+            marginTop: -68,
           }}
         >
           <Thumbnail
@@ -61,15 +58,15 @@ export default function InfoPerro( {mascota} ) {
           />
 
           <View style={{flexDirection: "row", justifyContent:'center'}}>
-              <Text style={{ color: colores.main, fontSize: 25, padding:15}} >
+              <Text style={{ color: colores.main, fontSize: 25, marginTop: 15}} >
                 {mascota.petName}
               </Text>
           </View>
-          <View style={{ marginTop: 15, marginBottom: 25 }}>
-            <CardItem header style={{ marginBottom: -15 }}>
+          <View style={{ marginBottom: 25 }}>
+            <CardItem header >
               <Text style={{color:'grey'}}> Descripción</Text>
             </CardItem>
-            <CardItem>
+            <CardItem style={{marginTop: -15}}>
               <Text style={{color:'grey'}}>{mascota.petDescription}</Text>
             </CardItem>
           </View>
@@ -148,7 +145,6 @@ const styles = StyleSheet.create({
     backgroundColor: colores.mainFill,
     shadowOpacity: 0.3,
     shadowRadius: 4.65,
-
     elevation: 8,
   }
 });
