@@ -19,7 +19,7 @@ export default function Notificaciones() {
 
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) =>
-      setExpoPushToken("ExponentPushToken[WqskbxPDcQfi45gztkpX-z]")
+      setExpoPushToken(token)
     );
 
     // This listener is fired whenever a notification is received while the app is foregrounded
@@ -92,7 +92,7 @@ async function sendPushNotification(expoPushToken) {
   });
 }
 
-async function registerForPushNotificationsAsync() {
+export async function registerForPushNotificationsAsync() {
   let token;
   if (Constants.isDevice) {
     const {
@@ -108,9 +108,9 @@ async function registerForPushNotificationsAsync() {
       return;
     }
     token = (await Notifications.getExpoPushTokenAsync()).data;
-    console.log('ss ', token);
+    
   } else {
-    alert("Must use physical device for Push Notifications");
+    //alert("Must use physical device for Push Notifications");
   }
 
   if (Platform.OS === "android") {
