@@ -4,16 +4,19 @@ import { GiftedChat } from "react-native-gifted-chat";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StyleSheet, TextInput, View, Button } from "react-native";
 import firebaseConfig from '../firebaseConfig'
+import { usuarioRandom } from "../helpers/auth";
+import { sendPushNotification } from "../helpers/notificationConfig";
 
-export default function Chat({mascotaId}) {
-  console.log(mascotaId);
+export default function Chat({mascotaId, notification}) {
   const chatsRef = firebaseConfig().collection(mascotaId);
   const [user, setUser] = useState(null);
   const [name, setName] = useState("");
   const [messages, setMessages] = useState([]);
-
+  
   useEffect(() => {
-    readUser();
+    (async ()=> {
+      await readUser();
+    })();
     const unsubscribe = chatsRef.onSnapshot((querySnapshot) => {
       const messagesFirestore = querySnapshot
         .docChanges()
@@ -25,6 +28,7 @@ export default function Chat({mascotaId}) {
           return { ...message, createdAt: message.createdAt.toDate() };
         })
         .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+        
       appendMessages(messagesFirestore);
     });
     return () => unsubscribe();
@@ -47,14 +51,15 @@ export default function Chat({mascotaId}) {
   }
   
   async function handlePress() {
-    const _id = Math.random().toString(36).substring(7);
-    const user = { _id, name };
-    await AsyncStorage.setItem("user", JSON.stringify(user));
-    setUser(user);
+   
+    const user = await usuarioRandom()
+    if(user) setUser(user);
   }
   async function handleSend(messages) {
+    console.log('mm ', messages);
     const writes = messages.map((m) => chatsRef.add(m));
     await Promise.all(writes);
+    sendPushNotification(notification, 'alguien vio tu perrito!!', messages[0].text);
   }
 
   if (!user) {
@@ -66,7 +71,7 @@ export default function Chat({mascotaId}) {
           value={name}
           onChangeText={setName}
         />
-        <Button onPress={handlePress} title="Enter the chat" />
+        <Button onPress={() => handlePress()} title="Enter the chat" />
       </View>
     );
   }

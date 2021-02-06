@@ -26,7 +26,7 @@ export async function googleLogin() {
       })
         .then((res) => res.json())
         .then(async ({ token, usuario }) => {
-          console.log("oo ", JSON.stringify(usuario));
+
           await AsyncStorage.setItem("user", JSON.stringify(usuario));
           await AsyncStorage.setItem("token", JSON.stringify(token));
           return true;
@@ -47,7 +47,7 @@ export async function isAuthenticated(user) {
   
   if (user && JSON.parse(user).google) {
     let id = JSON.parse(user)._id;
-
+    console.log('id  ', id);
     let authh = await fetch("http://192.168.0.104:3011/api/login/renew", {
       method: "POST",
       headers: {
@@ -60,7 +60,7 @@ export async function isAuthenticated(user) {
     })
       .then((res) => res.json())
       .then(async (res) => {
-
+        
         if(!res.ok) return false
         await AsyncStorage.setItem("token", res.token);
         
@@ -78,7 +78,35 @@ export async function isAuthenticated(user) {
 }
 
 export async function usuarioRandom(){
+  
   const notificationToken = await registerForPushNotificationsAsync();
+  const user = {
+    name: `usuario: ${(Math.random()*100)}`, //todo: ver round y metodo
+    password: "@@@",
+    img: "",
+    google: false,
+    notification: notificationToken,
+  };
+  const userDB = await fetch("http://192.168.0.104:3011/api/usuarios", {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      user
+    }),
+  })
+    .then((res) => res.json())
+    .then(async (res) => {
+      if (!res.ok) return false;
+      await AsyncStorage.setItem("user", JSON.stringify(res.user));
+      return res.user;
+    })
+    .catch((e) => {
+      console.log("err ", e);
+      return false;
+    });
 
-  return {user: 'colo'}
+  return userDB
 }

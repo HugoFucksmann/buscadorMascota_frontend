@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import React, { } from 'react'
 import {  ActivityIndicator,  ImageBackground,  View,  Text, StyleSheet, useColorScheme, } from "react-native";
 
 import perroNegro from "../assets/fondos/intro_translucent.png";

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Image, Platform, Text, ScrollView, StyleSheet, Dimensions } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as ImagePicker from "expo-image-picker";
-import {  Picker,  Item,  Label,  Input,  Textarea,  Form,  Left,  Card,  Button,  Icon,  H3, Right } from "native-base";
+import {  Picker,  Item,  Label,  Input,  Textarea,  Form,  Left,  Card,  Button,  H3, Right } from "native-base";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SwitchSelector from "react-native-switch-selector";
 

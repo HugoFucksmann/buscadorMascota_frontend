@@ -1,3 +1,4 @@
+const { default: AsyncStorage } = require("@react-native-async-storage/async-storage");
 
   
 async function actualizarArchivo(file, perroId, token) {
@@ -38,7 +39,12 @@ async function actualizarArchivo(file, perroId, token) {
 }
 
 async function crearMascota(perro, token) {
-    
+  const user = await AsyncStorage.getItem("user");
+  const notification = JSON.parse(user).notification
+  const data = {
+    perro,
+    notification,
+  };
   const perroId = await fetch("http://192.168.0.104:3011/api/mascotas", {
     method: "POST",
     headers: {
@@ -46,14 +52,18 @@ async function crearMascota(perro, token) {
       "Content-Type": "application/json",
       token: token,
     },
-    body: JSON.stringify(perro),
+    body: JSON.stringify(data),
   })
     .then((res) => res.json())
-    .then((res) => res.mascota._id)
+    .then(async (res) => {
+      if (!res.ok) return false;
+      return res.mascota._id;
+    })
     .catch((e) => console.log(e));
     
  
   if(!perroId) return '';
+
 
   return perroId;
     

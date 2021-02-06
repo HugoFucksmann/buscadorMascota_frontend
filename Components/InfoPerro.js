@@ -24,7 +24,7 @@ export default function InfoPerro( {mascota} ) {
 
     return (
       <>
-        <Chat mascotaId={mascota._id} />
+        <Chat mascotaId={mascota._id} notification={mascota.notification} />
       </>
     );
   }

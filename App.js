@@ -13,16 +13,13 @@ import Botonera from './views/botonera';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import colores from './Components/colorPalette';
 import { StatusBar } from 'expo-status-bar';
-import { log } from 'react-native-reanimated';
-  
-
 
 export default class App extends Component {
   
   constructor(props) {
     super(props);
     this.state = { loading: true, selectedTab: "feed" };
-    
+    //AsyncStorage.removeItem('user')
   }
   async componentDidMount() {
     
@@ -33,10 +30,11 @@ export default class App extends Component {
       Roboto: require("native-base/Fonts/Roboto.ttf"),
       Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf"),
     });
-    if (!user) await usuarioRandom().finally(() => ac.abort());
+    if (!user) {user = await usuarioRandom()}
     else if (JSON.parse(user).google) isAuth = await isAuthenticated(user).finally(() => ac.abort());
-    
-    this.setState({ loading: false, isAuth: isAuth, user: JSON.parse(user) });
+    //if (user && JSON.parse(user).google) isAuth = await isAuthenticated(user).finally(() => ac.abort());
+
+    this.setState({ loading: false, isAuth: isAuth });
     
   }
 
@@ -44,8 +42,7 @@ export default class App extends Component {
     
     let isAuth = await googleLogin();
     if (isAuth) {
-      let user = await AsyncStorage.getItem("user");
-      this.setState({ isAuth: isAuth, user: user });
+      this.setState({ isAuth: isAuth });
     };
   }
   
@@ -55,7 +52,6 @@ export default class App extends Component {
         return <Feed />;
         break;
       case "formulario":
-       
         if (this.state.isAuth) return <FormMascota />;
         return (
           <View

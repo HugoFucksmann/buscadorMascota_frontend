@@ -9,7 +9,7 @@ import { tiempoTranscurrido } from '../helpers/getTimePass';
 function CardFeed({mascota}) {
   const [bool, setBool] = useState(false);
   const [foto, setFoto] = useState(mostrarFoto(mascota.petPicture));
-
+  console.log(foto);
   function petInfo(){
     setBool(true);
   }
