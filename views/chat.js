@@ -56,7 +56,6 @@ export default function Chat({mascotaId, notification}) {
     if(user) setUser(user);
   }
   async function handleSend(messages) {
-    console.log('mm ', messages);
     const writes = messages.map((m) => chatsRef.add(m));
     await Promise.all(writes);
     sendPushNotification(notification, 'alguien vio tu perrito!!', messages[0].text);

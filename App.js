@@ -1,8 +1,9 @@
 import React, { Component, useState } from 'react';
 import { View, SafeAreaView, StyleSheet, ImageBackground, Text } from "react-native";
 import { Root, Button, Footer, FooterTab, Icon, Header } from "native-base";
+import { Provider } from "react-redux";
+import {store} from './redux/app-redux'; 
 import * as Font from "expo-font";
-import { SocialIcon } from "react-native-elements";
 import { googleLogin, isAuthenticated, usuarioRandom } from "./helpers/auth";
 import Feed from './views/feed';
 import LoadingView from './views/pagCarga'
@@ -62,14 +63,11 @@ export default class App extends Component {
           >
             <ImageBackground source={curiVerde} style={styles.image}>
               <Text style={styles.text}>LOGIN</Text>
-              <SocialIcon
-                title={"Inicia sesión con Google"}
-                button={true}
-                type="google"
-                iconSize={30}
-                light
+              <Button
                 onPress={() => this.googleAuth()}
-              />
+              >
+                <Text>Google!!</Text>
+              </Button>
             </ImageBackground>
           </View>
         );
@@ -82,61 +80,92 @@ export default class App extends Component {
   }
 
 
-  
-
   render() {
     if (this.state.loading) {
       return <LoadingView />;
     } else {
-      return ( 
-        <Root>    
-          <StatusBar style="dark" backgroundColor='#fff'/>
-          <Header
-          style={{
-            height: 50 ,
-            backgroundColor:'white',
-            borderBottomColor:colores.mild,
-            borderBottomWidth:2,
-            padding: 10,
-            marginTop: 25
-            }} >
-              <ImageBackground source={banner} style={{flex:0.8, resizeMode:'cover', justifyContent:'center'}}>
-              </ImageBackground>
+      return (
+        <Provider store={store}>
+          <Root>
+            <StatusBar style="dark" backgroundColor="#fff" />
+            <Header
+              style={{
+                height: 50,
+                backgroundColor: "white",
+                borderBottomColor: colores.mild,
+                borderBottomWidth: 2,
+                padding: 10,
+                marginTop: 25,
+              }}
+            >
+              <ImageBackground
+                source={banner}
+                style={{
+                  flex: 0.8,
+                  resizeMode: "cover",
+                  justifyContent: "center",
+                }}
+              ></ImageBackground>
             </Header>
-            <View>
-           
-          </View>
-          <SafeAreaView style={{ flex: 6 }}>
-            {this.renderSelectedTab()}
-          </SafeAreaView>
-          <Footer style={styles.footer}>    
-          <FooterTab style={{backgroundColor:colores.mild}}>
-              <Button  style={styles.button}
-                active={this.state.selectedTab === "formulario"}
-                onPress={() => this.setState({ selectedTab: "formulario" })}
-              >
-                <Icon type="FontAwesome" name="plus"
-                style={{color: (this.state.selectedTab=="formulario")?colores.main:colores.mild}}
-                />
-               </Button>
-              <Button style={styles.button}
-                active={this.state.selectedTab === "feed"}
-                onPress={() => {this.setState({ selectedTab: "feed" })}}
-              >
-                <Icon type="FontAwesome5" name="paw"
-                style={{color: (this.state.selectedTab=="feed")?colores.main:colores.mild}}/>
-              </Button>
-              <Button style={styles.button}
-                active={this.state.selectedTab === "perfil"}
-                onPress={() => this.setState({ selectedTab: "perfil" })}
-              >
-                <Icon type="FontAwesome" name="user"
-                style={{color: (this.state.selectedTab=="perfil")?colores.main:colores.mild}}/>
-                
-              </Button>
-            </FooterTab>
-          </Footer>
-        </Root>
+            <SafeAreaView style={{ flex: 6 }}>
+              {this.renderSelectedTab()}
+            </SafeAreaView>
+            <Footer style={styles.footer}>
+              <FooterTab style={{ backgroundColor: colores.mild }}>
+                <Button
+                  style={styles.button}
+                  active={this.state.selectedTab === "formulario"}
+                  onPress={() => this.setState({ selectedTab: "formulario" })}
+                >
+                  <Icon
+                    type="FontAwesome"
+                    name="plus"
+                    style={{
+                      color:
+                        this.state.selectedTab == "formulario"
+                          ? colores.main
+                          : colores.mild,
+                    }}
+                  />
+                </Button>
+                <Button
+                  style={styles.button}
+                  active={this.state.selectedTab === "feed"}
+                  onPress={() => {
+                    this.setState({ selectedTab: "feed" });
+                  }}
+                >
+                  <Icon
+                    type="FontAwesome5"
+                    name="paw"
+                    style={{
+                      color:
+                        this.state.selectedTab == "feed"
+                          ? colores.main
+                          : colores.mild,
+                    }}
+                  />
+                </Button>
+                <Button
+                  style={styles.button}
+                  active={this.state.selectedTab === "perfil"}
+                  onPress={() => this.setState({ selectedTab: "perfil" })}
+                >
+                  <Icon
+                    type="FontAwesome"
+                    name="user"
+                    style={{
+                      color:
+                        this.state.selectedTab == "perfil"
+                          ? colores.main
+                          : colores.mild,
+                    }}
+                  />
+                </Button>
+              </FooterTab>
+            </Footer>
+          </Root>
+        </Provider>
       );
     }
   }

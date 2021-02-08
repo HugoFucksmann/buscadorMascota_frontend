@@ -1,12 +1,71 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Text, Dimensions, StyleSheet } from "react-native";
-import { Card, CardItem, Icon, H3, Thumbnail } from "native-base";
+import { Card, CardItem, Icon, H3, Thumbnail, Button } from "native-base";
 import samplePhoto from '../assets/perros/perro1.jpg';
 import samplePhoto2 from '../assets/perros/perro2.jpg';
 import colores from '../Components/colorPalette';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import LoadingView from './pagCarga';
+import { PROD_URL } from "@env";
 
-const Botonera = () => {
+
+import { connect } from 'react-redux'
+import { setFavoriteAnimal, watchPersonData } from '../redux/app-redux'
+import { TextInput } from 'react-native-gesture-handler';
+import { Component } from 'react';
+
+
+const mapStateToProps = (state) => {
+  return {
+    favoriteAnimal: state.favoriteAnimal
+  }
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setFavoriteAnimal: (text) => dispatch(setFavoriteAnimal(text)),
+    watchPersonData: () => dispatch(watchPersonData())
+  };
+};
+
+
+
+class Botonera extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      favoriteAnimal: this.props.favoriteAnimal
+    }
+    this.props.watchPersonData();
+  }
+
+  handleState = () => {
+    this.props.setFavoriteAnimal(this.state.favoriteAnimal);
+  };
+ 
+  render() {
+    
     return (
+      <View>
+        <Text>{this.props.favoriteAnimal}</Text>
+
+        <TextInput
+          style={{ borderWidth: 1, width: 200, height: 40 }}
+          value={this.state.favoriteAnimal}
+          onChangeText={(text) => {
+            this.setState({ favoriteAnimal: text });
+          }}
+        />
+        <Button onPress={this.handleState}>
+          <Text>change estate</Text>
+        </Button>
+      </View>
+    );
+  }
+}
+
+/** 
+return (
      <View>
         <View style={styles.titles}>
          <Text style={styles.titles}> MIS ANUNCIOS </Text>
@@ -55,7 +114,7 @@ const Botonera = () => {
         
      </View>
     );
-}
+**/
 
 const styles = StyleSheet.create({
     titles: {
@@ -93,4 +152,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default Botonera;
+export default connect(mapStateToProps, mapDispatchToProps)(Botonera);

@@ -78,17 +78,17 @@ export async function sendPushNotification(expoPushToken, title, text) {
     sound: "default",
     title: title,
     body: text,
-    data: { someData: "goes here" },
+    data: { someData: "goes here" }
   };
-
+  console.log(JSON.stringify({ message }));
   await fetch("https://exp.host/--/api/v2/push/send", {
     method: "POST",
     headers: {
       Accept: "application/json",
       "Accept-encoding": "gzip, deflate",
-      "Content-Type": "application/json",
+      "Content-Type": "application/json"
     },
-    body: JSON.stringify(message),
+    body: JSON.stringify(message),  
   });
 }
 

@@ -1,4 +1,5 @@
 const { default: AsyncStorage } = require("@react-native-async-storage/async-storage");
+const { sendPushNotification } = require("./notificationConfig");
 
   
 async function actualizarArchivo(file, perroId, token) {
@@ -43,14 +44,14 @@ async function crearMascota(perro, token) {
   const notification = JSON.parse(user).notification
   const data = {
     perro,
-    notification,
+    notification
   };
   const perroId = await fetch("http://192.168.0.104:3011/api/mascotas", {
     method: "POST",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      token: token,
+      token: token
     },
     body: JSON.stringify(data),
   })
@@ -61,9 +62,7 @@ async function crearMascota(perro, token) {
     })
     .catch((e) => console.log(e));
     
- 
   if(!perroId) return '';
-
 
   return perroId;
     
