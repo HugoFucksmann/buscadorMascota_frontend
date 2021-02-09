@@ -79,7 +79,7 @@ export default class Formulario extends Component {
 
     return (
       <ScrollView>
-        <Card style={{ padding: 20 }}>
+        <Card >
           <SwitchSelector
             style={styles.state}
             initial={0}
