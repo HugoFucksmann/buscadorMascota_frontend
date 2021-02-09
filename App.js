@@ -1,5 +1,5 @@
 import React, { Component, useState } from 'react';
-import { View, SafeAreaView, StyleSheet, ImageBackground, Text } from "react-native";
+import { View, SafeAreaView, StyleSheet, ImageBackground, Text, Image } from "react-native";
 import { Root, Button, Footer, FooterTab, Icon, Header } from "native-base";
 import * as Font from "expo-font";
 import { SocialIcon } from "react-native-elements";
@@ -7,8 +7,9 @@ import { googleLogin, isAuthenticated, usuarioRandom } from "./helpers/auth";
 import Feed from './views/feed';
 import LoadingView from './views/pagCarga'
 import FormMascota from './Components/form';
-import curiVerde from "./assets/fondos/curi_verde_01.png";
+import loginBackground from './assets/fondos/log_in_curi.png';
 import banner from './assets/banner.png';
+import loginPhrase from './assets/login_phrase.png';
 import Botonera from './views/botonera';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import colores from './Components/colorPalette';
@@ -61,11 +62,15 @@ export default class App extends Component {
           <View
             style={{
               flex: 1,
-              backgroundColor: '#EEF4D7',
-            }}
+              backgroundColor: 'black',
+            }} 
           >
-            <ImageBackground source={curiVerde} style={styles.image}>
-              <Text style={styles.text}>LOGIN</Text>
+            <ImageBackground source={loginBackground} style={styles.image}>
+              {/* <Text style={styles.text}>LOGIN</Text> */}
+              <View style={{justifyContent:'center', alignItems: 'center', padding:10}}>
+              <Image source={loginPhrase} style={{resizeMode:'contain', width:170}}></Image>
+                {/* <Text style={styles.text}>LOGIN</Text> */}
+              </View>
               <SocialIcon
                 title={"Inicia sesión con Google"}
                 button={true}
@@ -84,7 +89,6 @@ export default class App extends Component {
       default:
     }
   }
-
 
   
 
