@@ -1,13 +1,9 @@
 import React, { Component } from "react";
-import { View, Text, Modal, StyleSheet, ImageBackground } from "react-native";
-import { Header, Label, Left, Right, Title, Button, Icon, Content } from "native-base";
+import { View, Text, StyleSheet, ImageBackground } from "react-native";
 import { SocialIcon } from "react-native-elements";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import Auth from "../helpers/auth";
 import perroGris from '../assets/fondos/log_in_curi.png';
-
-
 
 class Login extends Component{
 

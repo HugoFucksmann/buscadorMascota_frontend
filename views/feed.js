@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { PROD_URL } from "@env";
+import React, {} from 'react';
 import { FlatList, SafeAreaView } from "react-native";
-import CardFeed from '../Components/card'
-import LoadingView from './pagCarga';
+import CardFeed from '../Components/card';
 
 const Feed = ({mascotas, usuario}) => {
 

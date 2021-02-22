@@ -10,16 +10,11 @@ import LoadingView from './views/pagCarga'
 import FormMascota from './views/formulario';
 import Login from './Components/login'
 import {getMascotas} from './helpers/mascotaService'
-
 import banner from './assets/banner.png';
-
-import Botonera from './views/botonera';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import colores from './Components/colorPalette';
 import { StatusBar } from 'expo-status-bar';
 import Botonera2 from "./views/botonera2";
-import { PROD_URL } from "@env";
-
 
 export default class App extends Component {
   

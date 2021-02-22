@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+/* import React, { useEffect, useState } from "react";
 import { View, Text, Dimensions, StyleSheet } from "react-native";
 import { Card, CardItem, Icon, H3, Thumbnail, Button } from "native-base";
 import samplePhoto from "../assets/perros/perro1.jpg";
@@ -11,9 +11,9 @@ import { PROD_URL } from "@env";
 import { connect } from "react-redux";
 import { setFavoriteAnimal, watchPersonData } from "../redux/app-redux";
 import { TextInput } from "react-native-gesture-handler";
-import { Component } from "react";
+import { Component } from "react"; */
 
-const mapStateToProps = (state) => {
+/* const mapStateToProps = (state) => {
   return {
     favoriteAnimal: state.favoriteAnimal,
   };
@@ -58,7 +58,7 @@ class Botonera extends Component {
       </View>
     );
   }
-}
+} */
 
 /** 
 return (
@@ -112,7 +112,7 @@ return (
     );
 **/
 
-const styles = StyleSheet.create({
+/* const styles = StyleSheet.create({
   titles: {
     marginTop: 5,
     color: colores.main,
@@ -147,4 +147,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Botonera);
+export default connect(mapStateToProps, mapDispatchToProps)(Botonera); */
