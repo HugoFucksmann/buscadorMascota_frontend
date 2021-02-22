@@ -1,4 +1,4 @@
-
+import { PROD_URL } from "@env";
   
 async function actualizarArchivo(file, perroId, token) {
   try {
@@ -9,7 +9,7 @@ async function actualizarArchivo(file, perroId, token) {
     let match = /\.(\w+)$/.exec(filename);
     let type = match ? `image/${match[1]}` : `image`;
 
-    const url = `http://192.168.0.104:3011/api/upload/imgMascota/${perroId}`;
+    const url = `${PROD_URL}/upload/imgMascota/${perroId}`;
     let formData = new FormData();
  
     formData.append("imgMascota", { uri: localUri, name: filename, type });
@@ -29,7 +29,7 @@ async function actualizarArchivo(file, perroId, token) {
     if (data.ok) {
       return data.nombreArchivo;
     } else {
-      return alert(data.msg);
+      return false;
     }
   } catch (error) {
     console.log(error);
@@ -37,25 +37,33 @@ async function actualizarArchivo(file, perroId, token) {
   }
 }
 
-async function crearMascota(perro, token) {
-    
-  const perroId = await fetch("http://192.168.0.104:3011/api/mascotas", {
+async function getMascotas(){
+  return await fetch(`${PROD_URL}/mascotas`)
+    .then((response) => response.json())
+    .then(({ mascotas }) => mascotas.reverse())
+    .catch((error) => console.error(error));
+}
+
+async function crearMascota(perro, token, notification) {
+ 
+  const perroId = await fetch(`${PROD_URL}/mascotas`, {
     method: "POST",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
       token: token,
     },
-    body: JSON.stringify(perro),
+    body: JSON.stringify({perro, notification}),
   })
     .then((res) => res.json())
     .then((res) => res.mascota._id)
     .catch((e) => console.log(e));
     
  
-  if(!perroId) return '';
+  if(!perroId) return false;
 
   return perroId;
+
     
 }
 
@@ -66,4 +74,5 @@ async function crearMascota(perro, token) {
 module.exports = {
   actualizarArchivo,
   crearMascota,
+  getMascotas
 };

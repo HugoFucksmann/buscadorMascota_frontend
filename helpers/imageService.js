@@ -1,4 +1,4 @@
-import { BASE_URL, PROD_URL } from "@env";
+import { PROD_URL } from "@env";
 export async function uploadFoto(uri) {
 
   let localUri = uri;

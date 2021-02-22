@@ -6,16 +6,12 @@ import { mostrarFoto } from '../helpers/imageService';
 import colores from '../Components/colorPalette';
 import { tiempoTranscurrido } from '../helpers/getTimePass';
 
-function CardFeed({mascota}) {
+function CardFeed({mascota, usuario}) {
   const [bool, setBool] = useState(false);
   const [foto, setFoto] = useState(mostrarFoto(mascota.petPicture));
 
-  function petInfo(){
-    setBool(true);
-  }
-
-  return (
-    <>
+  function renderModalPet(){
+    return (
       <Modal
         animationType="slide"
         transparent={false}
@@ -23,21 +19,27 @@ function CardFeed({mascota}) {
         presentationStyle="pageSheet"
         onRequestClose={() => setBool(false)}
       >
-        <InfoPerro mascota={mascota} />
+        <InfoPerro mascota={mascota} usuario={usuario} />
         <Button
           full
           small
           onPress={() => setBool(false)}
-          style={{ backgroundColor: colores.mainFill }}
+          style={{ backgroundColor: colores.mainFill, marginBottom: -50 }}
         >
           <Text>Volver al feed</Text>
         </Button>
       </Modal>
+    );
+  }
+
+  function renderCardPet(){
+
+    return (
       <TouchableOpacity
         key={mascota._id}
         activeOpacity={1}
-        onPress={() => petInfo(mascota)}
-      >
+        onPress={() => setBool(true)}
+        >
         <Card style={styles.card}>
           <CardItem header style={{ height: 20 }}>
             <Title style={{ color: colores.main }}>{mascota.petName}</Title>
@@ -61,13 +63,19 @@ function CardFeed({mascota}) {
               </Text>
             </Left>
             <Right>
-              <Button small style={{ backgroundColor: colores.mainFill }} onPress={() => petInfo(mascota)} >
+              <Button small style={{ backgroundColor: colores.mainFill }} onPress={() => setBool(true)} >
                 <Text style={{ color: "white" }}>+ Info</Text>
               </Button>
             </Right>
           </CardItem>
         </Card>
-      </TouchableOpacity>
+        </TouchableOpacity>
+    )
+  }
+
+  return (
+    <>
+      {bool ? ( renderModalPet() ) : (renderCardPet() )}
     </>
   );
 }

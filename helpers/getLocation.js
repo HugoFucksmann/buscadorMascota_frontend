@@ -23,13 +23,37 @@ export async function myLocation() {
 
 }
 
+export function myLocation2() {
+  try {
+    let { status } = Location.requestPermissionsAsync();
+    if (status !== "granted") {
+      setErrorMsg("acceso denegado a localizacion");
+      return;
+    }
+    const location = Location.getCurrentPositionAsync();
+    const { latitude, longitude } = location.coords;
+
+    if(latitude && longitude){
+      return {
+        latitude: latitude,
+        longitude: longitude,
+        latitudeDelta: 0.0052,
+        longitudeDelta: 0.0051,
+      };
+    }
+    
+  } catch (e) {
+    console.log(e);
+  }
+}
+
 export function getMapLocation(location){
     
    return {
      latitude: location.latitude[0],
      longitude: location.longitude[0],
-     latitudeDelta: 0.0052,
-     longitudeDelta: 0.0051,
+     latitudeDelta: 0.0122,
+     longitudeDelta: 0.0121,
    };
 }
 
