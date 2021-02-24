@@ -1,6 +1,6 @@
 import "react-native-gesture-handler";
 import React, { Component } from 'react';
-import { SafeAreaView, StyleSheet, ImageBackground } from "react-native";
+import { SafeAreaView, StyleSheet, ImageBackground, LogBox } from "react-native";
 import { Root, Button, Footer, FooterTab, Icon, Header } from "native-base";
 import * as Font from "expo-font";
 
@@ -20,21 +20,23 @@ export default class App extends Component {
   
   constructor(props) {
     super(props);
+    
     this.state = { loading: true, selectedTab: "feed" };
   }
 
   async componentDidMount() {
-    await AsyncStorage.removeItem('user')
+   
     let user = await AsyncStorage.getItem("user");
     let isAuth = false;
+    
     await Font.loadAsync({
       Roboto: require("native-base/Fonts/Roboto.ttf"),
       Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf"),
     });
-
+    
     if (!user) user = await usuarioRandom();
     else user = JSON.parse(user)
-    
+    //user = {name: 'colo',_id: '34f34f34'}
     if (user.google) isAuth = await isAuthenticated(user);
    
     let mascotas = await getMascotas();
@@ -52,6 +54,7 @@ export default class App extends Component {
     let isAuth = await googleLogin();
     if (isAuth) {
       let user = await AsyncStorage.getItem("user");
+      JSON.parse(user)
       this.setState({ isAuth: isAuth, user: user });
     }
   }
@@ -133,7 +136,7 @@ export default class App extends Component {
         break;
 
       case "perfil":
-       
+       console.log("usuuu ", this.state.user);
         return <Botonera2 mascotas={this.state.mascotas} usuario={this.state.user} />;
         break;
 
@@ -142,6 +145,8 @@ export default class App extends Component {
   }
 
   render() {
+    LogBox.ignoreLogs(["Remote debugger"]);
+     LogBox.ignoreLogs(['Setting a timer']);
     if (this.state.loading) {
       return <LoadingView />;
     } else {

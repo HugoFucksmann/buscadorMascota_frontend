@@ -5,9 +5,10 @@ import { mostrarFoto } from "../helpers/imageService";
 import colores from "../Components/colorPalette";
 
 const Botonera2 = ({mascotas, usuario}) => {
+ 
   const [miMascota] = useState(mascotas.filter((masco) => masco.usuario == usuario._id))
    const [fotoPerfil] = useState(mostrarFoto(usuario.img));
-
+   
   return (
     <>
       <View style={{ margin: 15 }}>

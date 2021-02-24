@@ -4,17 +4,12 @@ import { SocialIcon } from "react-native-elements";
 
 import Auth from "../helpers/auth";
 import perroGris from '../assets/fondos/log_in_curi.png';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 class Login extends Component{
 
   constructor(props){
     super(props)
-  }
-  
-  async googleAuth(){
-    let isAuth = await Auth.googleLogin();
-    this.setState({isAuth: isAuth})
-    console.log(this.state);
   }
 
   render(){

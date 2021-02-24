@@ -38,12 +38,9 @@ function CardFeed({mascota, usuario, handlerRender}) {
             </Text>
           </Left>
           <Right>
-            <Button
-              small
-              style={{ backgroundColor: colores.mainFill }}
-            >
-              <Text style={{ color: "white" }}>+ Info</Text>
-            </Button>
+           
+              <Text style={{color: colores.main }}>+ Info</Text>
+          
           </Right>
         </CardItem>
       </Card>

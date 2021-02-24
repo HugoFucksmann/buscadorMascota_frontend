@@ -23,6 +23,7 @@
       "buildNumber": "1.0.0"
     },
     "android": {
+      "useNextNotificationsApi": true,
       "package": "com.colodev.buscan",
       "versionCode": 1,
       "adaptiveIcon": {

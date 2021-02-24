@@ -6,8 +6,7 @@
     "ios": "env-cmd -f .env.prod expo start --ios",
     "web": "env-cmd -f .env.prod expo start --web",
     "eject": "env-cmd -f .env.prod expo eject",
-    "build": "env-cmd -f .env.prod expo build:web",
-    "build:a": "expo build:android"
+    "build": "env-cmd -f .env.prod expo build:web"
   },
   "dependencies": {
     "@firebase/firestore": "^2.1.2",
@@ -23,7 +22,7 @@
     "expo-google-app-auth": "^8.1.4",
     "expo-image-picker": "~9.2.0",
     "expo-location": "~10.0.0",
-    "expo-notifications": "~0.9.0",
+    "expo-notifications": "~0.8.2",
     "expo-status-bar": "~1.0.3",
     "firebase": "^7.9.0",
     "native-base": "^2.15.2",

@@ -1,17 +1,17 @@
 // @refresh reset
 import React, { useState, useEffect, useCallback } from "react";
+import { BackHandler } from "react-native";
 import { GiftedChat } from "react-native-gifted-chat";
 import firebaseConfig from "../firebaseConfig";
 import { sendPushNotification } from "../helpers/notificationConfig";
 
-export default function Chat({ mascotaId, usuario }) {
-  
+export default function Chat({ mascotaId, usuario, handlerRender }) {
   const chatsRef = firebaseConfig().collection(mascotaId);
   const [messages, setMessages] = useState([]);
   
+
   useEffect(() => {
     const unsubscribe = chatsRef.onSnapshot((querySnapshot) => {
-      
       const messagesFirestore = querySnapshot
         .docChanges()
         .filter(({ type }) => type === "added")
@@ -19,18 +19,21 @@ export default function Chat({ mascotaId, usuario }) {
           const message = doc.data();
           //createdAt is firebase.firestore.Timestamp instance
           //https://firebase.google.com/docs/reference/js/firebase.firestore.Timestamp
+
           return { ...message, createdAt: message.createdAt.toDate() };
         })
         .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
       appendMessages(messagesFirestore);
-      
     });
 
-    return () => unsubscribe()
+    backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
+      handlerRender(false, 'tarjetas');
+      return true;
+    });
+    return () => {unsubscribe(); backHandler.remove()};
   }, []);
 
-  
   const appendMessages = useCallback(
     (messages) => {
       setMessages((previousMessages) =>
@@ -61,5 +64,4 @@ export default function Chat({ mascotaId, usuario }) {
       onSend={handleSend}
     />
   );
-  
 }

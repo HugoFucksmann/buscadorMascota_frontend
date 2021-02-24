@@ -103,12 +103,3 @@ export async function usuarioRandom() {
 
   return userDB;
 }
-
-export async function checkUser(user){
-
-  if(!user) user = usuarioRandom();
-  
-
- 
-
-}
