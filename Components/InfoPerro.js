@@ -43,9 +43,7 @@ export default function InfoPerro( {mascota, usuario} ) {
   if(activeChat){
     return  <Chat mascotaId={mascota._id} usuario={usuario} />;
   }
-  
-  
- 
+    //MapVew > Marker fijate abajo 
     return (
       <View>
         {loading ? (
@@ -53,24 +51,33 @@ export default function InfoPerro( {mascota, usuario} ) {
             <LoadingView />
           </View>
         ) : (
-          <MapView
-            style={{ height: 400, width: null }}
-            initialRegion={petUbi}
-          >
+          <MapView style={{ height: 400, width: null }} initialRegion={petUbi}>
             <Marker
               coordinate={{
                 longitude: mascota.location.longitude[0],
                 latitude: mascota.location.latitude[0],
               }}
               identifier="mkMascota"
-            />
+            >
+              {/* ------- aca perro -------- */}
+             {/*  <Image
+                source={require("../assets/")}
+                style={{ height: 35, width: 35 }}
+              /> */}
+            </Marker>
             <Marker
               coordinate={{
                 longitude: miUbi.longitude,
                 latitude: miUbi.latitude,
               }}
               identifier="mkUsuario"
-            />
+            >
+              {/* ------- aca persona-------- */}
+             {/*  <Image
+                source={require("../assets/")}
+                style={{ height: 35, width: 35 }}
+              /> */}
+            </Marker>
           </MapView>
         )}
 

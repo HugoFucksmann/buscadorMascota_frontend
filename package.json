@@ -6,7 +6,8 @@
     "ios": "env-cmd -f .env.prod expo start --ios",
     "web": "env-cmd -f .env.prod expo start --web",
     "eject": "env-cmd -f .env.prod expo eject",
-    "build": "env-cmd -f .env.prod expo build:web"
+    "build": "env-cmd -f .env.prod expo build:web",
+    "build:a": "expo build:android"
   },
   "dependencies": {
     "@firebase/firestore": "^2.1.2",

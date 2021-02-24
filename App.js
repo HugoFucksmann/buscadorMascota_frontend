@@ -1,6 +1,6 @@
 import "react-native-gesture-handler";
 import React, { Component } from 'react';
-import { SafeAreaView, StyleSheet, ImageBackground, Text, Image } from "react-native";
+import { SafeAreaView, StyleSheet, ImageBackground } from "react-native";
 import { Root, Button, Footer, FooterTab, Icon, Header } from "native-base";
 import * as Font from "expo-font";
 
@@ -24,7 +24,7 @@ export default class App extends Component {
   }
 
   async componentDidMount() {
-  
+    await AsyncStorage.removeItem('user')
     let user = await AsyncStorage.getItem("user");
     let isAuth = false;
     await Font.loadAsync({
@@ -32,18 +32,20 @@ export default class App extends Component {
       Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf"),
     });
 
-    if (!user) await usuarioRandom();
-    else if (JSON.parse(user).google)
-    isAuth = await isAuthenticated(user);
-
-    let mascotas = await getMascotas()
+    if (!user) user = await usuarioRandom();
+    else user = JSON.parse(user)
+    
+    if (user.google) isAuth = await isAuthenticated(user);
+   
+    let mascotas = await getMascotas();
     
     this.setState({
       loading: false,
       isAuth: isAuth,
-      user: JSON.parse(user),
+      user: user,
       mascotas: mascotas,
     });
+    
   }
 
   async googleAuth() {
@@ -118,6 +120,7 @@ export default class App extends Component {
   }
 
   renderSelectedTab() {
+   
     switch (this.state.selectedTab) {
       case "feed":
         return <Feed mascotas={this.state.mascotas} usuario={this.state.user} />;
@@ -130,6 +133,7 @@ export default class App extends Component {
         break;
 
       case "perfil":
+       
         return <Botonera2 mascotas={this.state.mascotas} usuario={this.state.user} />;
         break;
 

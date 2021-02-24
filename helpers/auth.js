@@ -8,13 +8,16 @@ export async function googleLogin() {
   
   try {
     const { type, idToken } = await Google.logInAsync({
-      androidClientId: GOOGLE_ANDROID,
-      iosClientId: GOOGLE_IOS,
+      androidClientId:
+        "548192272734-g31apkn3i99591l8nhqr992e9ovgiiov.apps.googleusercontent.com",
+        //"548192272734-2a7sfnf2m8vdkqdlt478jqet3q53hh2p.apps.googleusercontent.com", //GOOGLE_ANDROID,
+      iosClientId:
+        "548192272734-u25bqjc1kc6jd3oq4pn0vm7oo1k3ber1.apps.googleusercontent.com", // GOOGLE_IOS,
     }).catch((err) => console.log(err));
     if (type === "success") {
       const notificationToken = await registerForPushNotificationsAsync();
      
-      let authh = await fetch(`${PROD_URL}/login/google`, {
+      let authh = await fetch(`https://mascotass.herokuapp.com/api/login/google`, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -46,55 +49,42 @@ export async function googleLogin() {
 
 export async function isAuthenticated(user) {
   
-  if (user && JSON.parse(user).google) {
-    let id = JSON.parse(user)._id;
-    
-    let authh = await fetch(`${PROD_URL}/login/renew`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id: id,
-      }),
-    })
-      .then((res) => res.json())
-      .then(async (res) => {
-       
-        if(!res.ok) return false
-        await AsyncStorage.setItem("token", res.token);
-        
-        return true;
-      })
-      .catch((e) => {
-        console.log("err 4 ", e);
-        return false;
-      });
-
-    return authh;
-  }
-
-  return false;
-}
-
-export async function usuarioRandom() {
-  const notificationToken = await registerForPushNotificationsAsync();
-  const user = {
-    name: `usuario: ${Math.random() * 100}`, //todo: ver round y metodo
-    password: "@@@",
-    img: "",
-    google: false,
-    notification: notificationToken,
-  };
-  const userDB = await fetch(`${PROD_URL}/usuarios`, {
+  let authh = await fetch(`https://mascotass.herokuapp.com/api/login/renew`, {
     method: "POST",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      user,
+      id: user._id,
+    }),
+  })
+    .then((res) => res.json())
+    .then(async (res) => {
+      if (!res.ok) return false;
+      await AsyncStorage.setItem("token", res.token);
+
+      return true;
+    })
+    .catch((e) => {
+      console.log("err 4 ", e);
+      return false;
+    });
+
+  return authh;
+}
+
+export async function usuarioRandom() {
+  const notificationToken = await registerForPushNotificationsAsync();
+ 
+  const userDB = await fetch(`https://mascotass.herokuapp.com/api/usuarios`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      notificationToken,
     }),
   })
     .then((res) => res.json())
@@ -105,8 +95,17 @@ export async function usuarioRandom() {
     })
     .catch((e) => {
       console.log("err ", e);
-      return false;
+      return {};
     });
 
   return userDB;
+}
+
+export async function checkUser(user){
+
+  if(!user) user = usuarioRandom();
+  
+
+ 
+
 }

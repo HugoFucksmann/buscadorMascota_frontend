@@ -5,8 +5,11 @@ import { mostrarFoto } from "../helpers/imageService";
 import colores from "../Components/colorPalette";
 
 const Botonera2 = ({mascotas, usuario}) => {
+  console.log(mascotas[5]);
+  console.log('usuu');
+  console.log(usuario);
   const [miMascota] = useState(mascotas.filter((masco) => masco.usuario == usuario._id))
- 
+  console.log('mi mascota  en boto ', miMascota);
   return (
     <ScrollView>
       <View style={styles.titles}>
