@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import MapView, { Marker } from "react-native-maps";
-import { View, StyleSheet, Dimensions } from "react-native";
+import { View, StyleSheet, Dimensions, Modal } from "react-native";
 import { getMapLocation, myLocation } from "../helpers/getLocation";
 import {
   Button,
@@ -8,84 +8,77 @@ import {
   Text,
   CardItem,
   Icon,
-  H3,
   Thumbnail,
 } from "native-base";
 import { mostrarFoto } from "../helpers/imageService";
-import Chat from "../views/chat";
 import colores from '../Components/colorPalette';
 import LoadingView from "../views/pagCarga";
+import logoMarcador from "../assets/appLogo.png";
 
 
+export default function InfoPerro({ mascota, usuario, handlerRender }) {
 
-export default function InfoPerro( {mascota, usuario} ) {
-  const [activeChat, setActiveChat] = useState(false)
   const [petUbi] = useState(getMapLocation(mascota.location));
-  const [miUbi, setMiUbi] = useState({latitude: 0, longitude: 0});
-  const [foto] = useState(mostrarFoto(mascota.petPicture));  
-  const [loading, setLoading] = useState(true)
+  const [miUbi, setMiUbi] = useState({ latitude: 0, longitude: 0 });
+  const [foto] = useState(mostrarFoto(mascota.petPicture));
+  const [loading, setLoading] = useState(true);
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
 
   useEffect(() => {
-    let isMount = true
-    if(isMount){
+    let isMount = true;
+    if (isMount) {
       (async () => {
         setMiUbi(await myLocation());
-        setLoading(false)
+        setLoading(false);
       })();
     }
-    return () => isMount = false
-  },[])
+    return () => isMount = false;
+  }, []);
 
 
-
-  if(activeChat){
-    return  <Chat mascotaId={mascota._id} usuario={usuario} />;
-  }
-    //MapVew > Marker fijate abajo 
+  function renderMapInfo(){
     return (
-      <View>
-        {loading ? (
-          <View style={{ height: 400, width: null }}>
-            <LoadingView />
-          </View>
-        ) : (
-          <MapView style={{ height: 400, width: null }} initialRegion={petUbi}>
-            <Marker
-              coordinate={{
-                longitude: mascota.location.longitude[0],
-                latitude: mascota.location.latitude[0],
-              }}
-              identifier="mkMascota"
-            >
-              {/* ------- aca perro -------- */}
-             {/*  <Image
-                source={require("../assets/")}
-                style={{ height: 35, width: 35 }}
-              /> */}
-            </Marker>
-            <Marker
-              coordinate={{
-                longitude: miUbi.longitude,
-                latitude: miUbi.latitude,
-              }}
-              identifier="mkUsuario"
-            >
-              {/* ------- aca persona-------- */}
-             {/*  <Image
-                source={require("../assets/")}
-                style={{ height: 35, width: 35 }}
-              /> */}
-            </Marker>
-          </MapView>
-        )}
+      <MapView initialRegion={petUbi} style={{height: "100%", width: null}} >
+        <Marker
+          coordinate={{
+            longitude: mascota.location.longitude[0],
+            latitude: mascota.location.latitude[0],
+          }}
+          identifier="mkMascota"
+          image={logoMarcador}
+          style={{ height: 8, width: 8 }}
+        ></Marker>
+        <Marker
+          coordinate={{
+            longitude: miUbi.longitude,
+            latitude: miUbi.latitude,
+          }}
+          identifier="mkUsuario"
+          image={logoMarcador}
+        ></Marker>
+      </MapView>
+    );
+  }
 
+  return (
+    <Modal
+      animationType="slide"
+      transparent={false}
+      visible={true}
+      presentationStyle="pageSheet"
+      onRequestClose={() => handlerRender(false, "tarjetas")}
+    >
+      <View style={{ height: 450, width: null }}>
+        {loading ? <LoadingView /> : renderMapInfo()}
+      </View>
+      <View>
         <Card
           style={{
             borderTopRightRadius: 40,
             borderTopLeftRadius: 40,
             marginTop: -40,
+            height: "100%",
           }}
         >
           <Thumbnail
@@ -105,14 +98,15 @@ export default function InfoPerro( {mascota, usuario} ) {
             </Text>
           </View>
 
-          <View style={{ marginBottom: 15 }}>
-            <CardItem header>
-              <Text style={{ color: "grey" }}> Descripción</Text>
-            </CardItem>
-            <CardItem style={{ marginTop: -15 }}>
-              <Text style={{ color: "grey" }}>{mascota.petDescription}</Text>
-            </CardItem>
-          </View>
+          
+          <CardItem header>
+            <Text style={{ color: "grey" }}> Descripción</Text>
+          </CardItem>
+          <CardItem style={{ marginTop: -15, marginBottom: 15 }}>
+            <Text style={{ color: "grey" }}>{mascota.petDescription}</Text>
+          </CardItem>
+         
+
           <View style={{ flexDirection: "row", justifyContent: "center" }}>
             <Card style={styles.charCard}>
               <Text style={styles.cardText}>{mascota.petSex}</Text>
@@ -125,25 +119,33 @@ export default function InfoPerro( {mascota, usuario} ) {
             </Card>
           </View>
 
-          <View style={{ flexDirection: "row" }}>
+          <View style={{ flexDirection: "row", marginTop: 10 }}>
             <Button
               info
               block
-              onPress={() => setActiveChat(true)}
+              onPress={() => handlerRender(false, "chat")}
               style={styles.mainButtons}
             >
               <Text>Mensajes</Text>
               <Icon name="message1" type="AntDesign" />
             </Button>
+
             <Button info block style={styles.mainButtons}>
               <Text>Compartir</Text>
               <Icon name="share" type="Entypo" />
             </Button>
+
           </View>
         </Card>
       </View>
-    );
+    </Modal>
+  );
+}
 
+
+const MapInfo = () => {
+
+  
 }
 
 

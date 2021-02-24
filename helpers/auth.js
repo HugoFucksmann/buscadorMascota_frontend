@@ -9,8 +9,11 @@ export async function googleLogin() {
   try {
     const { type, idToken } = await Google.logInAsync({
       androidClientId:
+        "548192272734-2a7sfnf2m8vdkqdlt478jqet3q53hh2p.apps.googleusercontent.com",
+
+      androidStandaloneAppClientId:
         "548192272734-g31apkn3i99591l8nhqr992e9ovgiiov.apps.googleusercontent.com",
-        //"548192272734-2a7sfnf2m8vdkqdlt478jqet3q53hh2p.apps.googleusercontent.com", //GOOGLE_ANDROID,
+
       iosClientId:
         "548192272734-u25bqjc1kc6jd3oq4pn0vm7oo1k3ber1.apps.googleusercontent.com", // GOOGLE_IOS,
     }).catch((err) => console.log(err));

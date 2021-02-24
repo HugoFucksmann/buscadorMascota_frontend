@@ -1,6 +1,5 @@
 // @refresh reset
 import React, { useState, useEffect, useCallback } from "react";
-import { SafeAreaView } from "react-native";
 import { GiftedChat } from "react-native-gifted-chat";
 import firebaseConfig from "../firebaseConfig";
 import { sendPushNotification } from "../helpers/notificationConfig";
@@ -52,11 +51,15 @@ export default function Chat({ mascotaId, usuario }) {
       )
     );
   }
-  
+
   return (
-    <SafeAreaView>
-      <GiftedChat messages={messages} user={usuario} onSend={handleSend} />;
-    </SafeAreaView>
+    <GiftedChat
+      placeholder="escribe aqui..."
+      renderUsernameOnMessage
+      messages={messages}
+      user={usuario}
+      onSend={handleSend}
+    />
   );
   
 }

@@ -6,77 +6,48 @@ import { mostrarFoto } from '../helpers/imageService';
 import colores from '../Components/colorPalette';
 import { tiempoTranscurrido } from '../helpers/getTimePass';
 
-function CardFeed({mascota, usuario}) {
-  const [bool, setBool] = useState(false);
-  const [foto, setFoto] = useState(mostrarFoto(mascota.petPicture));
-
-  function renderModalPet(){
-    return (
-      <Modal
-        animationType="slide"
-        transparent={false}
-        visible={bool}
-        presentationStyle="pageSheet"
-        onRequestClose={() => setBool(false)}
-      >
-        <InfoPerro mascota={mascota} usuario={usuario} />
-        <Button
-          full
-          small
-          onPress={() => setBool(false)}
-          style={{ backgroundColor: colores.mainFill, marginBottom: -50 }}
-        >
-          <Text>Volver al feed</Text>
-        </Button>
-      </Modal>
-    );
-  }
-
-  function renderCardPet(){
-
-    return (
-      <TouchableOpacity
-        key={mascota._id}
-        activeOpacity={1}
-        onPress={() => setBool(true)}
-        >
-        <Card style={styles.card}>
-          <CardItem header style={{ height: 20 }}>
-            <Title style={{ color: colores.main }}>{mascota.petName}</Title>
-          </CardItem>
-          <CardItem cardBody>
-            <Image
-              source={{ uri: foto }}
-              style={{ height: 250, width: null, flex: 1 }}
-            />
-          </CardItem>
-          <CardItem>
-            <Left>
-              <Icon
-                active
-                name="date"
-                type="Fontisto"
-                style={{ color: colores.main }}
-              />
-              <Text style={{ color: "grey" }}>
-                {tiempoTranscurrido(mascota.date)}
-              </Text>
-            </Left>
-            <Right>
-              <Button small style={{ backgroundColor: colores.mainFill }} onPress={() => setBool(true)} >
-                <Text style={{ color: "white" }}>+ Info</Text>
-              </Button>
-            </Right>
-          </CardItem>
-        </Card>
-        </TouchableOpacity>
-    )
-  }
+function CardFeed({mascota, usuario, handlerRender}) {
+  const [foto] = useState(mostrarFoto(mascota.petPicture));
 
   return (
-    <>
-      {bool ? ( renderModalPet() ) : (renderCardPet() )}
-    </>
+    <TouchableOpacity
+      key={mascota._id}
+      activeOpacity={1}
+      onPress={() => handlerRender(mascota, "info")}
+    >
+      <Card style={styles.card}>
+        <CardItem header style={{ height: 20 }}>
+          <Title style={{ color: colores.main }}>{mascota.petName}</Title>
+        </CardItem>
+        <CardItem cardBody>
+          <Image
+            source={{ uri: foto }}
+            style={{ height: 250, width: null, flex: 1 }}
+          />
+        </CardItem>
+        <CardItem>
+          <Left>
+            <Icon
+              active
+              name="date"
+              type="Fontisto"
+              style={{ color: colores.main }}
+            />
+            <Text style={{ color: "grey" }}>
+              {tiempoTranscurrido(mascota.date)}
+            </Text>
+          </Left>
+          <Right>
+            <Button
+              small
+              style={{ backgroundColor: colores.mainFill }}
+            >
+              <Text style={{ color: "white" }}>+ Info</Text>
+            </Button>
+          </Right>
+        </CardItem>
+      </Card>
+    </TouchableOpacity>
   );
 }
 

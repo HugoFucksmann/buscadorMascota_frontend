@@ -6,7 +6,7 @@ export async function myLocation() {
       let { status } = await Location.requestPermissionsAsync();
       if (status !== "granted") {
         setErrorMsg("acceso denegado a localizacion");
-        return;
+        return {}
       }
       const location = await Location.getCurrentPositionAsync();
       const { latitude, longitude } = await location.coords;
@@ -28,7 +28,7 @@ export function myLocation2() {
     let { status } = Location.requestPermissionsAsync();
     if (status !== "granted") {
       setErrorMsg("acceso denegado a localizacion");
-      return;
+      return {};
     }
     const location = Location.getCurrentPositionAsync();
     const { latitude, longitude } = location.coords;

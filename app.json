@@ -2,6 +2,11 @@
   "expo": {
     "name": "BusCan",
     "slug": "buscan",
+    "splash": {
+      "image": "./assets/fondos/intro.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/appLogo.png",
