@@ -1,19 +1,26 @@
 
 import * as Google from "expo-google-app-auth";
-import { GOOGLE_ANDROID, GOOGLE_IOS } from "@env";
+import { GOOGLE_ANDROID, GOOGLE_IOS, PROD_URL } from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { registerForPushNotificationsAsync } from "./notificationConfig";
 
 export async function googleLogin() {
+  
   try {
     const { type, idToken } = await Google.logInAsync({
-      androidClientId: GOOGLE_ANDROID,
-      iosClientId: GOOGLE_IOS,
+      androidClientId:
+        "548192272734-2a7sfnf2m8vdkqdlt478jqet3q53hh2p.apps.googleusercontent.com",
+
+      androidStandaloneAppClientId:
+        "548192272734-g31apkn3i99591l8nhqr992e9ovgiiov.apps.googleusercontent.com",
+
+      iosClientId:
+        "548192272734-u25bqjc1kc6jd3oq4pn0vm7oo1k3ber1.apps.googleusercontent.com", // GOOGLE_IOS,
     }).catch((err) => console.log(err));
     if (type === "success") {
       const notificationToken = await registerForPushNotificationsAsync();
-
-      let authh = await fetch("http://192.168.0.104:3011/api/login/google", {
+     
+      let authh = await fetch(`https://mascotass.herokuapp.com/api/login/google`, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -26,7 +33,7 @@ export async function googleLogin() {
       })
         .then((res) => res.json())
         .then(async ({ token, usuario }) => {
-          console.log("oo ", JSON.stringify(usuario));
+         
           await AsyncStorage.setItem("user", JSON.stringify(usuario));
           await AsyncStorage.setItem("token", JSON.stringify(token));
           return true;
@@ -45,40 +52,54 @@ export async function googleLogin() {
 
 export async function isAuthenticated(user) {
   
-  if (user && JSON.parse(user).google) {
-    let id = JSON.parse(user)._id;
+  let authh = await fetch(`https://mascotass.herokuapp.com/api/login/renew`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      id: user._id,
+    }),
+  })
+    .then((res) => res.json())
+    .then(async (res) => {
+      if (!res.ok) return false;
+      await AsyncStorage.setItem("token", res.token);
 
-    let authh = await fetch("http://192.168.0.104:3011/api/login/renew", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id: id,
-      }),
+      return true;
     })
-      .then((res) => res.json())
-      .then(async (res) => {
+    .catch((e) => {
+      console.log("err 4 ", e);
+      return false;
+    });
 
-        if(!res.ok) return false
-        await AsyncStorage.setItem("token", res.token);
-        
-        return true;
-      })
-      .catch((e) => {
-        console.log("err ", e);
-        return false;
-      });
-
-    return authh;
-  }
-
-  return false;
+  return authh;
 }
 
-export async function usuarioRandom(){
+export async function usuarioRandom() {
   const notificationToken = await registerForPushNotificationsAsync();
+ 
+  const userDB = await fetch(`https://mascotass.herokuapp.com/api/usuarios`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      notificationToken,
+    }),
+  })
+    .then((res) => res.json())
+    .then(async (res) => {
+      if (!res.ok) return false;
+      await AsyncStorage.setItem("user", JSON.stringify(res.user));
+      return res.user;
+    })
+    .catch((e) => {
+      console.log("err ", e);
+      return {};
+    });
 
-  return {user: 'colo'}
+  return userDB;
 }

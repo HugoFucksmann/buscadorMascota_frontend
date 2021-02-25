@@ -1,5 +1,5 @@
-import React, { PureComponent } from 'react'
-import {  ActivityIndicator,  ImageBackground,  View,  Text, StyleSheet, useColorScheme, } from "react-native";
+import React, { } from 'react'
+import {  ActivityIndicator,  ImageBackground,  View,  Text, StyleSheet, } from "react-native";
 
 import perroNegro from "../assets/fondos/intro.png";
 import colores from '../Components/colorPalette';
@@ -14,7 +14,6 @@ export default function LoadingView(){
     </ImageBackground>
   </View>
     )
-  
 } 
 
 const styles = StyleSheet.create({

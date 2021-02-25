@@ -4,3 +4,12 @@ Cuando entrás a mirar un perro, no se puede volver atras usando el "back" del c
 
 Faltaría un Log In con Facebook. Fundamental, dado que mucha gente usa FB para buscar perros.
 
+
+
+
+//no tocar
+"splash": {
+      "image": "./assets/fondos/intro.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
