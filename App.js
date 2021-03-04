@@ -1,10 +1,10 @@
 import "react-native-gesture-handler";
 import React, { Component } from 'react';
-import { SafeAreaView, StyleSheet, ImageBackground, LogBox } from "react-native";
+import { SafeAreaView, StyleSheet, ImageBackground, LogBox, Image } from "react-native";
 import { Root, Button, Footer, FooterTab, Icon, Header } from "native-base";
 import * as Font from "expo-font";
 
-import { googleLogin, isAuthenticated, usuarioRandom } from "./helpers/auth";
+import { googleLogin, isAuthenticated, usuarioRandom, actualizarLocation } from "./helpers/auth";
 import Feed from './views/feed';
 import LoadingView from './views/pagCarga'
 import FormMascota from './views/formulario';
@@ -20,12 +20,12 @@ export default class App extends Component {
   
   constructor(props) {
     super(props);
-    
     this.state = { loading: true, selectedTab: "feed" };
+
   }
 
   async componentDidMount() {
-   
+    await AsyncStorage.removeItem('user');
     let user = await AsyncStorage.getItem("user");
     let isAuth = false;
     
@@ -33,14 +33,18 @@ export default class App extends Component {
       Roboto: require("native-base/Fonts/Roboto.ttf"),
       Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf"),
     });
+
+    
     
     if (!user) user = await usuarioRandom();
     else user = JSON.parse(user)
-    //user = {name: 'colo',_id: '34f34f34'}
-    if (user.google) isAuth = await isAuthenticated(user);
-   
-    let mascotas = await getMascotas();
     
+    if (user.google) isAuth = await isAuthenticated(user);
+  
+    user = await actualizarLocation(user);
+ 
+    let mascotas = await getMascotas(user);
+   
     this.setState({
       loading: false,
       isAuth: isAuth,
@@ -51,10 +55,12 @@ export default class App extends Component {
   }
 
   async googleAuth() {
-    let isAuth = await googleLogin();
+   
+    let isAuth = await googleLogin(this.state.user);
     if (isAuth) {
+     
       let user = await AsyncStorage.getItem("user");
-      JSON.parse(user)
+      user = JSON.parse(user)
       this.setState({ isAuth: isAuth, user: user });
     }
   }
@@ -117,26 +123,27 @@ export default class App extends Component {
   }
 
   async handlerMascotas(){
-    let mascotas = await getMascotas()
-    this.setState({ mascotas: mascotas })
     
+    let mascotas = await getMascotas()
+    this.setState({ mascotas: mascotas, selectedTab: 'feed' })
   }
 
   renderSelectedTab() {
    
     switch (this.state.selectedTab) {
       case "feed":
+
         return <Feed mascotas={this.state.mascotas} usuario={this.state.user} />;
         break;
 
       case "formulario":
         
         if (!this.state.isAuth) return <Login handlerPress={() => this.googleAuth()} />;
-        return <FormMascota notification={this.state.user.notification} handlerMascotas={() => handlerMascotas()} />;
+        return <FormMascota user={this.state.user} handlerMascotas={() => this.handlerMascotas()} />;
         break;
 
       case "perfil":
-       console.log("usuuu ", this.state.user);
+       
         return <Botonera2 mascotas={this.state.mascotas} usuario={this.state.user} />;
         break;
 
@@ -151,20 +158,20 @@ export default class App extends Component {
       return <LoadingView />;
     } else {
       return (
-            <Root>
-              <StatusBar style="dark" backgroundColor="#fff" />
-              <Header style={styles.header}>
-                <ImageBackground
-                  source={banner}
-                  style={styles.headerBackground}
-                ></ImageBackground>
-              </Header>
-
-              <SafeAreaView style={{ flex: 6 }}>
-                {this.renderSelectedTab()}
-              </SafeAreaView>
-              {this.renderTabs()}
-            </Root>
+        <Root>
+       
+            <Header style={styles.header}>
+              <ImageBackground
+                source={banner}
+                style={styles.headerBackground}
+              />
+              <StatusBar style="auto" backgroundColor="#ffffff" />
+            </Header>
+          <SafeAreaView style={{ flex: 6 }}>
+            {this.renderSelectedTab()}
+          </SafeAreaView>
+          {this.renderTabs()}
+        </Root>
       );
     }
   }
@@ -199,8 +206,9 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderBottomColor: colores.mild,
     borderBottomWidth: 2,
-    padding: 10,
-    marginTop: 25,
+    paddingTop: 11,
+    paddingBottom: 11,
+    marginTop: 25
   },
   headerBackground: {
     flex: 0.8,

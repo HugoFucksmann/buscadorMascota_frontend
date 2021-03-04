@@ -10,7 +10,7 @@ export async function myLocation() {
       }
       const location = await Location.getCurrentPositionAsync();
       const { latitude, longitude } = await location.coords;
-
+      
       return {
         latitude: latitude,
         longitude: longitude,
@@ -23,37 +23,35 @@ export async function myLocation() {
 
 }
 
-export function myLocation2() {
+export async function myLocation2() {
   try {
-    let { status } = Location.requestPermissionsAsync();
-    if (status !== "granted") {
-      setErrorMsg("acceso denegado a localizacion");
-      return {};
-    }
-    const location = Location.getCurrentPositionAsync();
-    const { latitude, longitude } = location.coords;
-
-    if(latitude && longitude){
+      let { status } = await Location.requestPermissionsAsync();
+      if (status !== "granted") {
+        setErrorMsg("acceso denegado a localizacion");
+        return {}
+      }
+      const location = await Location.getCurrentPositionAsync();
+      const { latitude, longitude } = await location.coords;
+      
       return {
         latitude: latitude,
         longitude: longitude,
-        latitudeDelta: 0.0052,
-        longitudeDelta: 0.0051,
       };
+    } catch (e) {
+      console.log(e);
     }
-    
-  } catch (e) {
-    console.log(e);
-  }
 }
 
-export function getMapLocation(location){
-    
+export function getMapLocation(mascoUbi, personUbi){
+  
+  const latitude = (0.5 * (personUbi.latitude + mascoUbi.latitude));
+  const longitude = (0.5 * (personUbi.longitude + mascoUbi.longitude));
+  
    return {
-     latitude: location.latitude[0],
-     longitude: location.longitude[0],
-     latitudeDelta: 0.0122,
-     longitudeDelta: 0.0121,
+     latitude: latitude,
+     longitude: longitude,
+     latitudeDelta: 0.0547,
+     longitudeDelta: 0.0546,
    };
 }
 

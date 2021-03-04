@@ -1,28 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView, View, Text, Dimensions, StyleSheet } from "react-native";
-import { Card, Icon, Thumbnail, Button, Right, Left } from "native-base";
+import { Card, Icon, Thumbnail, Button, Right, Left, CardItem } from "native-base";
 import { mostrarFoto } from "../helpers/imageService";
 import colores from "../Components/colorPalette";
 
 const Botonera2 = ({mascotas, usuario}) => {
  
-  const [miMascota] = useState(mascotas.filter((masco) => masco.usuario == usuario._id))
+  const [miMascota, setMiMascota] = useState(false);
    const [fotoPerfil] = useState(mostrarFoto(usuario.img));
+
+  useEffect(() => {
+   
+    if (mascotas) setMiMascota(mascotas.filter((masco) => masco.usuario == usuario._id));
+  },[])
    
   return (
     <>
-      <View style={{ margin: 15 }}>
-        <Card
-          style={{
-            height: 100,
-            borderRadius: 25,
-            elevation: 5,
-            backgroundColor: "#ededed",
-            padding: 15,
-          }}
-        >
-          <View flexDirection="row">
-            <Text style={{ fontSize: 20 }}>Hola </Text>
+      <View style={{height: 200, padding: 25}}>
+        
+           <View flexDirection="row">
+            <Text >Hola </Text>
             <Left>
               <Text> {usuario.name} </Text>
             </Left>
@@ -30,13 +27,10 @@ const Botonera2 = ({mascotas, usuario}) => {
               <Text>Iniciar sesion con otra cuenta</Text>
             </Right>
           </View>
-          <View></View>
-        </Card>
+    
       </View>
       <ScrollView>
-        <View style={styles.titles}>
-          <Text style={styles.titles}> MIS MASCOTAS PERDIDAS </Text>
-        </View>
+        <Text style={styles.titles}> MIS MASCOTAS PERDIDAS </Text>
         {miMascota ? (
           miMascota.map((mascota) => {
             const foto = mostrarFoto(mascota.petPicture);
@@ -65,7 +59,9 @@ const Botonera2 = ({mascotas, usuario}) => {
             );
           })
         ) : (
-          <Text>No tienes mascotas perdidas</Text>
+          <View style={styles.titles}>
+            <Text> No tienes mascotas perdidas </Text>
+          </View>
         )}
       </ScrollView>
     </>
@@ -79,6 +75,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     flexDirection: "row",
     justifyContent: "center",
+    alignSelf: 'center'
   },
   dogName: {
     color: colores.main,
@@ -87,7 +84,7 @@ const styles = StyleSheet.create({
     paddingTop: 2,
   },
   card: {
-    width: Dimensions.get("window").width - 10,
+    width: Dimensions.get("window").width - 20,
     flexDirection: "row",
     backgroundColor: colores.light,
     marginBottom: 5,

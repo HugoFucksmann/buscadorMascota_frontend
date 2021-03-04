@@ -3,8 +3,9 @@ import * as Google from "expo-google-app-auth";
 import { GOOGLE_ANDROID, GOOGLE_IOS, PROD_URL } from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { registerForPushNotificationsAsync } from "./notificationConfig";
+import { myLocation2 } from "./getLocation";
 
-export async function googleLogin() {
+export async function googleLogin(user) {
   
   try {
     const { type, idToken } = await Google.logInAsync({
@@ -16,11 +17,13 @@ export async function googleLogin() {
 
       iosClientId:
         "548192272734-u25bqjc1kc6jd3oq4pn0vm7oo1k3ber1.apps.googleusercontent.com", // GOOGLE_IOS,
+    
     }).catch((err) => console.log(err));
     if (type === "success") {
-      const notificationToken = await registerForPushNotificationsAsync();
+      //const notificationToken = await registerForPushNotificationsAsync();
      
-      let authh = await fetch(`https://mascotass.herokuapp.com/api/login/google`, {
+
+      let authh = await fetch(`http://192.168.0.106:3011/api/login/google`, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -28,12 +31,12 @@ export async function googleLogin() {
         },
         body: JSON.stringify({
           token: idToken,
-          notificationToken: notificationToken,
+          user,
         }),
       })
         .then((res) => res.json())
         .then(async ({ token, usuario }) => {
-         
+          console.log('dentro de response  ', token);
           await AsyncStorage.setItem("user", JSON.stringify(usuario));
           await AsyncStorage.setItem("token", JSON.stringify(token));
           return true;
@@ -78,9 +81,10 @@ export async function isAuthenticated(user) {
 }
 
 export async function usuarioRandom() {
+  
   const notificationToken = await registerForPushNotificationsAsync();
- 
-  const userDB = await fetch(`https://mascotass.herokuapp.com/api/usuarios`, {
+  //const ubi = await myLocation2();
+  const userDB = await fetch(`http://192.168.0.106:3011/api/usuarios`, {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -102,4 +106,35 @@ export async function usuarioRandom() {
     });
 
   return userDB;
+}
+
+
+export async function actualizarLocation(user){
+  
+   const ubi = await myLocation2();
+   
+   const userDB = await fetch(`http://192.168.0.106:3011/api/usuarios/location`, {
+     method: "PUT",
+     headers: {
+       Accept: "application/json",
+       "Content-Type": "application/json",
+     },
+     body: JSON.stringify({
+       ubi,
+       user,
+     }),
+   })
+     .then((res) => res.json())
+     .then(async (res) => {
+      
+       if (!res.ok) return {};
+       await AsyncStorage.setItem("user", JSON.stringify(res.usuario));
+       return res.usuario;
+     })
+     .catch((e) => {
+       console.log("err ", e);
+       return {};
+     });
+
+   return userDB;
 }

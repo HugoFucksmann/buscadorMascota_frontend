@@ -9,7 +9,7 @@ async function actualizarArchivo(file, perroId, token) {
     let match = /\.(\w+)$/.exec(filename);
     let type = match ? `image/${match[1]}` : `image`;
 
-    const url = `https://mascotass.herokuapp.com/api/upload/imgMascota/${perroId}`;
+    const url = `http://192.168.0.106:3011/api/upload/imgMascota/${perroId}`;
     let formData = new FormData();
  
     formData.append("imgMascota", { uri: localUri, name: filename, type });
@@ -23,9 +23,11 @@ async function actualizarArchivo(file, perroId, token) {
         token: token,
       },
       body: formData,
-    }).catch((e) => console.log(e));
+    })
+    .catch((e) => console.log(e));
 
     const data = await resp.json();
+   
     if (data.ok) {
       return data.nombreArchivo;
     } else {
@@ -37,23 +39,42 @@ async function actualizarArchivo(file, perroId, token) {
   }
 }
 
-async function getMascotas(){
-  return await fetch(`https://mascotass.herokuapp.com/api/mascotas`,{
+function filtrar(mascotas, user, dist2) {
+  // definir una nueva variable mascotasFiltered
+  var mascotasFiltered;
+  var userLat = user.location.latitude;
+  var userLon = user.location.longitude;
+  // para cada mascota, chequeo si esta a menos de sqrt(dist) de distancia y en tal caso la agrego a mascotasFiltered
+  for (let ind = 0; ind < mascotas.lenght; ind++) {
+    var petLat = mascotas[ind].location.latitude;
+    var petLon = mascotas[ind].location.longitude;
+    if ((petLat - userLat) ** 2 + (petLon - userLon) ** 2 < dist2) {
+      mascotasFiltered.append(mascotas[ind]);
+    }
+  }
+  return mascotasFiltered;
+}
+
+async function getMascotas(user){
+  
+  return await fetch(`http://192.168.0.106:3011/api/mascotas/${user._id}`, {
+    method: "GET",
     headers: {
-      mode: 'cors',
       Accept: "application/json",
       "Content-Type": "multipart/form-data",
-      'Access-Control-Allow-Credentials': 'true'
-    }
+    },
   })
     .then((response) => response.json())
-    .then(({ mascotas }) => mascotas.reverse())
+    .then((res) => {
+      if(res.ok) return res.mascotas
+      else return false
+    })
     .catch((error) => console.error(error));
 }
 
 async function crearMascota(perro, token, notification) {
  
-  const perroId = await fetch(`https://mascotass.herokuapp.com/api/mascotas`, {
+  const perroId = await fetch(`http://192.168.0.106:3011/api/mascotas/crear`, {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -63,7 +84,7 @@ async function crearMascota(perro, token, notification) {
     body: JSON.stringify({ perro, notification }),
   })
     .then((res) => res.json())
-    .then((res) => res.mascota._id)
+    .then(({mascota}) => mascota._id)
     .catch((e) => console.log(e));
     
  

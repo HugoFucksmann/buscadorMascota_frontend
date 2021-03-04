@@ -44,22 +44,12 @@ const Feed = ({mascotas, usuario}) => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "rgba(242,246,239,255)" }}>
+      
       {renderFeed()}
     </SafeAreaView>
   );
  
 };
-
-
-/**
- * <SafeAreaView style={{ flex: 1, backgroundColor: 'rgba(242,246,239,255)' }}>
-    <FlatList
-        data={mascotas}
-        renderItem={RenderItem}
-        keyExtractor={(item) => item._id}
-      />
-    </SafeAreaView>
- */
 
 
 

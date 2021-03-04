@@ -1,5 +1,6 @@
 import { PROD_URL } from "@env";
-export async function uploadFoto(uri) {
+
+/* export async function uploadFoto(uri) {
 
   let localUri = uri;
   let filename = localUri.split("/").pop();
@@ -18,7 +19,7 @@ export async function uploadFoto(uri) {
     },
   })
   .catch(e => console.log(e));
-}
+} */
 
 export function mostrarFoto(img){
 

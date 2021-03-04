@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import MapView, { Marker } from "react-native-maps";
-import { View, StyleSheet, Dimensions, Modal } from "react-native";
+import { View, StyleSheet, Dimensions, Modal, Image } from "react-native";
 import { getMapLocation, myLocation } from "../helpers/getLocation";
 import {
   Button,
@@ -13,13 +13,14 @@ import {
 import { mostrarFoto } from "../helpers/imageService";
 import colores from '../Components/colorPalette';
 import LoadingView from "../views/pagCarga";
-import logoMarcador from "../assets/appLogo.png";
+import markerDog from "../assets/iconos/marker_paw.png";
+import markerMan from "../assets/iconos/marker_man.png";
 
 
 export default function InfoPerro({ mascota, usuario, handlerRender }) {
 
-  const [petUbi] = useState(getMapLocation(mascota.location));
-  const [miUbi, setMiUbi] = useState({ latitude: 0, longitude: 0 });
+  const [centerUbi, setCenterUbi] = useState({latitude: 0, longitude: 0});
+  const [miUbi] = useState(usuario.location);
   const [foto] = useState(mostrarFoto(mascota.petPicture));
   const [loading, setLoading] = useState(true);
   const windowWidth = Dimensions.get("window").width;
@@ -29,24 +30,28 @@ export default function InfoPerro({ mascota, usuario, handlerRender }) {
     let isMount = true;
     if (isMount) {
       (async () => {
-        setMiUbi(await myLocation());
+        //let myUbi = await myLocation()
+        //await setMiUbi(myUbi);
+        await setCenterUbi(getMapLocation(mascota.location, usuario.location));     
         setLoading(false);
       })();
+     
     }
     return () => isMount = false;
   }, []);
 
 
   function renderMapInfo(){
+   
     return (
-      <MapView initialRegion={petUbi} style={{height: "100%", width: null}} >
+      <MapView region={centerUbi} style={{ height: "100%", width: null }}>
         <Marker
           coordinate={{
-            longitude: mascota.location.longitude[0],
-            latitude: mascota.location.latitude[0],
+            longitude: mascota.location.longitude,
+            latitude: mascota.location.latitude,
           }}
           identifier="mkMascota"
-          image={logoMarcador}
+          image={markerDog}
           style={{ height: 8, width: 8 }}
         ></Marker>
         <Marker
@@ -55,7 +60,7 @@ export default function InfoPerro({ mascota, usuario, handlerRender }) {
             latitude: miUbi.latitude,
           }}
           identifier="mkUsuario"
-          image={logoMarcador}
+          image={markerMan}
         ></Marker>
       </MapView>
     );

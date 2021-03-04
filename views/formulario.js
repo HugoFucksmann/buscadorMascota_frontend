@@ -14,14 +14,13 @@ import colores from "../Components/colorPalette";
 const lightBackColor = "rgba(236,242,213,255)";
 const strongMainColor = "rgba(78,120,81,255)";
 
-const FormMascota = ({ notification, handlerMascotas }) => {
+const FormMascota = ({ user, handlerMascotas }) => {
   const [image, setImage] = useState(null);
   const [file, setFile] = useState(null);
-  const [ubi, setUbi] = useState({
-    latitude: -31.6093586,
-    longitude: -60.6991563,
-    latitudeDelta: 0.0122,
-    longitudeDelta: 0.0121,
+  const [ubi] = useState({
+    ...user.location,
+    latitudeDelta: 0.0052,
+    longitudeDelta: 0.0051,
   });
   const [isLoading, setLoading] = useState(true);
   const [perro, setPerro] = useState({
@@ -38,35 +37,36 @@ const FormMascota = ({ notification, handlerMascotas }) => {
       latitude: 0,
     },
   });
-  
+
   useEffect(() => {
     (async () => {
+
       if (Platform.OS !== "web") {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (status !== "granted") alert("ups! :( , se necesita el permiso para que funcione ");
       }
-      setUbi(await myLocation());
+      
       setLoading(false);
     })();
   }, []);
-
+  
   async function uploadPerro() {
     const token = await AsyncStorage.getItem("token");
-    let perroId = await crearMascota(perro, token, notification);
-
+    let perroId = await crearMascota(perro, token, user.notification);
+    
     if (!perroId) return alert("error al crear perro");
 
     await actualizarArchivo(file, perroId, token)
       .then((res) => {
-        if (res) alert("Listo! Notificando a todos los mas cercanos");
-        else alert("Error al cargar la imagen del perro!");
+        if(res) return handlerMascotas();
+        else return alert("Error al cargar la imagen del perro!");
       })
       .catch((e) => {
         console.log(e);
         alert("Error al cargar la imagen del perro!");
       });
 
-    handlerMascotas();
+    
   }
 
   const pickImage = async () => {

@@ -26,13 +26,12 @@ export default function Chat({ mascotaId, usuario, handlerRender }) {
 
       appendMessages(messagesFirestore);
     });
-
-    backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
-      handlerRender(false, 'tarjetas');
-      return true;
-    });
     return () => {unsubscribe(); backHandler.remove()};
   }, []);
+  const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
+    handlerRender(false, "tarjetas");
+    return true;
+  });
 
   const appendMessages = useCallback(
     (messages) => {
@@ -59,9 +58,12 @@ export default function Chat({ mascotaId, usuario, handlerRender }) {
     <GiftedChat
       placeholder="escribe aqui..."
       renderUsernameOnMessage
+      isLoadingEarlier
+      renderAvatar={null}
       messages={messages}
       user={usuario}
       onSend={handleSend}
+      scrollToBottom={true}
     />
   );
 }
