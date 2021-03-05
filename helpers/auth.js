@@ -17,13 +17,15 @@ export async function googleLogin(user) {
 
       iosClientId:
         "548192272734-u25bqjc1kc6jd3oq4pn0vm7oo1k3ber1.apps.googleusercontent.com", // GOOGLE_IOS,
-    
+
+      clientId: "AIzaSyDJYe58zDD3D57qVJgklgN34YHG6Jhf4rI",
+      behavior: 'web'
     }).catch((err) => console.log(err));
     if (type === "success") {
       //const notificationToken = await registerForPushNotificationsAsync();
      
 
-      let authh = await fetch(`http://192.168.0.106:3011/api/login/google`, {
+      let authh = await fetch(`https://mascotass.herokuapp.com/api/login/google`, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -84,7 +86,7 @@ export async function usuarioRandom() {
   
   const notificationToken = await registerForPushNotificationsAsync();
   //const ubi = await myLocation2();
-  const userDB = await fetch(`http://192.168.0.106:3011/api/usuarios`, {
+  const userDB = await fetch(`https://mascotass.herokuapp.com/api/usuarios`, {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -113,7 +115,7 @@ export async function actualizarLocation(user){
   
    const ubi = await myLocation2();
    
-   const userDB = await fetch(`http://192.168.0.106:3011/api/usuarios/location`, {
+   const userDB = await fetch(`https://mascotass.herokuapp.com/api/usuarios/location`, {
      method: "PUT",
      headers: {
        Accept: "application/json",

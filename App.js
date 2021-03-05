@@ -25,7 +25,7 @@ export default class App extends Component {
   }
 
   async componentDidMount() {
-    await AsyncStorage.removeItem('user');
+    //await AsyncStorage.removeItem('user');
     let user = await AsyncStorage.getItem("user");
     let isAuth = false;
     

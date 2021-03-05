@@ -20,7 +20,10 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.colodev.buscan",
-      "buildNumber": "1.0.0"
+      "buildNumber": "1.0.0",
+      "config": {
+        "googleMapsApiKey": "AIzaSyBTml0ABdTXFNKVNeODlr6i2NDNyUX3kmY"
+      }
     },
     "android": {
       "useNextNotificationsApi": true,

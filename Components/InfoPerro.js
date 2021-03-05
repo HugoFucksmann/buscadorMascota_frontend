@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import MapView, { Marker } from "react-native-maps";
 import { View, StyleSheet, Dimensions, Modal, Image } from "react-native";
-import { getMapLocation, myLocation } from "../helpers/getLocation";
+import { getMapLocation } from "../helpers/getLocation";
 import {
   Button,
   Card,
@@ -18,50 +18,33 @@ import markerMan from "../assets/iconos/marker_man.png";
 
 
 export default function InfoPerro({ mascota, usuario, handlerRender }) {
-
-  const [centerUbi, setCenterUbi] = useState({latitude: 0, longitude: 0});
-  const [miUbi] = useState(usuario.location);
   const [foto] = useState(mostrarFoto(mascota.petPicture));
-  const [loading, setLoading] = useState(true);
   const windowWidth = Dimensions.get("window").width;
-  const windowHeight = Dimensions.get("window").height;
 
-  useEffect(() => {
-    let isMount = true;
-    if (isMount) {
-      (async () => {
-        //let myUbi = await myLocation()
-        //await setMiUbi(myUbi);
-        await setCenterUbi(getMapLocation(mascota.location, usuario.location));     
-        setLoading(false);
-      })();
-     
-    }
-    return () => isMount = false;
-  }, []);
 
 
   function renderMapInfo(){
-   
+  
     return (
-      <MapView region={centerUbi} style={{ height: "100%", width: null }}>
+      <MapView
+        region={getMapLocation(mascota.location, usuario.location)}
+        style={{ height: "100%", width: null }}
+        provider="google"
+      >
         <Marker
           coordinate={{
             longitude: mascota.location.longitude,
             latitude: mascota.location.latitude,
           }}
           identifier="mkMascota"
-          image={markerDog}
-          style={{ height: 8, width: 8 }}
-        ></Marker>
+        />
         <Marker
           coordinate={{
-            longitude: miUbi.longitude,
-            latitude: miUbi.latitude,
+            longitude: usuario.location.longitude,
+            latitude: usuario.location.latitude,
           }}
           identifier="mkUsuario"
-          image={markerMan}
-        ></Marker>
+        />
       </MapView>
     );
   }
@@ -75,7 +58,7 @@ export default function InfoPerro({ mascota, usuario, handlerRender }) {
       onRequestClose={() => handlerRender(false, "tarjetas")}
     >
       <View style={{ height: 450, width: null }}>
-        {loading ? <LoadingView /> : renderMapInfo()}
+        {renderMapInfo()}
       </View>
       <View>
         <Card
@@ -103,14 +86,12 @@ export default function InfoPerro({ mascota, usuario, handlerRender }) {
             </Text>
           </View>
 
-          
           <CardItem header>
             <Text style={{ color: "grey" }}> Descripción</Text>
           </CardItem>
           <CardItem style={{ marginTop: -15, marginBottom: 15 }}>
             <Text style={{ color: "grey" }}>{mascota.petDescription}</Text>
           </CardItem>
-         
 
           <View style={{ flexDirection: "row", justifyContent: "center" }}>
             <Card style={styles.charCard}>
@@ -139,18 +120,11 @@ export default function InfoPerro({ mascota, usuario, handlerRender }) {
               <Text>Compartir</Text>
               <Icon name="share" type="Entypo" />
             </Button>
-
           </View>
         </Card>
       </View>
     </Modal>
   );
-}
-
-
-const MapInfo = () => {
-
-  
 }
 
 
