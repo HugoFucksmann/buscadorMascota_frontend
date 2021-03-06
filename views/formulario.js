@@ -53,20 +53,20 @@ const FormMascota = ({ user, handlerMascotas }) => {
   async function uploadPerro() {
     const token = await AsyncStorage.getItem("token");
     let perroId = await crearMascota(perro, token, user.notification);
-    
+
     if (!perroId) return alert("error al crear perro");
 
     await actualizarArchivo(file, perroId, token)
-      .then((res) => {
-        if(res) return handlerMascotas();
-        else return alert("Error al cargar la imagen del perro!");
+      .then((res) => {       
+        if(!res) alert("Error al cargar la imagen del perro!");   
+        handlerMascotas();  
       })
       .catch((e) => {
         console.log(e);
         alert("Error al cargar la imagen del perro!");
       });
 
-    
+      
   }
 
   const pickImage = async () => {

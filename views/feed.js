@@ -1,3 +1,4 @@
+import { View } from 'native-base';
 import React, { useState } from 'react';
 import { FlatList, SafeAreaView } from "react-native";
 import CardFeed from '../Components/card';
@@ -27,7 +28,13 @@ const Feed = ({mascotas, usuario}) => {
   function renderFeed(){
      switch (render) {
        case "tarjetas":
-         return <FlatList data={mascotas} renderItem={RenderItem} keyExtractor={(item) => item._id} />
+         return (
+             <FlatList
+               data={mascotas}
+               renderItem={RenderItem}
+               keyExtractor={(item) => item._id}
+             />
+         );
          break;
 
        case "info":
@@ -44,7 +51,6 @@ const Feed = ({mascotas, usuario}) => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "rgba(242,246,239,255)" }}>
-      
       {renderFeed()}
     </SafeAreaView>
   );

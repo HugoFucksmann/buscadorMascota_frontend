@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, View, Text, Dimensions, StyleSheet } from "react-native";
-import { Card, Icon, Thumbnail, Button, Right, Left, CardItem } from "native-base";
+import { Card, Icon, Thumbnail, Button, Right, Left, Header, Title, Body, Image } from "native-base";
 import { mostrarFoto } from "../helpers/imageService";
 import colores from "../Components/colorPalette";
+import { StatusBar } from "expo-status-bar";
+import { ImageBackground } from "react-native";
+import banner from "../assets/banner.png";
 
 const Botonera2 = ({mascotas, usuario}) => {
  
@@ -16,18 +19,30 @@ const Botonera2 = ({mascotas, usuario}) => {
    
   return (
     <>
-      <View style={{height: 200, padding: 25}}>
-        
-           <View flexDirection="row">
-            <Text >Hola </Text>
-            <Left>
-              <Text> {usuario.name} </Text>
-            </Left>
-            <Right>
-              <Text>Iniciar sesion con otra cuenta</Text>
-            </Right>
-          </View>
-    
+      {/* <Header span >
+        <Left >
+          <Thumbnail small source={{ uri: fotoPerfil }} />
+          <Text> {usuario.name} </Text>
+        </Left>
+        <Body>
+          <Left></Left>
+        </Body>
+
+        <StatusBar style="auto" backgroundColor="#ffffff" />
+      </Header> */}
+      <View
+        style={{
+          height: 200,
+          padding: 25,
+          backgroundColor: "#c4d9c3",
+        }}
+      >
+        <Thumbnail
+          large
+          style={{ alignSelf: "center" }}
+          source={{ uri: fotoPerfil }}
+        />
+        <Text style={{ alignSelf: "center", fontSize: 24, marginTop: 10 }}> {usuario.name} </Text>
       </View>
       <ScrollView>
         <Text style={styles.titles}> MIS MASCOTAS PERDIDAS </Text>

@@ -17,134 +17,154 @@ import { StatusBar } from 'expo-status-bar';
 import Botonera2 from "./views/botonera2";
 
 export default class App extends Component {
-  
   constructor(props) {
     super(props);
     this.state = { loading: true, selectedTab: "feed" };
-
   }
 
   async componentDidMount() {
     //await AsyncStorage.removeItem('user');
     let user = await AsyncStorage.getItem("user");
     let isAuth = false;
-    
+
     await Font.loadAsync({
       Roboto: require("native-base/Fonts/Roboto.ttf"),
       Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf"),
     });
 
-    
-    
     if (!user) user = await usuarioRandom();
-    else user = JSON.parse(user)
-    
+    else user = JSON.parse(user);
+
     if (user.google) isAuth = await isAuthenticated(user);
-  
+
     user = await actualizarLocation(user);
- 
+
     let mascotas = await getMascotas(user);
-   
+
     this.setState({
       loading: false,
       isAuth: isAuth,
       user: user,
       mascotas: mascotas,
     });
-    
   }
 
   async googleAuth() {
-   
     let isAuth = await googleLogin(this.state.user);
     if (isAuth) {
-     
       let user = await AsyncStorage.getItem("user");
-      user = JSON.parse(user)
+      user = JSON.parse(user);
       this.setState({ isAuth: isAuth, user: user });
     }
   }
 
-  renderTabs(){
+  renderTabs() {
     return (
-       <Footer style={styles.footer}>
-      <FooterTab style={{ backgroundColor: colores.mild }}>
-        <Button
-          style={styles.button}
-          active={this.state.selectedTab === "formulario"}
-          onPress={() => this.setState({ selectedTab: "formulario" })}
-        >
-          <Icon
-            type="FontAwesome"
-            name="plus"
-            style={{
-              color:
-                this.state.selectedTab == "formulario"
-                  ? colores.main
-                  : colores.mild,
+      <Footer style={styles.footer}>
+        <FooterTab style={{ backgroundColor: colores.mild }}>
+          <Button
+            style={styles.button}
+            active={this.state.selectedTab === "formulario"}
+            onPress={() => this.setState({ selectedTab: "formulario" })}
+          >
+            <Icon
+              type="FontAwesome"
+              name="plus"
+              style={{
+                color:
+                  this.state.selectedTab == "formulario"
+                    ? colores.main
+                    : colores.mild,
+              }}
+            />
+          </Button>
+          <Button
+            style={styles.button}
+            active={this.state.selectedTab === "feed"}
+            onPress={() => {
+              this.setState({ selectedTab: "feed" });
             }}
-          />
-        </Button>
-        <Button
-          style={styles.button}
-          active={this.state.selectedTab === "feed"}
-          onPress={() => {
-            this.setState({ selectedTab: "feed" });
-          }}
-        >
-          <Icon
-            type="FontAwesome5"
-            name="paw"
-            style={{
-              color:
-                this.state.selectedTab == "feed" ? colores.main : colores.mild,
-            }}
-          />
-        </Button>
-        <Button
-          style={styles.button}
-          active={this.state.selectedTab === "perfil"}
-          onPress={() => this.setState({ selectedTab: "perfil" })}
-        >
-          <Icon
-            type="FontAwesome"
-            name="user"
-            style={{
-              color:
-                this.state.selectedTab == "perfil"
-                  ? colores.main
-                  : colores.mild,
-            }}
-          />
-        </Button>
-      </FooterTab>
-    </Footer>
-    )
+          >
+            <Icon
+              type="FontAwesome5"
+              name="paw"
+              style={{
+                color:
+                  this.state.selectedTab == "feed"
+                    ? colores.main
+                    : colores.mild,
+              }}
+            />
+          </Button>
+          <Button
+            style={styles.button}
+            active={this.state.selectedTab === "perfil"}
+            onPress={() => this.setState({ selectedTab: "perfil" })}
+          >
+            <Icon
+              type="FontAwesome"
+              name="user"
+              style={{
+                color:
+                  this.state.selectedTab == "perfil"
+                    ? colores.main
+                    : colores.mild,
+              }}
+            />
+          </Button>
+        </FooterTab>
+      </Footer>
+    );
   }
 
-  async handlerMascotas(){
-    
-    let mascotas = await getMascotas()
-    this.setState({ mascotas: mascotas, selectedTab: 'feed' })
+  async handlerMascotas() {
+   
+    let mascotas = await getMascotas(this.state.user);
+    this.setState({ mascotas: mascotas, selectedTab: "feed" });
+    alert('mascota cargada con exito')
   }
 
   renderSelectedTab() {
-   
     switch (this.state.selectedTab) {
       case "feed":
-
-        return <Feed mascotas={this.state.mascotas} usuario={this.state.user} />;
+        return (
+          <>
+            <Header style={styles.header}>
+              <ImageBackground
+                source={banner}
+                style={styles.headerBackground}
+              />
+              <StatusBar style="auto" backgroundColor="#ffffff" />
+            </Header>
+            <Feed mascotas={this.state.mascotas} usuario={this.state.user} />
+          </>
+        );
         break;
 
       case "formulario":
-        
-        if (!this.state.isAuth) return <Login handlerPress={() => this.googleAuth()} />;
-        return <FormMascota user={this.state.user} handlerMascotas={() => this.handlerMascotas()} />;
+        if (!this.state.isAuth)
+          return <Login handlerPress={() => this.googleAuth()} />;
+        return (
+          <>
+            <Header style={styles.header}>
+              <ImageBackground
+                source={banner}
+                style={styles.headerBackground}
+              />
+              <StatusBar style="auto" backgroundColor="#ffffff" />
+            </Header>
+            <FormMascota
+              user={this.state.user}
+              handlerMascotas={() => this.handlerMascotas()}
+            />
+          </>
+        );
         break;
 
       case "perfil":
-       
-        return <Botonera2 mascotas={this.state.mascotas} usuario={this.state.user} />;
+        return (
+          <Botonera2 mascotas={this.state.mascotas} usuario={this.state.user} />
+        );
         break;
 
       default:
@@ -153,20 +173,16 @@ export default class App extends Component {
 
   render() {
     LogBox.ignoreLogs(["Remote debugger"]);
-     LogBox.ignoreLogs(['Setting a timer']);
+    LogBox.ignoreLogs(["Setting a timer"]);
     if (this.state.loading) {
       return <LoadingView />;
     } else {
       return (
         <Root>
-       
-            <Header style={styles.header}>
-              <ImageBackground
-                source={banner}
-                style={styles.headerBackground}
-              />
-              <StatusBar style="auto" backgroundColor="#ffffff" />
-            </Header>
+          {/* <Header style={styles.header}>
+            <ImageBackground source={banner} style={styles.headerBackground} />
+            <StatusBar style="auto" backgroundColor="#ffffff" />
+          </Header> */}
           <SafeAreaView style={{ flex: 6 }}>
             {this.renderSelectedTab()}
           </SafeAreaView>

@@ -15,15 +15,15 @@ function CardFeed({mascota, usuario, handlerRender}) {
       activeOpacity={1}
       onPress={() => handlerRender(mascota, "info")}
     >
-      <Card style={styles.card}>
-        <CardItem header style={styles.headCard}>
-          <Title style={{ color: colores.main }}>{mascota.petName}</Title>
-        </CardItem>
+      <Card  style={styles.card}>
         <CardItem cardBody>
           <Image
             source={{ uri: foto }}
             style={{ height: 200, width: null, flex: 1 }}
           />
+        </CardItem>
+        <CardItem style={styles.headCard}>
+          <Title style={{ color: colores.main }}>{mascota.petName}</Title>
         </CardItem>
         <CardItem>
           <Left>
@@ -38,7 +38,12 @@ function CardFeed({mascota, usuario, handlerRender}) {
             </Text>
           </Left>
           <Right>
-            <Button small bordered style={styles.button}>
+            <Button
+              small
+              bordered
+              style={styles.button}
+              onPress={() => handlerRender(mascota, "info")}
+            >
               <Text style={{ color: colores.main, fontWeight: "bold" }}>
                 + Info
               </Text>
@@ -57,12 +62,14 @@ const styles = StyleSheet.create({
   },
   card: {
     marginBottom: 8,
+    alignSelf: 'center',
     padding: 0,
-    elevation: 4,
-    width: Dimensions.get("window").width,
+    width: Dimensions.get("window").width-16,
     backgroundColor: colores.light,
+    borderBottomColor: colores.main,
+    borderBottomWidth: 4
   },
-  headCard: { height: 40, justifyContent: "center", alignItems: "center" },
+  headCard: { height: 30 },
 });
 
 
