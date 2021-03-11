@@ -26,6 +26,7 @@
       }
     },
     "android": {
+      "enableDangerousExperimentalLeanBuilds": true,
       "useNextNotificationsApi": true,
       "package": "com.colodev.buscan",
       "versionCode": 1,
@@ -37,7 +38,7 @@
       "config": {
         "googleSignIn": {
           "apiKey": "AIzaSyA-FXb1ZKGIY_O-A4ZfIVe0pgX9fk6sGvY",
-          "certificateHash": "C9C1C1256420ABF915C4ABCA5D25D3609A6EF230"
+          "certificateHash": "3C20343D6B621097345AD10045BE18C902579DAF67EA339841063A94A4A7D8FB"
         },
         "googleMaps": {
           "apiKey": "AIzaSyA-FXb1ZKGIY_O-A4ZfIVe0pgX9fk6sGvY"

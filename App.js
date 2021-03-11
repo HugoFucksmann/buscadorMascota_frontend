@@ -9,7 +9,7 @@ import Feed from './views/feed';
 import LoadingView from './views/pagCarga'
 import FormMascota from './views/formulario';
 import Login from './Components/login'
-import {getMascotas} from './helpers/mascotaService'
+import { getMascotas, getMyPets } from "./helpers/mascotaService";
 import banner from './assets/banner.png';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import colores from './Components/colorPalette';
@@ -23,7 +23,7 @@ export default class App extends Component {
   }
 
   async componentDidMount() {
-    //await AsyncStorage.removeItem('user');
+    await AsyncStorage.removeItem('user');
     let user = await AsyncStorage.getItem("user");
     let isAuth = false;
 
@@ -40,7 +40,7 @@ export default class App extends Component {
     user = await actualizarLocation(user);
 
     let mascotas = await getMascotas(user);
-
+    
     this.setState({
       loading: false,
       isAuth: isAuth,
@@ -50,11 +50,10 @@ export default class App extends Component {
   }
 
   async googleAuth() {
-    let isAuth = await googleLogin(this.state.user);
-    if (isAuth) {
-      let user = await AsyncStorage.getItem("user");
-      user = JSON.parse(user);
-      this.setState({ isAuth: isAuth, user: user });
+    let user = await googleLogin(this.state.user);
+    if (user) {
+      await AsyncStorage.setItem("user", JSON.stringify(usuario));
+      this.setState({ isAuth: true, user: user });
     }
   }
 
@@ -124,35 +123,31 @@ export default class App extends Component {
     alert('mascota cargada con exito')
   }
 
+  renderHeader(){
+    return (
+      <Header style={styles.header}>
+        <ImageBackground source={banner} style={styles.headerBackground} />
+        <StatusBar style="auto" backgroundColor="#ffffff" />
+      </Header>
+    );
+  }
+
   renderSelectedTab() {
     switch (this.state.selectedTab) {
       case "feed":
         return (
           <>
-            <Header style={styles.header}>
-              <ImageBackground
-                source={banner}
-                style={styles.headerBackground}
-              />
-              <StatusBar style="auto" backgroundColor="#ffffff" />
-            </Header>
+           {this.renderHeader()}
             <Feed mascotas={this.state.mascotas} usuario={this.state.user} />
           </>
         );
         break;
 
       case "formulario":
-        if (!this.state.isAuth)
-          return <Login handlerPress={() => this.googleAuth()} />;
+        if (!this.state.isAuth) return <Login handlerPress={() => this.googleAuth()} />;
         return (
           <>
-            <Header style={styles.header}>
-              <ImageBackground
-                source={banner}
-                style={styles.headerBackground}
-              />
-              <StatusBar style="auto" backgroundColor="#ffffff" />
-            </Header>
+            {this.renderHeader()}
             <FormMascota
               user={this.state.user}
               handlerMascotas={() => this.handlerMascotas()}
@@ -162,8 +157,9 @@ export default class App extends Component {
         break;
 
       case "perfil":
+        
         return (
-          <Botonera2 mascotas={this.state.mascotas} usuario={this.state.user} />
+          <Botonera2 mascotas={getMyPets(this.state.mascotas, this.state.user._id)} usuario={this.state.user} />
         );
         break;
 

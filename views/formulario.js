@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import {  Image,  Platform,  Text,  ScrollView,  StyleSheet } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as ImagePicker from "expo-image-picker";
-import {  Picker,  Item,  Label,  Input,  Textarea,  Form,  Left,  Card,  Button,  H3,  Right } from "native-base";
+import {  Picker,  Item,  Label,  Input,  Textarea,  Form,  Left,  Card,  Button,  H3,  Right, Body } from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SwitchSelector from "react-native-switch-selector";
 import noImagen from "../assets/default_plus.png";
@@ -10,6 +10,8 @@ import { myLocation } from "../helpers/getLocation";
 import { crearMascota, actualizarArchivo } from "../helpers/mascotaService";
 import LoadingView from "../views/pagCarga";
 import colores from "../Components/colorPalette";
+import { Dimensions } from "react-native";
+
 
 const lightBackColor = "rgba(236,242,213,255)";
 const strongMainColor = "rgba(78,120,81,255)";
@@ -93,13 +95,12 @@ const FormMascota = ({ user, handlerMascotas }) => {
     {
       label: "Blanco",
       value: "blanco",
-      activeColor: "white",
+      activeColor: "#f5f5f5",
     },
     {
       label: "Negro",
       value: "negro",
       activeColor: "black",
-      textColor: "white",
     },
     { label: "Marrón", value: "marron", activeColor: "#6e2b0c" },
     {
@@ -111,6 +112,10 @@ const FormMascota = ({ user, handlerMascotas }) => {
   ];
 
   if (isLoading) return <LoadingView />;
+
+
+ 
+
   return (
     <ScrollView>
       <Card style={{ padding: 20 }}>
@@ -118,7 +123,7 @@ const FormMascota = ({ user, handlerMascotas }) => {
           style={styles.state}
           initial={0}
           onPress={(value) => setPerro({ ...perro, petState: value })}
-          textColor={colores.main}
+          textColor={colores.mainFill}
           selectedColor={colores.light}
           buttonColor={colores.mainFill}
           hasPadding
@@ -131,14 +136,11 @@ const FormMascota = ({ user, handlerMascotas }) => {
           ]}
         />
         {perro.petState === "perdido" && (
-          <Item
-            floatingLabel
-            style={[styles.itemForm, { borderBottomWidth: 2 }]}
-          >
-            <Label>Nombre del animal</Label>
+          <Item style={[styles.itemForm, { borderBottomWidth: 2 }]}>
             <Input
               value={perro.petName}
               onChangeText={(nombre) => setPerro({ ...perro, petName: nombre })}
+              placeholder="nombre de la mascota"
             />
           </Item>
         )}
@@ -175,7 +177,7 @@ const FormMascota = ({ user, handlerMascotas }) => {
             setPerro({ ...perro, location: e.nativeEvent.coordinate })
           }
         >
-          <Marker coordinate={perro.location} />
+          <Marker pinColor="#1c241b" coordinate={perro.location} />
         </MapView>
 
         <Item picker style={styles.itemForm}>
@@ -228,7 +230,7 @@ const FormMascota = ({ user, handlerMascotas }) => {
           <Textarea
             rowSpan={3}
             bordered
-            style={{ borderColor: colores.light, borderWidth: 4 }}
+            style={{ borderColor: colores.main, borderWidth: 4 }}
             placeholder="Descripción"
             value={perro.petDescription}
             onChangeText={(value) =>
@@ -256,7 +258,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     borderBottomWidth: 2,
     borderTopWidth: 0,
-    borderColor: colores.light,
+    borderColor: colores.main,
     padding: 5,
   },
   imagen: {
@@ -275,10 +277,9 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   map: {
-    height: 150,
-    width: 300,
-    marginLeft: "auto",
-    marginRight: "auto",
+    height: 180,
+    width: Dimensions.get('window').width,
+    alignSelf: 'center',
     marginBottom: 15,
   },
 });

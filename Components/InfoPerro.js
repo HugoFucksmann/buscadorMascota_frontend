@@ -29,7 +29,7 @@ export default function InfoPerro({ mascota, usuario, handlerRender }) {
       <MapView
         region={getMapLocation(mascota.location, usuario.location)}
         style={{ height: "100%", width: null }}
-        provider="google"
+        
       >
         <Marker
           coordinate={{
@@ -37,6 +37,8 @@ export default function InfoPerro({ mascota, usuario, handlerRender }) {
             latitude: mascota.location.latitude,
           }}
           identifier="mkMascota"
+          title="mascota"
+          pinColor="blue"
         />
         <Marker
           coordinate={{
@@ -57,9 +59,7 @@ export default function InfoPerro({ mascota, usuario, handlerRender }) {
       presentationStyle="pageSheet"
       onRequestClose={() => handlerRender(false, "tarjetas")}
     >
-      <View style={{ height: 450, width: null }}>
-        {renderMapInfo()}
-      </View>
+      <View style={{ height: 450, width: null }}>{renderMapInfo()}</View>
       <View>
         <Card
           style={{
@@ -77,6 +77,8 @@ export default function InfoPerro({ mascota, usuario, handlerRender }) {
               height: 120,
               width: 120,
               borderRadius: 120 / 2,
+              borderWidth: 3,
+              borderColor: "#f2f2f2",
             }}
           />
 

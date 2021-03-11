@@ -30,8 +30,8 @@ export async function myLocation2() {
         setErrorMsg("acceso denegado a localizacion");
         return {}
       }
-      const location = await Location.getCurrentPositionAsync();
-      const { latitude, longitude } = await location.coords;
+      let location = await Location.getCurrentPositionAsync();
+      let { latitude, longitude } = await location.coords;
       
       return {
         latitude: latitude,

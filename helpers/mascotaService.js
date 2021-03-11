@@ -39,23 +39,37 @@ async function actualizarArchivo(file, perroId, token) {
   }
 }
 
-function filtrar(mascotas, user, dist2) {
-  // definir una nueva variable mascotasFiltered
-  var mascotasFiltered;
-  var userLat = user.location.latitude;
-  var userLon = user.location.longitude;
-  // para cada mascota, chequeo si esta a menos de sqrt(dist) de distancia y en tal caso la agrego a mascotasFiltered
-  for (let ind = 0; ind < mascotas.lenght; ind++) {
-    var petLat = mascotas[ind].location.latitude;
-    var petLon = mascotas[ind].location.longitude;
-    if ((petLat - userLat) ** 2 + (petLon - userLon) ** 2 < dist2) {
-      mascotasFiltered.append(mascotas[ind]);
-    }
-  }
-  return mascotasFiltered;
+function getMyPets(mascotas, uid){
+
+  let miMascotas = mascotas.filter((masco) => masco.usuario == uid);
+  
+  if(miMascotas) return miMascotas
+  else return false
+
 }
 
+
+
 async function getMascotas(user){
+
+  function deg2rad(deg) {
+    return deg * (Math.PI / 180);
+  }
+
+  function distKM(A, B) {
+    const R = 6371;
+    let aLat = parseFloat(A.location.latitude);
+    let aLon = parseFloat(A.location.longitude);
+    let bLat = parseFloat(B.location.latitude);
+    let bLon = parseFloat(B.location.longitude);
+
+    var dLat = 2 * R * Math.sin(deg2rad(aLat - bLat) / 2);
+    var dLon = 2 * R * Math.sin(deg2rad(aLon - bLon) / 2);
+    var dist = Math.sqrt(dLat ** 2 + dLon ** 2);
+
+    return dist;
+  }
+    
   
   return await fetch(`https://mascotass.herokuapp.com/api/mascotas/${user._id}`, {
     method: "GET",
@@ -66,8 +80,19 @@ async function getMascotas(user){
   })
     .then((response) => response.json())
     .then((res) => {
-      if(res.ok) return res.mascotas
-      else return false
+      if (res.ok) {
+        
+        return res.mascotas.map((mascota) => {
+          let dist = distKM(mascota, user)
+          if(dist < 1) dist = dist * 1000;       
+          
+          
+
+          return {...mascota, dist: dist}
+        })
+        
+      }
+      else return false;
     })
     .catch((error) => console.error(error));
 }
@@ -98,5 +123,6 @@ async function crearMascota(perro, token, notification) {
 module.exports = {
   actualizarArchivo,
   crearMascota,
-  getMascotas
+  getMascotas,
+  getMyPets,
 };

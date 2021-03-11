@@ -15,7 +15,7 @@ function CardFeed({mascota, usuario, handlerRender}) {
       activeOpacity={1}
       onPress={() => handlerRender(mascota, "info")}
     >
-      <Card  style={styles.card}>
+      <Card style={styles.card}>
         <CardItem cardBody>
           <Image
             source={{ uri: foto }}
@@ -23,7 +23,18 @@ function CardFeed({mascota, usuario, handlerRender}) {
           />
         </CardItem>
         <CardItem style={styles.headCard}>
-          <Title style={{ color: colores.main }}>{mascota.petName}</Title>
+          {/*  <Title style={{ color: colores.main }}>{mascota.petName}</Title> */}
+          <Left>
+            <Icon
+              active
+              name="map-marker-radius"
+              type="MaterialCommunityIcons"
+              style={{ color: colores.main }}
+            />
+            <Text style={{ color: "grey" }}>
+              {mascota.dist }
+            </Text>
+          </Left>
         </CardItem>
         <CardItem>
           <Left>
@@ -67,7 +78,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width-16,
     backgroundColor: colores.light,
     borderBottomColor: colores.main,
-    borderBottomWidth: 4
+    borderBottomWidth: 3
   },
   headCard: { height: 30 },
 });
