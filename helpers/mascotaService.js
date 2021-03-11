@@ -1,5 +1,7 @@
 import { PROD_URL } from "@env";
-  
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import db from "../firebaseConfig";
+
 async function actualizarArchivo(file, perroId, token) {
   try {
     let localUri = file.uri;
@@ -47,8 +49,6 @@ function getMyPets(mascotas, uid){
   else return false
 
 }
-
-
 
 async function getMascotas(user){
 
@@ -120,9 +120,63 @@ async function crearMascota(perro, token, notification) {
     
 }
 
+async function editarMascota(idMascota){
+  const token = await AsyncStorage.getItem('token')
+  const url = `https://mascotass.herokuapp.com/api/mascotas/${idMascota}`;
+  const resp = await fetch(url, {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "multipart/form-data",
+      token
+    },
+    body: formData,
+  }).catch((e) => console.log(e));
+
+  const data = await resp.json();
+}
+
+async function eliminarMascota(collectionPath) {
+ 
+  const collectionRef = db.collection(collectionPath);
+  const query = collectionRef.orderBy("__name__").limit(batchSize);
+
+  return new Promise((resolve, reject) => {
+    deleteQueryBatch(db, query, resolve).catch(reject);
+  });
+  
+  async function deleteQueryBatch(db, query, resolve) {
+    const snapshot = await query.get();
+
+    const batchSize = snapshot.size;
+    if (batchSize === 0) {
+      // When there are no documents left, we are done
+      resolve();
+      return;
+    }
+
+    // Delete documents in a batch
+    const batch = db.batch();
+    snapshot.docs.forEach((doc) => {
+      batch.delete(doc.ref);
+    });
+    await batch.commit();
+
+    // Recurse on the next process tick, to avoid
+    // exploding the stack.
+    process.nextTick(() => {
+      deleteQueryBatch(db, query, resolve);
+    });
+  }
+
+  
+}
+
 module.exports = {
   actualizarArchivo,
   crearMascota,
   getMascotas,
   getMyPets,
-};
+  editarMascota,
+  eliminarMascota,
+}; 

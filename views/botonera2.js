@@ -11,9 +11,10 @@ import {
   Image,
 } from "react-native";
 import { Card, Icon, Thumbnail, Button, Right, Left, Header, Title, Body, CardItem } from "native-base";
+import { StatusBar } from "expo-status-bar";
+import { editarMascota, eliminarMascota } from "../helpers/mascotaService";
 import { mostrarFoto } from "../helpers/imageService";
 import colores from "../Components/colorPalette";
-import { StatusBar } from "expo-status-bar";
 import banner from "../assets/banner.png";
 
 const Botonera2 = ({mascotas, usuario}) => {
@@ -95,9 +96,27 @@ const CardPet = ({mascota}) => {
   return (
     <Card style={styles.myPetCard}>
       <Image source={{ uri: foto }} style={styles.imagenPet} />
-      <View style={{padding: 15}} flexDirection="column">
-        <Text>Nombre: {mascota.petName}</Text>
-        <Text>color: {mascota.petColor}</Text>
+      <View flexDirection="row" style={styles.myPetContent}>
+        <Button
+          onPress={() => editarMascota(mascota._id)}
+          small
+          rounded
+          style={{ backgroundColor: colores.main, width: 100, marginRight: 10 }}
+        >
+          <Icon fontSize="22" type="Feather" name="edit" />
+          <Text style={{ color: "#fff" }}>Editar</Text>
+        </Button>
+        <Button
+          onPress={() => eliminarMascota(mascota._id)}
+          small
+          rounded
+          style={{
+            backgroundColor: colores.main,
+            marginRight: 10,
+          }}
+        >
+          <Icon fontSize="22" type="Feather" name="check-circle" />
+        </Button>
       </View>
     </Card>
   );
@@ -105,19 +124,26 @@ const CardPet = ({mascota}) => {
 
 const styles = StyleSheet.create({
   myPetCard: {
-    height: 450,
-    width: Dimensions.get("window").width - 80,
+    height: 350,
+    width: 300,
     marginLeft: 20,
     borderRadius: 20,
     borderColor: colores.main,
     marginTop: 30,
   },
   imagenPet: {
-    height: "30%",
+    flex: 1,
     width: null,
     overflow: "hidden",
-    borderTopRightRadius: 20,
-    borderTopLeftRadius: 20,
+    /*  borderTopRightRadius: 20,
+    borderTopLeftRadius: 20, */
+    borderRadius: 20,
+  },
+  myPetContent: {
+    position: "absolute",
+    bottom: 8,
+    left: 5,
+    zIndex: 100,
   },
   titles: {
     marginTop: 5,
