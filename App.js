@@ -40,7 +40,7 @@ export default class App extends Component {
     user = await actualizarLocation(user);
 
     let mascotas = await getMascotas(user);
-    
+    console.log(mascotas);
     this.setState({
       loading: false,
       isAuth: isAuth,

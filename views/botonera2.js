@@ -23,18 +23,15 @@ const Botonera2 = ({ mascotas, usuario, handlerMascotas }) => {
   if(mascotas && !Array.isArray(mascotas))dataM.push(mascotas);
   else dataM = mascotas
   
-  /* console.log('mascotas ', mascotas);
-  console.log("dataM ", dataM);
-  console.log("longg ", mascotas.length); */
   return (
     <>
       <StatusBar style="auto" />
       <HeaderUser usuario={usuario} />
-      {mascotas.length !== 0 ? (
+      {mascotas && mascotas.length !== 0 ? (
         <MyPetCards miMascotas={dataM} handlerMascotas={handlerMascotas} />
       ) : (
         <View>
-          <Text >No tienes mascotas perdidas</Text>
+          <Text>No tienes mascotas perdidas</Text>
         </View>
       )}
     </>

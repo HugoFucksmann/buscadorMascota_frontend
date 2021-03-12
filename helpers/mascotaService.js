@@ -77,7 +77,7 @@ async function getMascotas(user){
     
   
   return await fetch(
-    `https://mascotass.herokuapp.com/apimascotas/${user._id}`,
+    `https://mascotass.herokuapp.com/api/mascotas/${user._id}`,
     {
       method: "GET",
       headers: {
@@ -150,7 +150,7 @@ async function eliminarMascota(idMascota){
   console.log('iddd ', idMascota);
   let result;
   const token = await AsyncStorage.getItem("token");
-  const url = `https://mascotass.herokuapp.com/apimascotas/${idMascota}`;
+  const url = `https://mascotass.herokuapp.com/api/mascotas/${idMascota}`;
   const resp = await fetch(url, {
     method: "DELETE",
     headers: {
