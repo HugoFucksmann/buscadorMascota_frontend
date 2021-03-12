@@ -12,14 +12,13 @@ function CardFeed({mascota, usuario, handlerRender}) {
   return (
     <TouchableOpacity
       key={mascota._id}
-      activeOpacity={1}
       onPress={() => handlerRender(mascota, "info")}
     >
       <Card style={styles.card}>
         <CardItem cardBody>
           <Image
             source={{ uri: foto }}
-            style={{ height: 200, width: null, flex: 1 }}
+            style={{ height: 180, width: null, flex: 1 }}
           />
         </CardItem>
         <CardItem style={styles.headCard}>
@@ -31,12 +30,10 @@ function CardFeed({mascota, usuario, handlerRender}) {
               type="MaterialCommunityIcons"
               style={{ color: colores.main }}
             />
-            <Text style={{ color: "grey" }}>
-              {mascota.dist }
-            </Text>
+            <Text style={{ color: "grey" }}>{mascota.dist}</Text>
           </Left>
         </CardItem>
-        <CardItem>
+        <CardItem style={styles.headCard}>
           <Left>
             <Icon
               active
@@ -80,7 +77,7 @@ const styles = StyleSheet.create({
     borderBottomColor: colores.main,
     borderBottomWidth: 3
   },
-  headCard: { height: 30 },
+  headCard: { height: 40},
 });
 
 

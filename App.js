@@ -159,7 +159,11 @@ export default class App extends Component {
       case "perfil":
         
         return (
-          <Botonera2 mascotas={getMyPets(this.state.mascotas, this.state.user._id)} usuario={this.state.user} />
+          <Botonera2
+            mascotas={getMyPets(this.state.mascotas, this.state.user._id)}
+            usuario={this.state.user}
+            handlerMascotas={() => this.handlerMascotas()}
+          />
         );
         break;
 

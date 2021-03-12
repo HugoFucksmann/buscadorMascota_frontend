@@ -1,6 +1,11 @@
 import { PROD_URL } from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import db from "../firebaseConfig";
+import { Alert } from "react-native";
+import firebaseConfig from "../firebaseConfig";
+
+async function getToken(){
+  return await AsyncStorage.getItem('token')
+}
 
 async function actualizarArchivo(file, perroId, token) {
   try {
@@ -71,28 +76,33 @@ async function getMascotas(user){
   }
     
   
-  return await fetch(`https://mascotass.herokuapp.com/api/mascotas/${user._id}`, {
-    method: "GET",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "multipart/form-data",
-    },
-  })
+  return await fetch(
+    `https://mascotass.herokuapp.com/apimascotas/${user._id}`,
+    {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  )
     .then((response) => response.json())
     .then((res) => {
       if (res.ok) {
-        
         return res.mascotas.map((mascota) => {
-          let dist = distKM(mascota, user)
-          if(dist < 1) dist = dist * 1000;       
-          
-          
+          let dist = distKM(mascota, user);
+          if (dist < 1) {
+            dist = dist * 1000;
+            dist = Math.round(dist);
+            dist = `${dist} mts`;
+          } else {
+            dist = dist.toFixed(1);
+            dist = `${dist} km`;
+          }
 
-          return {...mascota, dist: dist}
-        })
-        
-      }
-      else return false;
+          return { ...mascota, dist: dist };
+        });
+      } else return false;
     })
     .catch((error) => console.error(error));
 }
@@ -136,40 +146,44 @@ async function editarMascota(idMascota){
   const data = await resp.json();
 }
 
-async function eliminarMascota(collectionPath) {
- 
-  const collectionRef = db.collection(collectionPath);
-  const query = collectionRef.orderBy("__name__").limit(batchSize);
-
-  return new Promise((resolve, reject) => {
-    deleteQueryBatch(db, query, resolve).catch(reject);
-  });
-  
-  async function deleteQueryBatch(db, query, resolve) {
-    const snapshot = await query.get();
-
-    const batchSize = snapshot.size;
-    if (batchSize === 0) {
-      // When there are no documents left, we are done
-      resolve();
-      return;
+async function eliminarMascota(idMascota){
+  console.log('iddd ', idMascota);
+  let result;
+  const token = await AsyncStorage.getItem("token");
+  const url = `https://mascotass.herokuapp.com/apimascotas/${idMascota}`;
+  const resp = await fetch(url, {
+    method: "DELETE",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "multipart/form-data",
+      token,
     }
+  }).catch((e) => console.log(e));
 
-    // Delete documents in a batch
-    const batch = db.batch();
-    snapshot.docs.forEach((doc) => {
-      batch.delete(doc.ref);
-    });
-    await batch.commit();
-
-    // Recurse on the next process tick, to avoid
-    // exploding the stack.
-    process.nextTick(() => {
-      deleteQueryBatch(db, query, resolve);
-    });
+  const data = await resp.json();
+  
+  if(!data.ok) {
+    result = false
+    
+  }
+  else {
+    clearCollection(idMascota);
+    result = true
+    
   }
 
-  
+  return result
+}
+
+function clearCollection(path) {
+  console.log(path);
+  let ref = firebaseConfig().collection(path);
+  ref.onSnapshot((snapshot) => {
+    snapshot.docs.forEach((doc) => {
+      console.log('acaa ', doc);
+      ref.doc(doc.id).delete();
+    });
+  });
 }
 
 module.exports = {

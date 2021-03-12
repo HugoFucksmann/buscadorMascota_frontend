@@ -7,7 +7,8 @@ import Chat from './chat';
 import colores from '../Components/colorPalette';
 import { Dimensions } from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
-import { FlatList } from 'react-native-gesture-handler';
+import { FlatList, ScrollView } from 'react-native-gesture-handler';
+import markerPet from '../assets/iconos/marker_paw.png'
 
 const Feed = ({mascotas, usuario}) => {
   
@@ -87,34 +88,43 @@ const Feed = ({mascotas, usuario}) => {
 };
 
 const MapaPerros = ({usuario, mascotas}) => {
+    let data = [];
+    if (!Array.isArray(mascotas)) data.push(mascotas);
+    else data = mascotas;
   const [index, setIndex] = useState(0)
-  let ubi = {
+  const [render, setRender] = useState({
+    ...data[0].location,
+    latitudeDelta: 0.0271,
+    longitudeDelta: 0.0272,
+  });
+  /* let ubi = {
     ...usuario.location,
     latitudeDelta: 0.0271,
     longitudeDelta: 0.0272
-  }
-
-  let data = [];
-  if (!Array.isArray(mascotas)) data.push(mascotas);
-  else data = mascotas;
-
+  } */
+  
   const RenderItem = ({ item }) => {
-    return <CardFlotante mascota={item} index={index} />;
+   
+    return (
+      <Card onto style={styles.cardMap}>
+        <Text>Holaa</Text>
+      </Card>
+    );
   };
-
+  
   return (
     <>
-      <MapView style={styles.fullScreen} region={ubi}>
-        {data.map((mascota, index) => (
+      <MapView style={styles.fullScreen} region={render}>
+        {data.map((mascota) => (
           <Marker
             pinColor="#1c241b"
             key={mascota._id}
             coordinate={mascota.location}
-            onSelect={() => setIndex(index)}
+            tracksViewChanges={false}
           />
         ))}
       </MapView>
-      <View style={styles.ViewFlotante}>
+      <ScrollView style={styles.ViewFlotante}>
         <FlatList
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -122,15 +132,13 @@ const MapaPerros = ({usuario, mascotas}) => {
           renderItem={RenderItem}
           keyExtractor={(item) => item._id}
         />
-      </View>
+      </ScrollView>
     </>
   );
 }
 
-const CardFlotante = ({ mascota, index }) => {
-  return <Card style={styles.cardMap}>
-    <Text>Holaa</Text>
-  </Card>;
+const CardFlotante = ({ mascota }) => {
+  return ;
 };
 
 const styles = StyleSheet.create({
@@ -144,8 +152,8 @@ const styles = StyleSheet.create({
   },
   cardMap: {
     height: 120,
-    width: 300,
-    marginLeft: 25
+    width: 320,
+    marginLeft: 20,
   },
 });
 

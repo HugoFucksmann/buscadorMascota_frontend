@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   map: {
-    height: 180,
+    height: 170,
     width: Dimensions.get('window').width,
     alignSelf: 'center',
     marginBottom: 15,

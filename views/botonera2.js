@@ -9,6 +9,7 @@ import {
   ImageBackground,
   SafeAreaView,
   Image,
+  Alert
 } from "react-native";
 import { Card, Icon, Thumbnail, Button, Right, Left, Header, Title, Body, CardItem } from "native-base";
 import { StatusBar } from "expo-status-bar";
@@ -17,16 +18,24 @@ import { mostrarFoto } from "../helpers/imageService";
 import colores from "../Components/colorPalette";
 import banner from "../assets/banner.png";
 
-const Botonera2 = ({mascotas, usuario}) => {
- 
+const Botonera2 = ({ mascotas, usuario, handlerMascotas }) => {
+  let dataM = [];
+  if(mascotas && !Array.isArray(mascotas))dataM.push(mascotas);
+  else dataM = mascotas
+  
+  /* console.log('mascotas ', mascotas);
+  console.log("dataM ", dataM);
+  console.log("longg ", mascotas.length); */
   return (
     <>
       <StatusBar style="auto" />
       <HeaderUser usuario={usuario} />
-      {mascotas ? (
-        <MyPetCards miMascotas={mascotas} />
+      {mascotas.length !== 0 ? (
+        <MyPetCards miMascotas={dataM} handlerMascotas={handlerMascotas} />
       ) : (
-        <Text>No tienes mascotas perdidas</Text>
+        <View>
+          <Text >No tienes mascotas perdidas</Text>
+        </View>
       )}
     </>
   );
@@ -67,18 +76,28 @@ const HeaderUser = ({usuario}) => {
   );
 }
 
-const MyPetCards = ({miMascotas}) => {
-
-  let data = [];
-  if (!Array.isArray(miMascotas)) data.push(miMascotas)
-  else data = miMascotas;
+const MyPetCards = ({ miMascotas }) => {
+  const [render, setRender] = useState();
+  let data = miMascotas
+  async function handlerEliminar(mascota) {
   
-  const RenderItem = ({ item }) => {
-    return <CardPet mascota={item} />;
-  };
+    let result = await eliminarMascota(mascota._id);
+    if(result)  {
+      data.map((masco, index) => {
+        if (masco === mascota) {setRender(data.splice(index, 1));}
+      });
 
+      alert("se elimino la mascota");
+    }
+  
+  }
+
+  const RenderItem = ({ item }) => {
+    return <CardPet mascota={item} handlerEliminar={handlerEliminar} />;
+  };
+  
   return (
-    <ScrollView >
+    <ScrollView>
       <FlatList
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -88,17 +107,32 @@ const MyPetCards = ({miMascotas}) => {
       />
     </ScrollView>
   );
-}
+};
 
-const CardPet = ({mascota}) => {
-  
+
+const CardPet = ({ mascota, handlerEliminar }) => {
   const [foto] = useState(mostrarFoto(mascota.petPicture));
+
+  const createTwoButtonAlert = () =>
+    Alert.alert("Encontraste tu mascota ?", "My Alert Msg", [
+      {
+        text: "todavia no",
+        style: "cancel",
+      },
+      {
+        text: "si, ya la recupere",
+        onPress: () => {
+          handlerEliminar(mascota);
+        },
+      },
+    ]);
+
   return (
     <Card style={styles.myPetCard}>
       <Image source={{ uri: foto }} style={styles.imagenPet} />
       <View flexDirection="row" style={styles.myPetContent}>
         <Button
-          onPress={() => editarMascota(mascota._id)}
+          onPress={() => editarMascota(mas._id)}
           small
           rounded
           style={{ backgroundColor: colores.main, width: 100, marginRight: 10 }}
@@ -107,7 +141,7 @@ const CardPet = ({mascota}) => {
           <Text style={{ color: "#fff" }}>Editar</Text>
         </Button>
         <Button
-          onPress={() => eliminarMascota(mascota._id)}
+          onPress={() => createTwoButtonAlert()}
           small
           rounded
           style={{
@@ -120,7 +154,7 @@ const CardPet = ({mascota}) => {
       </View>
     </Card>
   );
-}
+};
 
 const styles = StyleSheet.create({
   myPetCard: {
