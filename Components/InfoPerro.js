@@ -13,7 +13,7 @@ import {
 import { mostrarFoto } from "../helpers/imageService";
 import colores from '../Components/colorPalette';
 import LoadingView from "../views/pagCarga";
-import markerDog from "../assets/iconos/marker_paw.png";
+import markerPet from "../assets/iconos/marker_paw.png";
 import markerMan from "../assets/iconos/marker_man.png";
 
 
@@ -21,15 +21,12 @@ export default function InfoPerro({ mascota, usuario, handlerRender }) {
   const [foto] = useState(mostrarFoto(mascota.petPicture));
   const windowWidth = Dimensions.get("window").width;
 
-
-
   function renderMapInfo(){
   
     return (
       <MapView
         region={getMapLocation(mascota.location, usuario.location)}
         style={{ height: "100%", width: null }}
-        
       >
         <Marker
           coordinate={{
@@ -39,14 +36,36 @@ export default function InfoPerro({ mascota, usuario, handlerRender }) {
           identifier="mkMascota"
           title="mascota"
           pinColor="blue"
-        />
+        >
+          <Text style={{ height: 40 }}>
+            <Image
+              source={markerPet}
+              style={{
+                height: 30,
+                width: 30,
+                resizeMode: "contain",
+              }}
+            />
+          </Text>
+        </Marker>
         <Marker
           coordinate={{
             longitude: usuario.location.longitude,
             latitude: usuario.location.latitude,
           }}
           identifier="mkUsuario"
-        />
+        >
+          <Text style={{ height: 40 }}>
+            <Image
+              source={markerMan}
+              style={{
+                height: 30,
+                width: 30,
+                resizeMode: "contain",
+              }}
+            />
+          </Text>
+        </Marker>
       </MapView>
     );
   }

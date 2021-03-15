@@ -55,6 +55,14 @@ export function getMapLocation(mascoUbi, personUbi){
    };
 }
 
+export function generateInitialRegion(location){
+  return {
+    ...location,
+    latitudeDelta: 0.04864195044303443,
+    longitudeDelta: 0.040142817690068,
+  };
+}
+
 /*
 latitudeDelta: 0.0052,
         longitudeDelta: 0.0051,

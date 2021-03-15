@@ -11,7 +11,7 @@ import { crearMascota, actualizarArchivo } from "../helpers/mascotaService";
 import LoadingView from "../views/pagCarga";
 import colores from "../Components/colorPalette";
 import { Dimensions } from "react-native";
-
+import markerPet from '../assets/iconos/marker_paw.png'
 
 const lightBackColor = "rgba(236,242,213,255)";
 const strongMainColor = "rgba(78,120,81,255)";
@@ -177,7 +177,18 @@ const FormMascota = ({ user, handlerMascotas }) => {
             setPerro({ ...perro, location: e.nativeEvent.coordinate })
           }
         >
-          <Marker pinColor="#1c241b" coordinate={perro.location} />
+          <Marker pinColor="#1c241b" coordinate={perro.location}>
+            <Text style={{ height: 40 }}>
+              <Image
+                source={markerPet}
+                style={{
+                  height: 30,
+                  width: 30,
+                  resizeMode: "contain",
+                }}
+              />
+            </Text>
+          </Marker>
         </MapView>
 
         <Item picker style={styles.itemForm}>

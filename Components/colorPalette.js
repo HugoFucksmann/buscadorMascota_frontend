@@ -6,12 +6,14 @@
 // };
 
 export default {
-    main: 'rgba(63,125,104,255)', // color principal fuerte
-    mainFill: 'rgba(63,125,104,255)', // color principal fuerte
-    light: 'rgba(242,242,238,255)', // color de fondo bien clarito
-    mild: 'rgba(217,232,225,255)', // color intermedio (version clara del main)
-    principal: '#b5d43c',
-    secundario: '#d9ef81',
-    oscuro: '434738',
-    claro: 'f7f7f7'
+  main: "rgba(63,125,104,255)", // color principal fuerte
+  mainFill: "rgba(63,125,104,255)", // color principal fuerte
+  light: "rgba(242,242,238,255)", // color de fondo bien clarito
+  mild: "rgba(217,232,225,255)", // color intermedio (version clara del main)
+  principal: "#b5d43c",
+  secundario: "#d9ef81",
+  oscuro: "434738",
+  claro: "f7f7f7",
+  mainTenueUno: "rgba(63,125,104,0.4)",
+  mainTenueDos: "rgba(63,125,104,0.7)",
 };

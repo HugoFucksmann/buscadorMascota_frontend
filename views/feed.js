@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
-import { SafeAreaView, VirtualizedList, Text, StyleSheet } from "react-native";
-import { Tabs, Tab, TabHeading, View, Card } from "native-base";
+import { SafeAreaView, VirtualizedList, Text, StyleSheet, WebView, Image, Animated } from "react-native";
+import { Tabs, Tab, TabHeading, Card } from "native-base";
 import CardFeed from '../Components/card';
 import InfoPerro from '../Components/InfoPerro';
 import Chat from './chat';
 import colores from '../Components/colorPalette';
-import { Dimensions } from 'react-native';
-import MapView, {Marker} from 'react-native-maps';
+import MapView, {Marker, Callout } from 'react-native-maps';
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import markerPet from '../assets/iconos/marker_paw.png'
+import { Dimensions } from 'react-native';
+import Screens from '../Components/mapFeed'
+import MapFeed from '../Components/mapFeed';
 
 const Feed = ({mascotas, usuario}) => {
   
   const [mascota, setMascota] = useState(false);
   const [render, setRender] = useState('tarjetas');
-
+  
   const RenderItem = ({item}) => {
     return (
       <CardFeed
@@ -35,15 +37,18 @@ const Feed = ({mascotas, usuario}) => {
        case "tarjetas":
          return (
            <Tabs
+              locked
              tabBarPosition="bottom"
              tabBarUnderlineStyle={{ backgroundColor: colores.main, height: 2 }}
-             tabContainerStyle={{ height: 40 }} >
-             <Tab heading={
-                <TabHeading style={{ backgroundColor: "#ffffff" }}>
-                  <Text>Feed</Text>
-                </TabHeading>
-                }>
-
+             tabContainerStyle={{ height: 40 }}
+           >
+             <Tab
+               heading={
+                 <TabHeading style={{ backgroundColor: "#ffffff" }}>
+                   <Text>Feed</Text>
+                 </TabHeading>
+               }
+             >
                <VirtualizedList
                  data={mascotas}
                  renderItem={RenderItem}
@@ -52,16 +57,17 @@ const Feed = ({mascotas, usuario}) => {
                  initialNumToRender={4}
                  getItem={(data, index) => data[index]}
                />
-               
              </Tab>
-             <Tab heading={
-                <TabHeading style={{ backgroundColor: "#ffffff" }}>
-                  <Text>Mapa</Text>
-                </TabHeading> 
-                }>
-
-               <MapaPerros usuario={usuario} mascotas={mascotas} />
-
+             <Tab
+               heading={
+                 <TabHeading style={{ backgroundColor: "#ffffff" }}>
+                   <Text>Mapa</Text>
+                 </TabHeading>
+               }
+             >
+              
+                 <MapFeed usuario={usuario} mascotas={mascotas} />
+             
              </Tab>
            </Tabs>
          );
@@ -97,11 +103,7 @@ const MapaPerros = ({usuario, mascotas}) => {
     latitudeDelta: 0.0271,
     longitudeDelta: 0.0272,
   });
-  /* let ubi = {
-    ...usuario.location,
-    latitudeDelta: 0.0271,
-    longitudeDelta: 0.0272
-  } */
+
   
   const RenderItem = ({ item }) => {
    
@@ -111,35 +113,52 @@ const MapaPerros = ({usuario, mascotas}) => {
       </Card>
     );
   };
-  
+
+  const fixImage = (content) =>
+    Platform.OS === "ios" ? (
+      content
+    ) : (
+      <Text style={styles.imageWrapper}>content</Text>
+    );
+
+
+
   return (
     <>
       <MapView style={styles.fullScreen} region={render}>
         {data.map((mascota) => (
           <Marker
-            pinColor="#1c241b"
-            key={mascota._id}
+            key={`${mascota._id}`}
             coordinate={mascota.location}
             tracksViewChanges={false}
-          />
+          >
+            <Text style={{ height: 40 }}>
+              <Image
+                source={markerPet}
+                style={{
+                  height: 30,
+                  width: 30,
+                  resizeMode: "contain",
+                }}
+              />
+            </Text>
+          </Marker>
         ))}
       </MapView>
-      <ScrollView style={styles.ViewFlotante}>
+       <ScrollView style={styles.ViewFlotante}>
         <FlatList
           horizontal
-          showsHorizontalScrollIndicator={false}
           data={data}
           renderItem={RenderItem}
           keyExtractor={(item) => item._id}
         />
       </ScrollView>
+
     </>
   );
 }
 
-const CardFlotante = ({ mascota }) => {
-  return ;
-};
+
 
 const styles = StyleSheet.create({
   fullScreen: {
@@ -154,6 +173,27 @@ const styles = StyleSheet.create({
     height: 120,
     width: 320,
     marginLeft: 20,
+  },
+  message: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  callout: {
+    padding: 10,
+    flexDirection: "column",
+    alignItems: "center",
+    backgroundColor: "white",
+  },
+  image: {
+    width: 55,
+    height: 55,
+    margin: 0,
+    padding: 0,
+    backgroundColor: "white",
+  },
+  imageWrapper: {
+    marginTop: -23,
+    paddingBottom: 23,
   },
 });
 

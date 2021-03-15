@@ -1,8 +1,9 @@
 
 export function tiempoTranscurrido(horaCero) {
-  //horaCero es cuando se creo el perro, el valor es el resultado de new Date().getTime()
-  let now = new Date().getTime();
-  let tiempoPasado = now - horaCero;
+  var nacimiento = new Date(1936, 11, 29);
+  var hoy = new Date();
+  let msj;
+  var tiempoPasado = hoy - horaCero;
   var segs = 1000;
   var mins = segs * 60;
   var hours = mins * 60;
@@ -10,7 +11,7 @@ export function tiempoTranscurrido(horaCero) {
   var months = days * 30.416666666666668;
   var years = months * 12;
 
- 
+  //calculo
   var anos = Math.floor(tiempoPasado / years);
 
   tiempoPasado = tiempoPasado - anos * years;
@@ -28,7 +29,10 @@ export function tiempoTranscurrido(horaCero) {
   tiempoPasado = tiempoPasado - minutos * mins;
   var segundos = Math.floor(tiempoPasado / segs);
 
-  if (minutos <= 60) return `perdido hace ${minutos} minutos`;
-  else if (horas < 72) return `perdido hace ${horas}hs`;
-  else return `perdido hace ${dias} dias`;
+  if (dias === 0 && horas === 0 && minutos == 0 ) msj = `perdido hace ${segundos} segundos`;
+  else if (dias === 0 && horas === 0) msj = `perdido hace ${minutos} minutos`;
+  else if (dias === 0 && horas > 0) msj = `perdido hace ${horas} horas`;
+  else msj = `perdido hace ${dias} dias`;
+ 
+  return msj;
 }

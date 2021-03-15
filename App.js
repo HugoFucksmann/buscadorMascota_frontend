@@ -15,6 +15,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import colores from './Components/colorPalette';
 import { StatusBar } from 'expo-status-bar';
 import Botonera2 from "./views/botonera2";
+import Screens from "./Components/mapFeed";
 
 export default class App extends Component {
   constructor(props) {
@@ -40,7 +41,7 @@ export default class App extends Component {
     user = await actualizarLocation(user);
 
     let mascotas = await getMascotas(user);
-    console.log(mascotas);
+    
     this.setState({
       loading: false,
       isAuth: isAuth,
@@ -157,14 +158,12 @@ export default class App extends Component {
         break;
 
       case "perfil":
-        
-        return (
-          <Botonera2
+        return <Botonera2
             mascotas={getMyPets(this.state.mascotas, this.state.user._id)}
             usuario={this.state.user}
             handlerMascotas={() => this.handlerMascotas()}
-          />
-        );
+          /> 
+      
         break;
 
       default:
