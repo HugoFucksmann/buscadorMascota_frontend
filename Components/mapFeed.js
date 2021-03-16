@@ -13,7 +13,7 @@ import MapView from "react-native-maps";
 import { generateInitialRegion } from "../helpers/getLocation";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { mostrarFoto } from "../helpers/imageService";
-import {  Card,  Icon,  Right } from "native-base";
+import {  Card,  Icon,  Right, Header, Input, Item, Button, CardItem } from "native-base";
 import { tiempoTranscurrido } from "../helpers/getTimePass";
 import EmptyCard from "./EmptyCard";
 
@@ -45,7 +45,7 @@ export default class MapFeed extends Component {
     // We should just debounce the event listener here
     this.animation.addListener(({ value }) => {
       let index = Math.floor(value / CARD_WIDTH + 0.3); // animate 30% away from landing on the next item
-      
+      console.log('aca ', index, this.index);
       if (index >= this.data.length) {
         index = this.data.length - 1;
       }
@@ -85,7 +85,7 @@ export default class MapFeed extends Component {
       
       const scale = this.animation.interpolate({
         inputRange,
-        outputRange: [1, 2.5, 1],
+        outputRange: [1, 1.5, 1],
         extrapolate: "clamp",
       });
       const opacity = this.animation.interpolate({
@@ -118,17 +118,11 @@ export default class MapFeed extends Component {
 
               return (
                 <MapView.Marker
-                  tracksViewChanges={false}
                   key={`${index}${Date.now()}`}
                   coordinate={marker.location}
                 >
                   <Animated.View style={[styles.markerWrap, opacityStyle]}>
-                    <Animated.View
-                      style={[
-                        this.index === index ? styles.ringBig : styles.ring,
-                        scaleStyle,
-                      ]}
-                    />
+                    <Animated.View style={[styles.ring, scaleStyle]} />
                     <Text style={{ height: 40 }}>
                       <Animated.Image
                         source={markerPet}
@@ -140,12 +134,12 @@ export default class MapFeed extends Component {
               );
             })}
         </MapView>
-        
+        <SearchBar />
         <Animated.ScrollView
           horizontal
           scrollEventThrottle={1}
           showsHorizontalScrollIndicator={false}
-          snapToInterval={CARD_WIDTH}
+          snapToInterval={CARD_WIDTH + 15}
           onScroll={Animated.event(
             [
               {
@@ -170,7 +164,7 @@ export default class MapFeed extends Component {
               />
             ))
           ) : (
-           <EmptyCard text={"no hay perros perdidos"} />
+            <EmptyCard text={"no hay perros perdidos"} />
           )}
         </Animated.ScrollView>
       </View>
@@ -222,11 +216,11 @@ const CardFeedMap = ({ mascota, handlerRender }) => {
             <Text style={{ fontWeight: "bold", color: colores.main }}>
               {mascota.petName}
             </Text>
-            <Right style={{marginHorizontal: 20}}>
+            <Right >
               <Icon
                 type="Entypo"
                 name="circle-with-plus"
-                style={{ color: colores.main, }}
+                style={{ color: colores.main }}
               />
             </Right>
           </View>
@@ -235,6 +229,28 @@ const CardFeedMap = ({ mascota, handlerRender }) => {
     </TouchableOpacity>
   );
 };
+
+const SearchBar = () => {
+
+  return (
+    <View
+      style={{
+        position: "absolute",
+        top: 20,
+        width: Dimensions.get("window").width - 100,
+        alignSelf: "center",
+      }}
+    >
+      <Card style={{ borderRadius: 20}}>
+        <CardItem style={{flexDirection: 'row', height: 40, borderRadius: 20}}>
+          <Icon name="ios-search" />
+          <Input placeholder="buscar" />
+         
+        </CardItem>
+      </Card>
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -262,7 +278,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     borderRadius: 15,
     borderRightWidth: 6,
-    borderColor: colores.main
+    borderColor: colores.main,
   },
   card: {
     flexDirection: "row",
@@ -303,8 +319,8 @@ const styles = StyleSheet.create({
   markerWrap: {
     alignItems: "center",
     justifyContent: "center",
-    height: 60,
-    width: 60,
+    height: 65,
+    width: 65,
   },
   /* marker: {
     width: 8,
@@ -313,22 +329,12 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(130,4,150, 0.9)",
   }, */
   ring: {
-    width: 18,
-    height: 18,
-    borderRadius: 9,
+    width: 16,
+    height: 16,
+    borderRadius: 8,
     backgroundColor: colores.mainTenueUno,
     position: "absolute",
-    bottom: 0,
-    borderWidth: 2,
-    borderColor: colores.main,
-  },
-  ringBig: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    backgroundColor: colores.mainTenueDos,
-    position: "absolute",
-    bottom: 0,
+    bottom: 7,
     borderWidth: 2,
     borderColor: colores.main,
   },

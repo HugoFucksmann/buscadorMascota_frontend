@@ -137,14 +137,15 @@ export default class App extends Component {
       case "feed":
         return (
           <>
-           {this.renderHeader()}
+            {this.renderHeader()}
             <Feed mascotas={this.state.mascotas} usuario={this.state.user} />
+           
           </>
         );
         break;
 
       case "formulario":
-        if (!this.state.isAuth) return <Login handlerPress={() => this.googleAuth()} />;
+        if (!this.state.isAuth) return <Login handlerPress={() => this.googleAuth()} />
         return (
           <>
             {this.renderHeader()}
@@ -157,17 +158,21 @@ export default class App extends Component {
         break;
 
       case "perfil":
-        return <Botonera2
+        return (
+          <Botonera2
             mascotas={getMyPets(this.state.mascotas, this.state.user._id)}
             usuario={this.state.user}
             handlerMascotas={() => this.handlerMascotas()}
-          /> 
+          />
+        );  
       
         break;
 
       default:
     }
   }
+
+  
 
   render() {
     LogBox.ignoreLogs(["Remote debugger"]);
@@ -230,3 +235,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
+
+
+  /*  */
