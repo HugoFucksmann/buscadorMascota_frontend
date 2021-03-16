@@ -15,7 +15,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import colores from './Components/colorPalette';
 import { StatusBar } from 'expo-status-bar';
 import Botonera2 from "./views/botonera2";
-import Screens from "./Components/mapFeed";
 
 export default class App extends Component {
   constructor(props) {
@@ -117,11 +116,11 @@ export default class App extends Component {
     );
   }
 
-  async handlerMascotas() {
+  async handlerMascotas(tab, text) {
    
     let mascotas = await getMascotas(this.state.user);
-    this.setState({ mascotas: mascotas, selectedTab: "feed" });
-    alert('mascota cargada con exito')
+    this.setState({ mascotas: mascotas, selectedTab:tab });
+    alert(text)
   }
 
   renderHeader(){

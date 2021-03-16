@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   ScrollView,
   View,
@@ -17,22 +17,23 @@ import { editarMascota, eliminarMascota } from "../helpers/mascotaService";
 import { mostrarFoto } from "../helpers/imageService";
 import colores from "../Components/colorPalette";
 import banner from "../assets/banner.png";
+import EmptyCard from "../Components/EmptyCard";
 
 const Botonera2 = ({ mascotas, usuario, handlerMascotas }) => {
   let dataM = [];
-  if(mascotas && !Array.isArray(mascotas))dataM.push(mascotas);
-  else dataM = mascotas
+    if(mascotas){
+      if (!Array.isArray(mascotas)) dataM.push(mascotas);
+      else dataM = mascotas;
+    }
   
   return (
     <>
       <StatusBar style="auto" />
       <HeaderUser usuario={usuario} />
-      {mascotas && mascotas.length !== 0 ? (
-        <MyPetCards miMascotas={dataM} handlerMascotas={handlerMascotas} />
+      {dataM.length !== 0 ? (
+        <MyPetCards miMascotas={mascotas} handlerMascotas={handlerMascotas} />
       ) : (
-        <View>
-          <Text>No tienes mascotas perdidas</Text>
-        </View>
+        <EmptyCard text={"no tienes mascotas perdidas"} />
       )}
     </>
   );
@@ -73,18 +74,19 @@ const HeaderUser = ({usuario}) => {
   );
 }
 
-const MyPetCards = ({ miMascotas }) => {
+const MyPetCards = ({ miMascotas, handlerMascotas }) => {
   const [render, setRender] = useState();
   let data = miMascotas
   async function handlerEliminar(mascota) {
   
     let result = await eliminarMascota(mascota._id);
     if(result)  {
-      data.map((masco, index) => {
+     /*  data.map((masco, index) => {
         if (masco === mascota) {setRender(data.splice(index, 1));}
-      });
-
-      alert("se elimino la mascota");
+      }); */
+      handlerMascotas('perfil', 'se elimino la mascota');
+      //alert("se elimino la mascota");
+      
     }
   
   }
@@ -155,25 +157,25 @@ const CardPet = ({ mascota, handlerEliminar }) => {
 
 const styles = StyleSheet.create({
   myPetCard: {
-    height: 350,
-    width: 300,
+    height: 250,
+    width: 280,
     marginLeft: 20,
     borderRadius: 20,
     borderColor: colores.main,
     marginTop: 30,
   },
   imagenPet: {
-    flex: 1,
     width: null,
     overflow: "hidden",
     /*  borderTopRightRadius: 20,
     borderTopLeftRadius: 20, */
     borderRadius: 20,
+    height: '80%'
   },
   myPetContent: {
     position: "absolute",
-    bottom: 8,
-    left: 5,
+    bottom: 10,
+    left: 10,
     zIndex: 100,
   },
   titles: {

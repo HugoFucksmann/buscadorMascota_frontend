@@ -1,11 +1,9 @@
-import React, { Component, useState } from "react";
+import React, { Component } from "react";
 import colores from '../Components/colorPalette'
 import {
-  AppRegistry,
   StyleSheet,
   Text,
   View,
-  ScrollView,
   Animated,
   Image,
   Dimensions,
@@ -15,18 +13,30 @@ import MapView from "react-native-maps";
 import { generateInitialRegion } from "../helpers/getLocation";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { mostrarFoto } from "../helpers/imageService";
+import {  Card,  Icon,  Right } from "native-base";
+import { tiempoTranscurrido } from "../helpers/getTimePass";
+import EmptyCard from "./EmptyCard";
 
-const { width, height } = Dimensions.get("window");
-
-const CARD_HEIGHT = height / 4;
-const CARD_WIDTH = CARD_HEIGHT - 50;
+const { width } = Dimensions.get("window");
+const CARD_HEIGHT = 110;
+const CARD_WIDTH = width-80;
 
 export default class MapFeed extends Component {
   constructor(props) {
     super(props);
     this.index = 0;
     this.animation = new Animated.Value(0);
-    this.iniReg = generateInitialRegion(this.props.mascotas[0].location);
+    this.data = [];
+    if(this.props.mascotas){
+       if (!Array.isArray(this.props.mascotas))
+         this.data.push(this.props.mascotas);
+       else this.data = this.props.mascotas;
+
+       this.iniReg = generateInitialRegion(this.data[0].location);
+    }else{
+      this.iniReg = generateInitialRegion(this.props.usuario.location);
+    }
+   
     
   }
 
@@ -36,8 +46,8 @@ export default class MapFeed extends Component {
     this.animation.addListener(({ value }) => {
       let index = Math.floor(value / CARD_WIDTH + 0.3); // animate 30% away from landing on the next item
       
-      if (index >= this.props.mascotas.length) {
-        index = this.props.mascotas.length - 1;
+      if (index >= this.data.length) {
+        index = this.data.length - 1;
       }
       if (index <= 0) {
         index = 0;
@@ -45,49 +55,34 @@ export default class MapFeed extends Component {
 
       clearTimeout(this.regionTimeout);
       this.regionTimeout = setTimeout(() => {
-     
+      
         if (this.index !== index) {
           this.index = index;
-          const { location } = this.props.mascotas[index];          
+          const { location } = this.data[index];          
           this.map.animateToRegion(
             {
               ...location,
               latitudeDelta: 0.04864195044303443,
-              longitudeDelta: 0.040142817690068  //this.state.region.longitudeDelta,
+              longitudeDelta: 0.040142817690068 
             },
             350
           );
+          
         }
-      }, 10);
+      }, 30);
     });
   }
 
   render() {
-    /* const interpolations2 = this.props.mascotas.map((marker, index) => {
+    
+    const interpolations = this.data.map((mascota, index) => {
+      
       const inputRange = [
         (index - 1) * CARD_WIDTH,
         index * CARD_WIDTH,
         (index + 1) * CARD_WIDTH,
       ];
-      const scale = this.animation.interpolate({
-        inputRange,
-        outputRange: [1, 2.5, 1],
-        extrapolate: "clamp",
-      });
-      const opacity = this.animation.interpolate({
-        inputRange,
-        outputRange: [0.35, 1, 0.35],
-        extrapolate: "clamp",
-      });
-      return { scale, opacity };
-    }); */
-    const interpolations = this.props.mascotas.map((marker, index) => {
-      const inputRange = [
-        (index - 1) * CARD_WIDTH,
-        index * CARD_WIDTH,
-        (index + 1) * CARD_WIDTH,
-      ];
-      console.log('acaa ', inputRange);
+      
       const scale = this.animation.interpolate({
         inputRange,
         outputRange: [1, 2.5, 1],
@@ -100,7 +95,7 @@ export default class MapFeed extends Component {
       });
       return { scale, opacity };
     });
-    //console.log("intermo ", interpolations);
+    
     return (
       <View style={styles.container}>
         <MapView
@@ -108,38 +103,44 @@ export default class MapFeed extends Component {
           initialRegion={this.iniReg}
           style={styles.container}
         >
-          {this.props.mascotas.map((marker, index) => {
-              //console.log("y el index es ", interpolations[index].scale);
-            const scaleStyle = {
-              transform: [
-                {
-                  scale: interpolations[index].scale,
-                },
-              ],
-            };
-            const opacityStyle = {
-              opacity: interpolations[index].opacity,
-            };
-           
-            return (
-              <MapView.Marker
-                tracksViewChanges={false}
-                key={`${index}${Date.now()}`}
-                coordinate={marker.location}
-              >
-                <Animated.View style={[styles.markerWrap, opacityStyle]}>
-                  <Animated.View style={[this.index === index ? styles.ringBig : styles.ring, scaleStyle]} />
-                  <Text style={{ height: 40 }}>
-                    <Animated.Image
-                      source={markerPet}
-                      style={styles.markerImage}
+          {this.data.length !== 0 &&
+            this.data.map((marker, index) => {
+              const scaleStyle = {
+                transform: [
+                  {
+                    scale: interpolations[index].scale,
+                  },
+                ],
+              };
+              const opacityStyle = {
+                opacity: interpolations[index].opacity,
+              };
+
+              return (
+                <MapView.Marker
+                  tracksViewChanges={false}
+                  key={`${index}${Date.now()}`}
+                  coordinate={marker.location}
+                >
+                  <Animated.View style={[styles.markerWrap, opacityStyle]}>
+                    <Animated.View
+                      style={[
+                        this.index === index ? styles.ringBig : styles.ring,
+                        scaleStyle,
+                      ]}
                     />
-                  </Text>
-                </Animated.View>
-              </MapView.Marker>
-            );
-          })}
+                    <Text style={{ height: 40 }}>
+                      <Animated.Image
+                        source={markerPet}
+                        style={styles.markerImage}
+                      />
+                    </Text>
+                  </Animated.View>
+                </MapView.Marker>
+              );
+            })}
         </MapView>
+        
         <Animated.ScrollView
           horizontal
           scrollEventThrottle={1}
@@ -160,33 +161,78 @@ export default class MapFeed extends Component {
           style={styles.scrollView}
           contentContainerStyle={styles.endPadding}
         >
-          {this.props.mascotas.map((mascota, index) => (
-            <CardFeedMap mascota={mascota} index={index} />
-          ))}
+          {this.data.length !== 0 ? (
+            this.data.map((mascota) => (
+              <CardFeedMap
+                mascota={mascota}
+                key={mascota._id}
+                handlerRender={this.props.handlerRender}
+              />
+            ))
+          ) : (
+           <EmptyCard text={"no hay perros perdidos"} />
+          )}
         </Animated.ScrollView>
       </View>
     );
   }
 }
 
-const CardFeedMap = ({ mascota, index }) => {
-    const foto = mostrarFoto(mascota.petPicture);
+const CardFeedMap = ({ mascota, handlerRender }) => {
+  const foto = mostrarFoto(mascota.petPicture);
   return (
-    <View style={styles.card} key={index}>
-      <Image
-        source={{ uri: foto }}
-        style={styles.cardImage}
-        resizeMode="cover"
-      />
-      <View style={styles.textContent}>
-        <Text numberOfLines={1} style={styles.cardtitle}>
-          {mascota.petName}
-        </Text>
-        <Text numberOfLines={1} style={styles.cardDescription}>
-          {mascota.petDescription}
-        </Text>
-      </View>
-    </View>
+    <TouchableOpacity
+      activeOpacity={0.8}
+      key={mascota._id}
+      onPress={() => {handlerRender(mascota, "info")}}
+    >
+      <Card style={styles.cardd}>
+        <View style={{ flexDirection: "column", height: "100%", width: "40%" }}>
+          <Image
+            source={{ uri: foto }}
+            style={styles.cardImage}
+            resizeMode="cover"
+          />
+        </View>
+
+        <View style={{ flexDirection: "column-reverse" }}>
+          <View style={{ flexDirection: "row", padding: 12 }}>
+            <Icon
+              active
+              name="date"
+              type="Fontisto"
+              style={{ color: colores.main, fontSize: 20, paddingRight: 5 }}
+            />
+            <Text style={{ color: "grey", fontSize: 13 }}>
+              {tiempoTranscurrido(mascota.date)}
+            </Text>
+          </View>
+
+          <View style={{ flexDirection: "row", paddingLeft: 12 }}>
+            <Icon
+              active
+              name="map-marker-radius"
+              type="MaterialCommunityIcons"
+              style={{ color: colores.main, fontSize: 20, paddingRight: 5 }}
+            />
+            <Text style={{ color: "grey" }}>{mascota.dist}</Text>
+          </View>
+
+          <View style={{ flexDirection: "row", paddingLeft: 13 }}>
+            <Text style={{ fontWeight: "bold", color: colores.main }}>
+              {mascota.petName}
+            </Text>
+            <Right style={{marginHorizontal: 20}}>
+              <Icon
+                type="Entypo"
+                name="circle-with-plus"
+                style={{ color: colores.main, }}
+              />
+            </Right>
+          </View>
+        </View>
+      </Card>
+    </TouchableOpacity>
   );
 };
 
@@ -199,33 +245,48 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     position: "absolute",
-    bottom: 30,
+    bottom: 20,
     left: 0,
     right: 0,
-    paddingVertical: 10,
+    //paddingVertical: 10,
     zIndex: 100,
   },
   endPadding: {
     paddingRight: width - CARD_WIDTH,
   },
+  cardd: {
+    flexDirection: "row",
+    marginLeft: 15,
+    height: CARD_HEIGHT,
+    width: CARD_WIDTH,
+    overflow: "hidden",
+    borderRadius: 15,
+    borderRightWidth: 6,
+    borderColor: colores.main
+  },
   card: {
-    padding: 10,
+    flexDirection: "row",
     elevation: 2,
     backgroundColor: "#FFF",
-    marginHorizontal: 10,
+    marginLeft: 15,
     shadowColor: "#000",
     shadowRadius: 5,
     shadowOpacity: 0.3,
     shadowOffset: { x: 2, y: -2 },
     height: CARD_HEIGHT,
     width: CARD_WIDTH,
-    overflow: "hidden",
+    //overflow: "hidden",
+    borderRadius: 15,
+    borderRightWidth: 6,
+    borderRightColor: colores.main,
   },
   cardImage: {
-    flex: 3,
+    flex: 1,
     width: "100%",
     height: "100%",
     alignSelf: "center",
+    borderBottomLeftRadius: 15,
+    borderTopLeftRadius: 15,
   },
   textContent: {
     flex: 1,

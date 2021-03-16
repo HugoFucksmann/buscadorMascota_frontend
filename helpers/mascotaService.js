@@ -48,11 +48,12 @@ async function actualizarArchivo(file, perroId, token) {
 
 function getMyPets(mascotas, uid){
 
-  let miMascotas = mascotas.filter((masco) => masco.usuario == uid);
+  let miMascotas
   
-  if(miMascotas) return miMascotas
-  else return false
+  if(mascotas) {miMascotas = mascotas.filter((masco) => masco.usuario == uid); return miMascotas}
+  else miMascotas = false
 
+  return miMascotas
 }
 
 async function getMascotas(user){
@@ -88,7 +89,8 @@ async function getMascotas(user){
   )
     .then((response) => response.json())
     .then((res) => {
-      if (res.ok) {
+      if (res.ok && res.mascotas) {
+        
         return res.mascotas.map((mascota) => {
           let dist = distKM(mascota, user);
           if (dist < 1) {
@@ -119,7 +121,7 @@ async function crearMascota(perro, token, notification) {
     body: JSON.stringify({ perro, notification }),
   })
     .then((res) => res.json())
-    .then(({mascota}) => mascota._id)
+    .then(({ mascota }) => mascota._id)
     .catch((e) => console.log(e));
     
  

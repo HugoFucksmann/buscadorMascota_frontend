@@ -28,6 +28,7 @@ const Feed = ({mascotas, usuario}) => {
   };
 
   function handlerRender(mascota, render) {
+ 
     if (mascota) setMascota(mascota);
     setRender(render);
   }
@@ -35,10 +36,72 @@ const Feed = ({mascotas, usuario}) => {
   function renderFeed(){ 
      switch (render) {
        case "tarjetas":
-         return (
-           <Tabs
+         return <MapFeed usuario={usuario} mascotas={mascotas} handlerRender={handlerRender} />                  
+         break;
+
+       case "info":
+         return <InfoPerro mascota={mascota} usuario={usuario} handlerRender={handlerRender} />;
+         break;
+
+       case "chat":
+         return <Chat mascotaId={mascota._id} usuario={usuario} handlerRender={handlerRender} />;
+         break;
+
+       default:
+     }
+  };
+
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: "rgba(242,246,239,255)" }}>
+      {renderFeed()}
+    </SafeAreaView>
+  );
+ 
+};
+
+const styles = StyleSheet.create({
+  fullScreen: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  ViewFlotante: {
+    position: "absolute",
+    bottom: 10,
+    zIndex: 100,
+  },
+  cardMap: {
+    height: 120,
+    width: 320,
+    marginLeft: 20,
+  },
+  message: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  callout: {
+    padding: 10,
+    flexDirection: "column",
+    alignItems: "center",
+    backgroundColor: "white",
+  },
+  image: {
+    width: 55,
+    height: 55,
+    margin: 0,
+    padding: 0,
+    backgroundColor: "white",
+  },
+  imageWrapper: {
+    marginTop: -23,
+    paddingBottom: 23,
+  },
+});
+
+
+export default Feed;
+
+/**
+ * /*   <Tabs
               locked
-             tabBarPosition="bottom"
              tabBarUnderlineStyle={{ backgroundColor: colores.main, height: 2 }}
              tabContainerStyle={{ height: 40 }}
            >
@@ -69,31 +132,10 @@ const Feed = ({mascotas, usuario}) => {
                  <MapFeed usuario={usuario} mascotas={mascotas} />
              
              </Tab>
-           </Tabs>
-         );
-         break;
-
-       case "info":
-         return <InfoPerro mascota={mascota} usuario={usuario} handlerRender={handlerRender} />;
-         break;
-
-       case "chat":
-         return <Chat mascotaId={mascota._id} usuario={usuario} handlerRender={handlerRender} />;
-         break;
-
-       default:
-     }
-  };
-
-  return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "rgba(242,246,239,255)" }}>
-      {renderFeed()}
-    </SafeAreaView>
-  );
- 
-};
-
-const MapaPerros = ({usuario, mascotas}) => {
+           </Tabs> 
+           
+           
+           const MapaPerros = ({usuario, mascotas}) => {
     let data = [];
     if (!Array.isArray(mascotas)) data.push(mascotas);
     else data = mascotas;
@@ -157,46 +199,5 @@ const MapaPerros = ({usuario, mascotas}) => {
     </>
   );
 }
-
-
-
-const styles = StyleSheet.create({
-  fullScreen: {
-    ...StyleSheet.absoluteFillObject,
-  },
-  ViewFlotante: {
-    position: "absolute",
-    bottom: 10,
-    zIndex: 100,
-  },
-  cardMap: {
-    height: 120,
-    width: 320,
-    marginLeft: 20,
-  },
-  message: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  callout: {
-    padding: 10,
-    flexDirection: "column",
-    alignItems: "center",
-    backgroundColor: "white",
-  },
-  image: {
-    width: 55,
-    height: 55,
-    margin: 0,
-    padding: 0,
-    backgroundColor: "white",
-  },
-  imageWrapper: {
-    marginTop: -23,
-    paddingBottom: 23,
-  },
-});
-
-
-
-export default Feed;
+           */
+ 
