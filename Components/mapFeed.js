@@ -43,34 +43,37 @@ export default class MapFeed extends Component {
   componentDidMount() {
     // We should detect when scrolling has stopped then animate
     // We should just debounce the event listener here
-    this.animation.addListener(({ value }) => {
-      let index = Math.floor(value / CARD_WIDTH + 0.3); // animate 30% away from landing on the next item
-      console.log('aca ', index, this.index);
-      if (index >= this.data.length) {
-        index = this.data.length - 1;
-      }
-      if (index <= 0) {
-        index = 0;
-      }
+    
+      this.animation.addListener(({ value }) => {
+        
+         
+          let index = Math.floor(value / CARD_WIDTH + 0.3); // animate 30% away from landing on the next item
 
-      clearTimeout(this.regionTimeout);
-      this.regionTimeout = setTimeout(() => {
-      
-        if (this.index !== index) {
-          this.index = index;
-          const { location } = this.data[index];          
-          this.map.animateToRegion(
-            {
-              ...location,
-              latitudeDelta: 0.04864195044303443,
-              longitudeDelta: 0.040142817690068 
-            },
-            350
-          );
-          
-        }
-      }, 30);
-    });
+          if (index >= this.data.length) {
+            index = this.data.length - 1;
+          }
+          if (index <= 0) {
+            index = 0;
+          }
+
+          clearTimeout(this.regionTimeout);
+          this.regionTimeout = setTimeout(() => {
+            if (this.index !== index) {
+              this.index = index;
+              const { location } = this.data[index];
+
+              this.map.animateToRegion(
+                {
+                  ...location,
+                  latitudeDelta: 0.04864195044303443,
+                  longitudeDelta: 0.040142817690068,
+                },
+                350
+              );
+            }
+          }, 10);
+        
+      });
   }
 
   render() {
