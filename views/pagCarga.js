@@ -1,7 +1,7 @@
 import React, { } from 'react'
 import {  ActivityIndicator,  ImageBackground,  View,  Text, StyleSheet, } from "react-native";
 
-import perroNegro from "../assets/fondos/intro.png";
+import perroNegro from "../assets/fondos/introff.png";
 import colores from '../Components/colorPalette';
 
 export default function LoadingView(){

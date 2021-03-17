@@ -17,3 +17,4 @@ export default {
   mainTenueUno: "rgba(63,125,104,0.4)",
   mainTenueDos: "rgba(63,125,104,0.7)",
 };
+
