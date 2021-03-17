@@ -18,6 +18,8 @@ import { mostrarFoto } from "../helpers/imageService";
 import colores from "../Components/colorPalette";
 import banner from "../assets/banner.png";
 import EmptyCard from "../Components/EmptyCard";
+import backImg from "../assets/fondos/user_background.png";
+import fondo from "../assets/fondos/app_background.png"
 
 const Botonera2 = ({ mascotas, usuario, handlerMascotas }) => {
   let dataM = [];
@@ -28,6 +30,7 @@ const Botonera2 = ({ mascotas, usuario, handlerMascotas }) => {
   
   return (
     <>
+      <ImageBackground source={fondo} style={styles.image} resizeMode="repeat">
       <StatusBar style="auto" />
       <HeaderUser usuario={usuario} />
       {dataM.length !== 0 ? (
@@ -35,6 +38,7 @@ const Botonera2 = ({ mascotas, usuario, handlerMascotas }) => {
       ) : (
         <EmptyCard text={"no tienes mascotas perdidas"} />
       )}
+      </ImageBackground>
     </>
   );
 };
@@ -49,12 +53,13 @@ const HeaderUser = ({usuario}) => {
         backgroundColor: colores.main,
       }}
     >
+      <ImageBackground source={backImg} style={styles.image}>
       <View style={{ flexDirection: "row-reverse", height: 20 }}>
         <Button transparent>
           <Icon
             type="EvilIcons"
             name="gear"
-            style={{ fontSize: 30, color: "black" }}
+            style={{ fontSize: 30, color: colores.mild }}
           />
         </Button>
       </View>
@@ -67,9 +72,10 @@ const HeaderUser = ({usuario}) => {
         }}
         source={{ uri: fotoPerfil }}
       />
-      <Text style={{ alignSelf: "center", fontSize: 20, marginTop: 10 }}>
+      <Text style={{ alignSelf: "center", fontSize: 20, marginTop: 10, color: colores.mild }}>
         {usuario.name}
       </Text>
+      </ImageBackground>
     </View>
   );
 }
@@ -137,7 +143,7 @@ const CardPet = ({ mascota, handlerEliminar }) => {
           style={{ backgroundColor: colores.main, width: 100, marginRight: 10 }}
         >
           <Icon fontSize="22" type="Feather" name="edit" />
-          <Text style={{ color: "#fff" }}>Editar</Text>
+          <Text style={{ color: colores.mild }}>Editar</Text>
         </Button>
         <Button
           onPress={() => createTwoButtonAlert()}
@@ -158,18 +164,20 @@ const CardPet = ({ mascota, handlerEliminar }) => {
 const styles = StyleSheet.create({
   myPetCard: {
     height: 250,
-    width: 280,
+    width: Dimensions.get('window').width-40,
     marginLeft: 20,
-    borderRadius: 20,
+    borderRadius: 10,
     borderColor: colores.main,
     marginTop: 30,
   },
   imagenPet: {
     width: null,
     overflow: "hidden",
-    /*  borderTopRightRadius: 20,
-    borderTopLeftRadius: 20, */
-    borderRadius: 20,
+    borderWidth: 0,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10, 
     height: '80%'
   },
   myPetContent: {
@@ -180,7 +188,7 @@ const styles = StyleSheet.create({
   },
   titles: {
     marginTop: 5,
-    color: colores.main,
+    color: colores.light,
     fontSize: 20,
     flexDirection: "row",
     justifyContent: "center",
@@ -222,6 +230,11 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     borderWidth: 2,
   },
+  image: {
+    flex: 1,
+    resizeMode: "cover",
+    justifyContent: "center"
+  }
 });
  
 

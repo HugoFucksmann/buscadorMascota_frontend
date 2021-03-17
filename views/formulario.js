@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View,  Image,  Platform,  Text,  ScrollView,  StyleSheet } from "react-native";
+import { View,  Image,  Platform,  Text,  ScrollView,  ImageBackground, StyleSheet } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as ImagePicker from "expo-image-picker";
 import {  Picker,  Item,  Label,  Input,  Textarea,  Form,  Left,  Card,  Button,  H3,  Right, Body, CardItem } from "native-base";
@@ -12,6 +12,7 @@ import LoadingView from "../views/pagCarga";
 import colores from "../Components/colorPalette";
 import { Dimensions } from "react-native";
 import markerPet from '../assets/iconos/marker_paw.png'
+import fondo from "../assets/fondos/app_background.png"
 
 const lightBackColor = "rgba(236,242,213,255)";
 const strongMainColor = "rgba(78,120,81,255)";
@@ -119,6 +120,7 @@ const FormMascota = ({ user, handlerMascotas }) => {
   return (
     <ScrollView>
       <View style={{ padding: 20 }}>
+      {/* <ImageBackground source={fondo} resizeMode="repeat"> */}
         <SwitchSelector
           style={styles.state}
           initial={0}
@@ -268,6 +270,7 @@ const FormMascota = ({ user, handlerMascotas }) => {
         >
           <Label style={{ color: colores.light, fontSize: 20 }}>CARGAR</Label>
         </Button>
+        {/* </ImageBackground> */}
       </View>
     </ScrollView>
   );
@@ -302,7 +305,6 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
     alignSelf: 'center',
     marginBottom: 15,
-    
   },
 });
 
