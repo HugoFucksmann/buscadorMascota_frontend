@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SafeAreaView, VirtualizedList, Text, StyleSheet, WebView, Image, Animated } from "react-native";
+import { SafeAreaView, VirtualizedList, Text, StyleSheet, Image, Animated } from "react-native";
 import { Tabs, Tab, TabHeading, Card } from "native-base";
 import CardFeed from '../Components/card';
 import InfoPerro from '../Components/InfoPerro';
@@ -36,7 +36,7 @@ const Feed = ({mascotas, usuario}) => {
   function renderFeed(){ 
      switch (render) {
        case "tarjetas":
-         return <MapFeed usuario={usuario} mascotas={mascotas} handlerRender={handlerRender} />                  
+         return <TabsFeed usuario={usuario} mascotas={mascotas} handlerRender={handlerRender} />                  
          break;
 
        case "info":
@@ -57,6 +57,56 @@ const Feed = ({mascotas, usuario}) => {
     </SafeAreaView>
   );
  
+};
+// MapFeed
+
+const TabsFeed = ({ usuario, mascotas, handlerRender }) => {
+
+  const RenderItem = ({ item }) => {
+    return (
+      <CardFeed mascota={item} usuario={usuario} handlerRender={handlerRender} />
+    );
+  };
+
+
+  return (
+    <Tabs
+      locked
+      tabBarUnderlineStyle={{ backgroundColor: colores.main, height: 2 }}
+      tabContainerStyle={{ height: 40 }}
+      tabBarPosition="bottom"
+    >
+      <Tab
+        heading={
+          <TabHeading style={{ backgroundColor: "#ffffff" }}>
+            <Text>Feed</Text>
+          </TabHeading>
+        }
+      >
+        <VirtualizedList
+          data={mascotas}
+          renderItem={RenderItem}
+          keyExtractor={(item) => item._id}
+          getItemCount={(data) => data.length}
+          initialNumToRender={4}
+          getItem={(data, index) => data[index]}
+        />
+      </Tab>
+      <Tab
+        heading={
+          <TabHeading style={{ backgroundColor: "#ffffff" }}>
+            <Text>Mapa</Text>
+          </TabHeading>
+        }
+      >
+        <MapFeed
+          usuario={usuario}
+          mascotas={mascotas}
+          handlerRender={handlerRender}
+        />
+      </Tab>
+    </Tabs>
+  );
 };
 
 const styles = StyleSheet.create({

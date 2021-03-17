@@ -3,11 +3,11 @@
     "name": "BusCan",
     "slug": "buscan",
     "splash": {
-      "image": "./assets/fondos/intro.png",
-      "resizeMode": "contain",
+      "image": "./assets/fondos/introF.png",
+      "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
-    "version": "1.0.0",
+    "version": "1.2.2",
     "orientation": "portrait",
     "icon": "./assets/appLogo.png",
     "updates": {
@@ -20,21 +20,21 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.colodev.buscan",
-      "buildNumber": "1.0.0",
+      "buildNumber": "1.2.2",
       "config": {
         "googleMapsApiKey": "AIzaSyBTml0ABdTXFNKVNeODlr6i2NDNyUX3kmY"
       }
     },
     "android": {
-      "enableDangerousExperimentalLeanBuilds": true,
+      "enableDangerousExperimentalLeanBuilds": false,
       "useNextNotificationsApi": true,
       "package": "com.colodev.buscan",
-      "versionCode": 1,
+      "googleServicesFile": "./google-services.json",  
+      "versionCode": 4,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/appLogo.png",
         "backgroundColor": "#FFFFFF"
       },
-      "googleServicesFile": "./google-services.json",  
       "config": {
         "googleSignIn": {
           "apiKey": "AIzaSyA-FXb1ZKGIY_O-A4ZfIVe0pgX9fk6sGvY",

@@ -1,6 +1,6 @@
 import "react-native-gesture-handler";
 import React, { Component } from 'react';
-import { SafeAreaView, StyleSheet, ImageBackground, LogBox, Image } from "react-native";
+import { SafeAreaView, StyleSheet, ImageBackground, LogBox, Image, Alert } from "react-native";
 import { Root, Button, Footer, FooterTab, Icon, Header } from "native-base";
 import * as Font from "expo-font";
 
@@ -23,7 +23,7 @@ export default class App extends Component {
   }
 
   async componentDidMount() {
-    await AsyncStorage.removeItem('user');
+    await AsyncStorage.removeItem("user");
     let user = await AsyncStorage.getItem("user");
     let isAuth = false;
 
@@ -40,7 +40,7 @@ export default class App extends Component {
     user = await actualizarLocation(user);
 
     let mascotas = await getMascotas(user);
-    
+
     this.setState({
       loading: false,
       isAuth: isAuth,
@@ -52,8 +52,10 @@ export default class App extends Component {
   async googleAuth() {
     let user = await googleLogin(this.state.user);
     if (user) {
-      await AsyncStorage.setItem("user", JSON.stringify(usuario));
+      await AsyncStorage.setItem("user", JSON.stringify(user));
       this.setState({ isAuth: true, user: user });
+    } else {
+      return Alert("Error al intentar loguearse");
     }
   }
 
@@ -116,14 +118,19 @@ export default class App extends Component {
     );
   }
 
-  async handlerMascotas(tab, text) {
-   
+  async handlerNewMascotas() {
     let mascotas = await getMascotas(this.state.user);
-    this.setState({ mascotas: mascotas, selectedTab:tab });
-    alert(text)
+    this.setState({ mascotas: mascotas, selectedTab: "feed" });
+    alert("se ha creado la mascota correctamente");
   }
 
-  renderHeader(){
+  async handlerDeleteMascotas() {
+    let mascotas = await getMascotas(this.state.user);
+    this.setState({ mascotas: mascotas, selectedTab: "perfil" });
+    alert("se ha eliminado la mascota");
+  }
+
+  renderHeader() {
     return (
       <Header style={styles.header}>
         <ImageBackground source={banner} style={styles.headerBackground} />
@@ -139,19 +146,19 @@ export default class App extends Component {
           <>
             {this.renderHeader()}
             <Feed mascotas={this.state.mascotas} usuario={this.state.user} />
-           
           </>
         );
         break;
 
       case "formulario":
-        if (!this.state.isAuth) return <Login handlerPress={() => this.googleAuth()} />
+        if (!this.state.isAuth)
+          return <Login handlerPress={() => this.googleAuth()} />;
         return (
           <>
             {this.renderHeader()}
             <FormMascota
               user={this.state.user}
-              handlerMascotas={() => this.handlerMascotas()}
+              handlerMascotas={() => this.handlerDeleteMascotas()}
             />
           </>
         );
@@ -164,15 +171,13 @@ export default class App extends Component {
             usuario={this.state.user}
             handlerMascotas={() => this.handlerMascotas()}
           />
-        );  
-      
+        );
+
         break;
 
       default:
     }
   }
-
-  
 
   render() {
     LogBox.ignoreLogs(["Remote debugger"]);

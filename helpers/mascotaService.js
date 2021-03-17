@@ -149,7 +149,7 @@ async function editarMascota(idMascota){
 }
 
 async function eliminarMascota(idMascota){
-  console.log('iddd ', idMascota);
+
   let result;
   const token = await AsyncStorage.getItem("token");
   const url = `https://mascotass.herokuapp.com/api/mascotas/${idMascota}`;
@@ -178,11 +178,11 @@ async function eliminarMascota(idMascota){
 }
 
 function clearCollection(path) {
-  console.log(path);
+ 
   let ref = firebaseConfig().collection(path);
   ref.onSnapshot((snapshot) => {
     snapshot.docs.forEach((doc) => {
-      console.log('acaa ', doc);
+     
       ref.doc(doc.id).delete();
     });
   });

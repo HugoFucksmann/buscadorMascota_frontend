@@ -9,6 +9,7 @@ import {
   Dimensions,
 } from "react-native";
 import markerPet from "../assets/iconos/marker_paw.png";
+import markerMan from "../assets/iconos/marker_man.png";
 import MapView from "react-native-maps";
 import { generateInitialRegion } from "../helpers/getLocation";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -127,10 +128,7 @@ export default class MapFeed extends Component {
                   <Animated.View style={[styles.markerWrap, opacityStyle]}>
                     <Animated.View style={[styles.ring, scaleStyle]} />
                     <Text style={{ height: 40 }}>
-                      <Animated.Image
-                        source={markerPet}
-                        style={styles.markerImage}
-                      />
+                      <Image source={markerPet} style={styles.markerImage} />
                     </Text>
                   </Animated.View>
                 </MapView.Marker>

@@ -80,15 +80,8 @@ const MyPetCards = ({ miMascotas, handlerMascotas }) => {
   async function handlerEliminar(mascota) {
   
     let result = await eliminarMascota(mascota._id);
-    if(result)  {
-     /*  data.map((masco, index) => {
-        if (masco === mascota) {setRender(data.splice(index, 1));}
-      }); */
-      handlerMascotas('perfil', 'se elimino la mascota');
-      //alert("se elimino la mascota");
-      
-    }
-  
+    if(result)   handlerMascotas();
+    else Alert('error al eliminar la mascota')
   }
 
   const RenderItem = ({ item }) => {

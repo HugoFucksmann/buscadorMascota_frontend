@@ -61,7 +61,7 @@ const FormMascota = ({ user, handlerMascotas }) => {
     await actualizarArchivo(file, perroId, token)
       .then((res) => {       
         if(!res) alert("Error al cargar la imagen del perro!");   
-        handlerMascotas('feed', 'mascota cargada con exito');  
+        handlerMascotas();  
       })
       .catch((e) => {
         console.log(e);
@@ -231,7 +231,7 @@ const FormMascota = ({ user, handlerMascotas }) => {
             </Picker>
           </Item>
 
-          {/*  <Item picker style={styles.itemForm}>
+           <Item picker style={styles.itemForm}>
           <Left>
             <Text>Color:</Text>
           </Left>
@@ -246,7 +246,7 @@ const FormMascota = ({ user, handlerMascotas }) => {
             />
           </Right>
         </Item>
- */}
+
           <Form>
             <Textarea
               rowSpan={3}
