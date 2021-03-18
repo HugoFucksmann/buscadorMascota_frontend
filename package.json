@@ -1,0 +1,43 @@
+{
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "start": "env-cmd -f .env.development expo start",
+    "android": "env-cmd -f .env.prod expo start --android",
+    "ios": "env-cmd -f .env.prod expo start --ios",
+    "web": "env-cmd -f .env.prod expo start --web",
+    "eject": "env-cmd -f .env.prod expo eject",
+    "build": "env-cmd -f .env.prod expo build:web"
+  },
+  "dependencies": {
+    "@firebase/firestore": "^2.2.0",
+    "@react-native-async-storage/async-storage": "^1.14.1",
+    "expo": "^40.0.1",
+    "expo-cli": "^4.3.0",
+    "expo-font": "~8.4.0",
+    "expo-google-app-auth": "^8.1.4",
+    "expo-image-picker": "~9.2.0",
+    "expo-location": "~10.0.0",
+    "expo-notifications": "~0.8.2",
+    "expo-splash-screen": "~0.8.1",
+    "expo-status-bar": "~1.0.3",
+    "firebase": "^7.9.0",
+    "native-base": "^2.15.2",
+    "npm": "^6.14.11",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-40.0.0.tar.gz",
+    "react-native-dotenv": "^2.5.3",
+    "react-native-gesture-handler": "~1.8.0",
+    "react-native-gifted-chat": "^0.16.3",
+    "react-native-maps": "0.27.1",
+    "react-native-reanimated": "~1.13.0",
+    "react-native-switch-selector": "^2.1.4",
+    "react-native-web": "^0.15.0",
+    "run": "^1.4.0",
+    "start": "^5.1.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9.6"
+  },
+  "private": true
+}
