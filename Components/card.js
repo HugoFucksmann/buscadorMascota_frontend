@@ -18,7 +18,7 @@ function CardFeed({mascota, usuario, handlerRender}) {
         <CardItem cardBody>
           <Image
             source={{ uri: foto }}
-            style={{ height: 180, width: null, flex: 1 }}
+            style={{ height: 250, width: null, flex: 1 }}
           />
         </CardItem>
         <CardItem style={styles.headCard}>
@@ -32,9 +32,8 @@ function CardFeed({mascota, usuario, handlerRender}) {
             />
             <Text style={{ color: "grey" }}>{mascota.dist}</Text>
           </Left>
-        </CardItem>
-        <CardItem style={styles.headCard}>
-          <Left>
+        {/* </CardItem>
+        <CardItem style={styles.headCard}> */}
             <Icon
               active
               name="date"
@@ -44,17 +43,17 @@ function CardFeed({mascota, usuario, handlerRender}) {
             <Text style={{ color: "grey" }}>
               {tiempoTranscurrido(mascota.date)}
             </Text>
-          </Left>
           <Right>
             <Button
               small
-              bordered
               style={styles.button}
               onPress={() => handlerRender(mascota, "info")}
             >
-              <Text style={{ color: colores.main, fontWeight: "bold" }}>
-                + Info
-              </Text>
+              <Icon
+                type="Entypo"
+                name="circle-with-plus"
+                style={{ color: colores.main }}
+              />
             </Button>
           </Right>
         </CardItem>
@@ -66,14 +65,15 @@ function CardFeed({mascota, usuario, handlerRender}) {
 const styles = StyleSheet.create({
   button: {
     color: colores.main,
-    borderColor: colores.main
+    // borderColor: colores.main,
+    backgroundColor: '#fff',
   },
   card: {
     marginBottom: 8,
     alignSelf: 'center',
     padding: 0,
     width: Dimensions.get("window").width-16,
-    backgroundColor: colores.light,
+    backgroundColor: colores.mild,
     borderBottomColor: colores.main,
     borderBottomWidth: 3
   },

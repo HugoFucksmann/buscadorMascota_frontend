@@ -86,18 +86,18 @@ export default function InfoPerro({ mascota, usuario, handlerRender }) {
            style={{
              borderTopRightRadius: 40,
              borderTopLeftRadius: 40,
-             marginTop: -40,
+             marginTop: -50,
              height: "100%",
            }}
          >
            <Thumbnail
              source={{ uri: foto }}
              style={{
-               marginLeft: windowWidth / 2 - 60,
-               marginTop: -60,
-               height: 120,
-               width: 120,
-               borderRadius: 120 / 2,
+               marginLeft: windowWidth / 2 - 90,
+               marginTop: -90,
+               height: 180,
+               width: 180,
+               borderRadius: 180 / 2,
                borderWidth: 3,
                borderColor: "#f2f2f2",
              }}

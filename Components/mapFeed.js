@@ -19,8 +19,8 @@ import { tiempoTranscurrido } from "../helpers/getTimePass";
 import EmptyCard from "./EmptyCard";
 
 const { width } = Dimensions.get("window");
-const CARD_HEIGHT = 110;
-const CARD_WIDTH = width-80;
+const CARD_HEIGHT = 130;
+const CARD_WIDTH = width-100;
 
 export default class MapFeed extends Component {
   constructor(props) {
@@ -182,7 +182,7 @@ const CardFeedMap = ({ mascota, handlerRender }) => {
       onPress={() => {handlerRender(mascota, "info")}}
     >
       <Card style={styles.cardd}>
-        <View style={{ flexDirection: "column", height: "100%", width: "40%" }}>
+        <View style={{ flexDirection: "column", height: "100%", width: "50%" }}>
           <Image
             source={{ uri: foto }}
             style={styles.cardImage}
@@ -214,14 +214,14 @@ const CardFeedMap = ({ mascota, handlerRender }) => {
           </View>
 
           <View style={{ flexDirection: "row", paddingLeft: 13 }}>
-            <Text style={{ fontWeight: "bold", color: colores.main }}>
+            <Text style={{ fontWeight: "bold", color: colores.main, fontSize: 25, paddingBottom:15 }}>
               {mascota.petName}
             </Text>
             <Right >
               <Icon
                 type="Entypo"
                 name="circle-with-plus"
-                style={{ color: colores.main }}
+                style={{ color: colores.main, paddingBottom:10  }}
               />
             </Right>
           </View>
