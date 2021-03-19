@@ -80,7 +80,7 @@ export default function InfoPerro({ mascota, usuario, handlerRender }) {
        presentationStyle="pageSheet"
        onRequestClose={() => handlerRender(false, "tarjetas")}
      >
-       <View style={{ height: 450, width: null }}>{renderMapInfo()}</View>
+       <View style={{ height: 430, width: null }}>{renderMapInfo()}</View>
        <View>
          <Card
            style={{

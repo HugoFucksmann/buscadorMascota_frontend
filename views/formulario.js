@@ -121,161 +121,165 @@ const FormMascota = ({ user, mascotas, handlerMascotas }) => {
 
 
  
-
+  
   return (
     <ImageBackground source={fondo} style={styles.image} resizeMode="repeat">
-    <ScrollView>
-      <View style={{ padding: 20 }}>
-
-        <SwitchSelector
-          style={styles.state}
-          initial={0}
-          onPress={(value) => setPerro({ ...perro, petState: value })}
-          textColor={colores.mainFill}
-          selectedColor={colores.light}
-          buttonColor={colores.mainFill}
-          hasPadding
-          fontSize={15}
-          borderRadius={20}
-          borderWidth={0}
-          options={[
-            { label: "Se perdió mi mascota", value: "perdido" },
-            { label: "Encontré animal perdido", value: "encontrado" },
-          ]}
-        />
-
-        <Button
-          block
-          bordered={false}
-          onPress={pickImage}
-          info
-          style={styles.buttonUnderImage}
-        >
-          {/* <Icon type="AntDesign" name="downcircleo" />  */}
-          {image ? (
-            <Image source={{ uri: image }} style={styles.imagen} />
-          ) : (
-            <Image source={noImagen} style={styles.imagen} />
-          )}
-        </Button>
-        <Card style={styles.map}>
-          <MapView
-            style={styles.map}
-            initialRegion={ubi}
-            onPress={(e) =>
-              setPerro({ ...perro, location: e.nativeEvent.coordinate })
-            }
-          >
-            <Marker pinColor="#1c241b" coordinate={perro.location}>
-              <Text style={{ height: 40 }}>
-                <Image
-                  source={markerPet}
-                  style={{
-                    height: 30,
-                    width: 30,
-                    resizeMode: "contain",
-                  }}
-                />
-              </Text>
-            </Marker>
-          </MapView>
-          <Card
-            style={{
-              alignSelf: "center",
-              position: "relative",
-              bottom: 50,
-              borderRadius: 5,
-              padding: 5,
-            }}
-          >
-            <Text style={{ fontSize: 13, color: colores.main }}>
-              Indica dónde se perdió
-            </Text>
-          </Card>
-        </Card>
-        {perro.petState === "perdido" && (
-          <Item style={styles.itemForm}>
-            <Input
-              value={perro.petName}
-              onChangeText={(nombre) => setPerro({ ...perro, petName: nombre })}
-              placeholder="Nombre mascota"
-            />
-          </Item>
-        )}
-
-        <Item picker style={styles.itemForm}>
-          <Left>
-            <Text>Sexo:</Text>
-          </Left>
-          <Picker
-            mode="dropdown"
-            selectedValue={perro.petSex}
-            onValueChange={(value) => setPerro({ ...perro, petSex: value })}
-          >
-            <Picker.Item label="macho" value="macho" />
-            <Picker.Item label="hembra" value="hembra" />
-          </Picker>
-        </Item>
-
-        <Item picker style={styles.itemForm}>
-          <Left>
-            <Text>Tamaño:</Text>
-          </Left>
-
-          <Picker
-            mode="dropdown"
-            selectedValue={perro.setSize}
-            onValueChange={(value) => setPerro({ ...perro, petSize: value })}
-          >
-            <Picker.Item label="chico" value="chico" />
-            <Picker.Item label="mediano" value="mediano" />
-            <Picker.Item label="grande" value="grande" />
-          </Picker>
-        </Item>
-
-        <Item picker style={styles.itemForm}>
-          <Left>
-            <Text>Color:</Text>
-          </Left>
-          <Right>
-            <SwitchSelector
-              initial={2}
-              hasPadding
-              borderWidth={0}
-              options={switchOptions}
-              onPress={(value) => setPerro({ ...perro, petColor: value })}
-              style={styles.swSelector}
-            />
-          </Right>
-        </Item>
-        <Form>
-          <Textarea
-            rowSpan={3}
-            bordered
-            style={{ borderColor: colores.mild, borderWidth: 10 }}
-            placeholder="Descripción"
-            value={perro.petDescription}
-            onChangeText={(value) =>
-              setPerro({ ...perro, petDescription: value })
-            }
+      <ScrollView>
+        <View style={{ padding: 20 }}>
+          <SwitchSelector
+            style={styles.state}
+            initial={0}
+            onPress={(value) => setPerro({ ...perro, petState: value })}
+            textColor={colores.mainFill}
+            selectedColor={colores.light}
+            buttonColor={colores.mainFill}
+            hasPadding
+            fontSize={15}
+            borderRadius={20}
+            borderWidth={0}
+            options={[
+              { label: "Se perdió mi mascota", value: "perdido" },
+              { label: "Encontré animal perdido", value: "encontrado" },
+            ]}
           />
-        </Form>
-        <Button
-          block
-          info
-          style={[
-            styles.btnFinal,
-            { backgroundColor: topCargas() == true ? "grey" : colores.mainFill },
-          ]}
-          onPress={() => uploadPerro()}
-          disabled={topCargas()}
-        >
-          <Label style={{ color: colores.light, fontSize: 20 }}>
-            {topCargas ? "maximo de mascotas alcanzado" : "CARGAR"}
-          </Label>
-        </Button>
-      </View>
-    </ScrollView>
+
+          <Button
+            block
+            bordered={false}
+            onPress={pickImage}
+            info
+            style={styles.buttonUnderImage}
+          >
+            {/* <Icon type="AntDesign" name="downcircleo" />  */}
+            {image ? (
+              <Image source={{ uri: image }} style={styles.imagen} />
+            ) : (
+              <Image source={noImagen} style={styles.imagen} />
+            )}
+          </Button>
+          <Card style={styles.map}>
+            <MapView
+              style={styles.map}
+              initialRegion={ubi}
+              onPress={(e) =>
+                setPerro({ ...perro, location: e.nativeEvent.coordinate })
+              }
+            >
+              <Marker pinColor="#1c241b" coordinate={perro.location}>
+                <Text style={{ height: 40 }}>
+                  <Image
+                    source={markerPet}
+                    style={{
+                      height: 30,
+                      width: 30,
+                      resizeMode: "contain",
+                    }}
+                  />
+                </Text>
+              </Marker>
+            </MapView>
+            <Card
+              style={{
+                alignSelf: "center",
+                position: "relative",
+                bottom: 50,
+                borderRadius: 5,
+                padding: 5,
+              }}
+            >
+              <Text style={{ fontSize: 13, color: colores.main }}>
+                Indica dónde se perdió
+              </Text>
+            </Card>
+          </Card>
+          {perro.petState === "perdido" && (
+            <Item style={styles.itemForm}>
+              <Input
+                value={perro.petName}
+                onChangeText={(nombre) =>
+                  setPerro({ ...perro, petName: nombre })
+                }
+                placeholder="Nombre mascota"
+              />
+            </Item>
+          )}
+
+          <Item picker style={styles.itemForm}>
+            <Left>
+              <Text>Sexo:</Text>
+            </Left>
+            <Picker
+              mode="dropdown"
+              selectedValue={perro.petSex}
+              onValueChange={(value) => setPerro({ ...perro, petSex: value })}
+            >
+              <Picker.Item label="macho" value="macho" />
+              <Picker.Item label="hembra" value="hembra" />
+            </Picker>
+          </Item>
+
+          <Item picker style={styles.itemForm}>
+            <Left>
+              <Text>Tamaño:</Text>
+            </Left>
+
+            <Picker
+              mode="dropdown"
+              selectedValue={perro.setSize}
+              onValueChange={(value) => setPerro({ ...perro, petSize: value })}
+            >
+              <Picker.Item label="chico" value="chico" />
+              <Picker.Item label="mediano" value="mediano" />
+              <Picker.Item label="grande" value="grande" />
+            </Picker>
+          </Item>
+
+          <Item picker style={styles.itemForm}>
+            <Left>
+              <Text>Color:</Text>
+            </Left>
+            <Right>
+              <SwitchSelector
+                initial={2}
+                hasPadding
+                borderWidth={0}
+                options={switchOptions}
+                onPress={(value) => setPerro({ ...perro, petColor: value })}
+                style={styles.swSelector}
+              />
+            </Right>
+          </Item>
+          <Form>
+            <Textarea
+              rowSpan={3}
+              bordered
+              style={styles.textArea}
+              placeholder="Descripción"
+              value={perro.petDescription}
+              onChangeText={(value) =>
+                setPerro({ ...perro, petDescription: value })
+              }
+            />
+          </Form>
+          <Button
+            block
+            info
+            style={[
+              styles.btnFinal,
+              {
+                backgroundColor:
+                  topCargas() == true ? "grey" : colores.mainFill,
+              },
+            ]}
+            onPress={() => uploadPerro()}
+            disabled={topCargas()}
+          >
+            <Label style={{ color: colores.light, fontSize: 20 }}>
+              {topCargas === true ? "maximo de carga alcanzado" : "CARGAR"}
+            </Label>
+          </Button>
+        </View>
+      </ScrollView>
     </ImageBackground>
   );
 };
@@ -289,12 +293,12 @@ const styles = StyleSheet.create({
     borderColor: colores.mild,
     padding: 0,
     paddingLeft: 10,
-    backgroundColor: '#fff',
-    borderRadius: 5
+    backgroundColor: "#fff",
+    borderRadius: 5,
   },
   imagen: {
     height: 200,
-    width: Dimensions.get('window').width-40,
+    width: Dimensions.get("window").width - 40,
     marginLeft: "auto",
     marginRight: "auto",
     marginBottom: 15,
@@ -305,29 +309,34 @@ const styles = StyleSheet.create({
     marginTop: 20,
     elevation: 10,
     backgroundColor: colores.mainFill,
-    borderRadius: 5
+    borderRadius: 5,
   },
   map: {
     height: 200,
-    width: Dimensions.get('window').width-40,
-    alignSelf: 'center',
+    width: Dimensions.get("window").width - 40,
+    alignSelf: "center",
     marginBottom: 15,
   },
   buttonUnderImage: {
     height: 200,
-    width: Dimensions.get('window').width-40,
+    width: Dimensions.get("window").width - 40,
     shadowRadius: 0,
     backgroundColor: "rgba(0,0,0,0)",
     padding: 0,
     marginBottom: 15,
     marginTop: 15,
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   image: {
     flex: 1,
     resizeMode: "cover",
-    justifyContent: "center"
-  }
+    justifyContent: "center",
+  },
+  textArea: {
+    backgroundColor: "#fff",
+    borderColor: "transparent",
+    borderRadius: 5,
+  },
 });
 
 export default FormMascota;

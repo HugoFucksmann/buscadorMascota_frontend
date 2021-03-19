@@ -18,7 +18,7 @@ function CardFeed({mascota, usuario, handlerRender}) {
         <CardItem cardBody>
           <Image
             source={{ uri: foto }}
-            style={{ height: 230, width: null, flex: 1 }}
+            style={{ height: 220, width: null, flex: 1 }}
           />
         </CardItem>
         <CardItem style={styles.headCard}>
