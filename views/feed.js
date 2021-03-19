@@ -52,7 +52,7 @@ const Feed = ({mascotas, usuario}) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "rgba(242,246,239,255)" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       {renderFeed()}
     </SafeAreaView>
   );

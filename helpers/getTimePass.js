@@ -29,10 +29,10 @@ export function tiempoTranscurrido(horaCero) {
   tiempoPasado = tiempoPasado - minutos * mins;
   var segundos = Math.floor(tiempoPasado / segs);
 
-  if (dias === 0 && horas === 0 && minutos == 0 ) msj = `perdido hace ${segundos} segundos`;
-  else if (dias === 0 && horas === 0) msj = `perdido hace ${minutos} minutos`;
-  else if (dias === 0 && horas > 0) msj = `perdido hace ${horas} horas`;
-  else msj = `perdido hace ${dias} dias`;
+  if (dias === 0 && horas === 0 && minutos == 0 ) msj = `Hace ${segundos} segundos`;
+  else if (dias === 0 && horas === 0) msj = `Hace ${minutos} minutos`;
+  else if (dias === 0 && horas > 0) msj = `Hace ${horas} horas`;
+  else msj = `Hace ${dias} dias`;
  
   return msj;
 }

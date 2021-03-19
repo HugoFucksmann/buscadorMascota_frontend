@@ -135,28 +135,13 @@ const FormMascota = ({ user, handlerMascotas }) => {
             { label: "Encontré animal perdido", value: "encontrado" },
           ]}
         />
-        {perro.petState === "perdido" && (
-          <Item style={[styles.itemForm, { borderBottomWidth: 2 }]}>
-            <Input
-              value={perro.petName}
-              onChangeText={(nombre) => setPerro({ ...perro, petName: nombre })}
-              placeholder="nombre de la mascota"
-            />
-          </Item>
-        )}
+
         <Button
           block
           bordered={false}
           onPress={pickImage}
           info
-          style={{
-            height: 150,
-            width: 300,
-            shadowRadius: 0,
-            backgroundColor: "rgba(0,0,0,0)",
-            padding: 0,
-            margin: 30,
-          }}
+          style={styles.buttonUnderImage}
         >
           {/* <Icon type="AntDesign" name="downcircleo" />  */}
           {image ? (
@@ -196,10 +181,19 @@ const FormMascota = ({ user, handlerMascotas }) => {
             }}
           >
             <Text style={{ fontSize: 13, color: colores.main }}>
-              Selecciona dónde se perdió
+              Indica dónde se perdió (triple click)
             </Text>
           </Card>
         </Card>
+        {perro.petState === "perdido" && (
+          <Item style={[styles.itemForm, { borderBottomWidth: 2 }]}>
+            <Input
+              value={perro.petName}
+              onChangeText={(nombre) => setPerro({ ...perro, petName: nombre })}
+              placeholder="Nombre mascota"
+            />
+          </Item>
+        )}
         
           <Item picker style={styles.itemForm}>
             <Left>
@@ -251,7 +245,7 @@ const FormMascota = ({ user, handlerMascotas }) => {
             <Textarea
               rowSpan={3}
               bordered
-              style={{ borderColor: colores.main, borderWidth: 4 }}
+              style={{ borderColor: colores.mild, borderWidth: 10  }}
               placeholder="Descripción"
               value={perro.petDescription}
               onChangeText={(value) =>
@@ -279,12 +273,12 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     borderBottomWidth: 2,
     borderTopWidth: 0,
-    borderColor: colores.main,
+    borderColor: colores.mild,
     padding: 5,
   },
   imagen: {
-    height: 150,
-    width: 300,
+    height: 200,
+    width: Dimensions.get('window').width-40,
     marginLeft: "auto",
     marginRight: "auto",
     marginBottom: 15,
@@ -298,12 +292,21 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   map: {
-    height: 170,
-    width: Dimensions.get('window').width,
+    height: 200,
+    width: Dimensions.get('window').width-40,
     alignSelf: 'center',
     marginBottom: 15,
-    
   },
+  buttonUnderImage: {
+    height: 200,
+    width: Dimensions.get('window').width-40,
+    shadowRadius: 0,
+    backgroundColor: "rgba(0,0,0,0)",
+    padding: 0,
+    marginBottom: 15,
+    marginTop: 15,
+    alignSelf: 'center',
+  }
 });
 
 export default FormMascota;
