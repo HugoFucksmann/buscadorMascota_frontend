@@ -18,7 +18,7 @@ function CardFeed({mascota, usuario, handlerRender}) {
         <CardItem cardBody>
           <Image
             source={{ uri: foto }}
-            style={{ height: 250, width: null, flex: 1 }}
+            style={{ height: 230, width: null, flex: 1 }}
           />
         </CardItem>
         <CardItem style={styles.headCard}>
@@ -69,10 +69,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   card: {
-    marginBottom: 8,
+    marginBottom: 10,
     alignSelf: 'center',
     padding: 0,
-    width: Dimensions.get("window").width-16,
+    width: Dimensions.get("window").width-20,
     backgroundColor: colores.mild,
     borderBottomColor: colores.main,
     borderBottomWidth: 3

@@ -182,7 +182,7 @@ const CardFeedMap = ({ mascota, handlerRender }) => {
       onPress={() => {handlerRender(mascota, "info")}}
     >
       <Card style={styles.cardd}>
-        <View style={{ flexDirection: "column", height: "100%", width: "50%" }}>
+        <View style={{ flexDirection: "column", width: "50%",marginBottom: 3,marginTop: 3, marginLeft: 3 }}>
           <Image
             source={{ uri: foto }}
             style={styles.cardImage}
@@ -213,17 +213,11 @@ const CardFeedMap = ({ mascota, handlerRender }) => {
             <Text style={{ color: "grey" }}>{mascota.dist}</Text>
           </View>
 
-          <View style={{ flexDirection: "row", paddingLeft: 13 }}>
-            <Text style={{ fontWeight: "bold", color: colores.main, fontSize: 25, paddingBottom:15 }}>
+          <View style={{ flexDirection: "row", paddingLeft: 13, paddingBottom: 10 }}>
+            <Text style={{ fontWeight: "bold", color: colores.main, fontSize: 22 }}>
               {mascota.petName}
             </Text>
-            <Right >
-              <Icon
-                type="Entypo"
-                name="circle-with-plus"
-                style={{ color: colores.main, paddingBottom:10  }}
-              />
-            </Right>
+           
           </View>
         </View>
       </Card>

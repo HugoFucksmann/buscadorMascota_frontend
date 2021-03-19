@@ -69,6 +69,7 @@ export default class App extends Component {
             onPress={() => this.setState({ selectedTab: "formulario" })}
           >
             <Icon
+            
               type="FontAwesome"
               name="plus"
               style={{
@@ -120,7 +121,7 @@ export default class App extends Component {
 
   async handlerNewMascotas() {
     let mascotas = await getMascotas(this.state.user);
-    this.setState({ mascotas: mascotas, selectedTab: "feed" });
+    this.setState({ mascotas: mascotas, selectedTab: "perfil" });
     alert("se ha creado la mascota correctamente");
   }
 
@@ -158,7 +159,7 @@ export default class App extends Component {
             {this.renderHeader()}
             <FormMascota
               user={this.state.user}
-              handlerMascotas={() => this.handlerDeleteMascotas()}
+              handlerMascotas={() => this.handlerNewMascotas()}
             />
           </>
         );
@@ -169,7 +170,7 @@ export default class App extends Component {
           <Botonera2
             mascotas={getMyPets(this.state.mascotas, this.state.user._id)}
             usuario={this.state.user}
-            handlerMascotas={() => this.handlerMascotas()}
+            handlerMascotas={() => this.handlerDeleteMascotas()}
           />
         );
 
