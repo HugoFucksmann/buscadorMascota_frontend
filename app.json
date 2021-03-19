@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "BusCan",
-    "slug": "buscan",
+    "name": "BusCan_iba",
+    "slug": "buscan_iba",
     "splash": {
       "image": "./assets/fondos/introF.png",
       "resizeMode": "cover",
@@ -29,7 +29,7 @@
       "enableDangerousExperimentalLeanBuilds": false,
       "useNextNotificationsApi": true,
       "package": "com.colodev.buscan",
-      "googleServicesFile": "./google-services.json",  
+      "googleServicesFile": "./google-services.json",
       "versionCode": 6,
       "adaptiveIcon": {
         "foregroundImage": "./assets/appLogo.png",
@@ -47,6 +47,7 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "description": ""
   }
 }
