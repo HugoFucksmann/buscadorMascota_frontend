@@ -11,7 +11,7 @@ import {
   Image,
   Alert
 } from "react-native";
-import { Card, Icon, Thumbnail, Button, Right, Left, Header, Title, Body, CardItem, SwipeRow } from "native-base";
+import { Card, Icon, Thumbnail, Button, Right, Left, Header, Title, Body, CardItem } from "native-base";
 import { StatusBar } from "expo-status-bar";
 import { editarMascota, eliminarMascota } from "../helpers/mascotaService";
 import { mostrarFoto } from "../helpers/imageService";
@@ -30,9 +30,10 @@ const Botonera2 = ({ mascotas, usuario, handlerMascotas }) => {
   
   return (
     <>
-      <ImageBackground source={fondo} style={styles.image} resizeMode="repeat">
+     
       <StatusBar style="auto" />
       <HeaderUser usuario={usuario} />
+       <ImageBackground source={fondo} style={styles.image} resizeMode="repeat">
       {dataM.length !== 0 ? (
         <MyPetCards miMascotas={mascotas} handlerMascotas={handlerMascotas} />
       ) : (
@@ -87,7 +88,11 @@ const MyPetCards = ({ miMascotas, handlerMascotas }) => {
   
     let result = await eliminarMascota(mascota._id);
     if(result)  {
-      handlerMascotas();
+     /*  data.map((masco, index) => {
+        if (masco === mascota) {setRender(data.splice(index, 1));}
+      }); */
+      handlerMascotas('perfil', 'se elimino la mascota');
+      //alert("se elimino la mascota");
       
     }
   
@@ -115,7 +120,7 @@ const CardPet = ({ mascota, handlerEliminar }) => {
   const [foto] = useState(mostrarFoto(mascota.petPicture));
 
   const createTwoButtonAlert = () =>
-    Alert.alert("Encontraste tu mascota ?", "", [
+    Alert.alert("Encontraste tu mascota ?", "My Alert Msg", [
       {
         text: "todavia no",
         style: "cancel",
@@ -131,34 +136,6 @@ const CardPet = ({ mascota, handlerEliminar }) => {
   return (
     <Card style={styles.myPetCard}>
       <Image source={{ uri: foto }} style={styles.imagenPet} />
-      <View
-        style={{ position: "absolute", bottom: 30, right: 10, height: 200 }}
-      >
-        <Card transparent>
-          <CardItem
-            style={{
-              backgroundColor: "rgba(255,255,255,0.5)",
-              flexDirection: "column",
-            }}
-          >
-            <View style={{ marginBottom: 5 }}>
-              <Text>Nombre ffff</Text>
-            </View>
-            <View style={{ marginBottom: 5 }}>
-              <Text>Color ffff</Text>
-            </View>
-            <View style={{ marginBottom: 5 }}>
-              <Text>Tamaño ffff</Text>
-            </View>
-            <View style={{ marginBottom: 5 }}>
-              <Text>Sexo ffff</Text>
-            </View>
-            <View style={{ marginBottom: 5 }}>
-              <Text>Desc ffff</Text>
-            </View>
-          </CardItem>
-        </Card>
-      </View>
       <View flexDirection="row" style={styles.myPetContent}>
         <Button
           onPress={() => editarMascota(mas._id)}
@@ -185,8 +162,6 @@ const CardPet = ({ mascota, handlerEliminar }) => {
   );
 };
 
-
-
 const styles = StyleSheet.create({
   myPetCard: {
     height: 250,
@@ -197,14 +172,20 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   imagenPet: {
-    borderRadius: 10,
     width: null,
+    overflow: "hidden",
+    borderWidth: 0,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10, 
     height: '80%'
   },
   myPetContent: {
     position: "absolute",
     bottom: 10,
     left: 10,
+    zIndex: 100,
   },
   titles: {
     marginTop: 5,
@@ -253,7 +234,6 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
     resizeMode: "cover",
-    justifyContent: "center"
   }
 });
  
