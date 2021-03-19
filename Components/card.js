@@ -32,28 +32,24 @@ function CardFeed({mascota, usuario, handlerRender}) {
             />
             <Text style={{ color: "grey" }}>{mascota.dist}</Text>
           </Left>
-        {/* </CardItem>
+          {/* </CardItem>
         <CardItem style={styles.headCard}> */}
-            <Icon
-              active
-              name="date"
-              type="Fontisto"
-              style={{ color: colores.main }}
-            />
-            <Text style={{ color: "grey" }}>
-              {tiempoTranscurrido(mascota.date)}
-            </Text>
+          <Icon
+            active
+            name="date"
+            type="Fontisto"
+            style={{ color: colores.main }}
+          />
+          <Text style={{ color: "grey" }}>
+            {tiempoTranscurrido(mascota.date)}
+          </Text>
           <Right>
             <Button
               small
               style={styles.button}
-              onPress={() => handlerRender(mascota, "info")}
+              onPress={() => handlerRender(mascota, "chat")}
             >
-              <Icon
-                type="Entypo"
-                name="circle-with-plus"
-                style={{ color: colores.main }}
-              />
+              <Icon type="Entypo" name="chat" style={{ color: colores.main }} />
             </Button>
           </Right>
         </CardItem>
@@ -65,7 +61,6 @@ function CardFeed({mascota, usuario, handlerRender}) {
 const styles = StyleSheet.create({
   button: {
     color: colores.main,
-    // borderColor: colores.main,
     backgroundColor: '#fff',
   },
   card: {

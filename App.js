@@ -23,7 +23,7 @@ export default class App extends Component {
   }
 
   async componentDidMount() {
-    await AsyncStorage.removeItem("user");
+    
     let user = await AsyncStorage.getItem("user");
     let isAuth = false;
 
@@ -159,6 +159,7 @@ export default class App extends Component {
             {this.renderHeader()}
             <FormMascota
               user={this.state.user}
+              mascotas={getMyPets(this.state.mascotas, this.state.user._id)}
               handlerMascotas={() => this.handlerNewMascotas()}
             />
           </>
