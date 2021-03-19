@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View,  Image,  Platform,  Text,  ScrollView,  StyleSheet } from "react-native";
+import { View,  Image,  Platform,  Text,  ScrollView,  StyleSheet, ImageBackground } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as ImagePicker from "expo-image-picker";
 import {  Picker,  Item,  Label,  Input,  Textarea,  Form,  Left,  Card,  Button,  H3,  Right, Body, CardItem } from "native-base";
@@ -12,6 +12,7 @@ import LoadingView from "../views/pagCarga";
 import colores from "../Components/colorPalette";
 import { Dimensions } from "react-native";
 import markerPet from '../assets/iconos/marker_paw.png'
+import fondo from "../assets/fondos/form_background.png"
 
 const lightBackColor = "rgba(236,242,213,255)";
 const strongMainColor = "rgba(78,120,81,255)";
@@ -117,8 +118,10 @@ const FormMascota = ({ user, handlerMascotas }) => {
  
 
   return (
+    <ImageBackground source={fondo} style={styles.image} resizeMode="repeat">
     <ScrollView>
       <View style={{ padding: 20 }}>
+
         <SwitchSelector
           style={styles.state}
           initial={0}
@@ -181,12 +184,12 @@ const FormMascota = ({ user, handlerMascotas }) => {
             }}
           >
             <Text style={{ fontSize: 13, color: colores.main }}>
-              Indica dónde se perdió (triple click)
+              Indica dónde se perdió
             </Text>
           </Card>
         </Card>
         {perro.petState === "perdido" && (
-          <Item style={[styles.itemForm, { borderBottomWidth: 2 }]}>
+          <Item style={styles.itemForm}>
             <Input
               value={perro.petName}
               onChangeText={(nombre) => setPerro({ ...perro, petName: nombre })}
@@ -245,7 +248,7 @@ const FormMascota = ({ user, handlerMascotas }) => {
             <Textarea
               rowSpan={3}
               bordered
-              style={{ borderColor: colores.mild, borderWidth: 10  }}
+              style={{borderColor: '#fff', backgroundColor: '#fff', paddingTop: 5, borderRadius: 5 }}
               placeholder="Descripción"
               value={perro.petDescription}
               onChangeText={(value) =>
@@ -264,6 +267,7 @@ const FormMascota = ({ user, handlerMascotas }) => {
         </Button>
       </View>
     </ScrollView>
+    </ImageBackground>
   );
 };
 
@@ -271,10 +275,13 @@ const styles = StyleSheet.create({
   state: { marginTop: 20, marginBottom: 5 },
   itemForm: {
     marginBottom: 15,
-    borderBottomWidth: 2,
+    borderBottomWidth: 0,
     borderTopWidth: 0,
     borderColor: colores.mild,
-    padding: 5,
+    padding: 0,
+    paddingLeft: 10,
+    backgroundColor: '#fff',
+    borderRadius: 5
   },
   imagen: {
     height: 200,
@@ -284,12 +291,12 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     marginTop: 15,
   },
-  swSelector: { width: 270, marginLeft: 20 },
+  swSelector: { width: 270, marginLeft: 20, padding: 5 },
   btnFinal: {
     marginTop: 20,
     elevation: 10,
     backgroundColor: colores.mainFill,
-    borderRadius: 5,
+    borderRadius: 5
   },
   map: {
     height: 200,
@@ -306,6 +313,11 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     marginTop: 15,
     alignSelf: 'center',
+  },
+  image: {
+    flex: 1,
+    resizeMode: "cover",
+    justifyContent: "center"
   }
 });
 
