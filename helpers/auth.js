@@ -91,6 +91,7 @@ export async function usuarioRandom() {
     .then((res) => res.json())
     .then(async (res) => {
       if (!res.ok) return false;
+     
       await AsyncStorage.setItem("user", JSON.stringify(res.user));
       return res.user;
     })
@@ -100,6 +101,20 @@ export async function usuarioRandom() {
     });
 
   return userDB;
+}
+
+export async function usuarioRandom2(){
+  const notificationToken = await registerForPushNotificationsAsync();
+  const id = Math.random().toString().slice(2, 7);
+ 
+  user = {
+    "_id": id,
+    "google": false,
+    "name": "usuario no registrado",
+    "notification": notificationToken
+  }
+  await AsyncStorage.setItem("user", JSON.stringify(user));
+  return user;
 }
 
 export async function actualizarLocation(user) {

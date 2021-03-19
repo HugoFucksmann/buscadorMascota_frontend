@@ -14,10 +14,7 @@ import { Dimensions } from "react-native";
 import markerPet from '../assets/iconos/marker_paw.png'
 import fondo from "../assets/fondos/form_background.png"
 
-const lightBackColor = "rgba(236,242,213,255)";
-const strongMainColor = "rgba(78,120,81,255)";
-
-const FormMascota = ({ user, handlerMascotas }) => {
+const FormMascota = ({ user, mascotas, handlerMascotas }) => {
   const [image, setImage] = useState(null);
   const [file, setFile] = useState(null);
   const [ubi] = useState({
@@ -41,6 +38,14 @@ const FormMascota = ({ user, handlerMascotas }) => {
     },
   });
 
+  function topCargas(){
+    let disable
+    if(mascotas.length >= 3) disable = true
+    else disable = false
+
+    return disable
+  }
+  
   useEffect(() => {
     (async () => {
 
@@ -197,38 +202,38 @@ const FormMascota = ({ user, handlerMascotas }) => {
             />
           </Item>
         )}
-        
-          <Item picker style={styles.itemForm}>
-            <Left>
-              <Text>Sexo:</Text>
-            </Left>
-            <Picker
-              mode="dropdown"
-              selectedValue={perro.petSex}
-              onValueChange={(value) => setPerro({ ...perro, petSex: value })}
-            >
-              <Picker.Item label="macho" value="macho" />
-              <Picker.Item label="hembra" value="hembra" />
-            </Picker>
-          </Item>
 
-          <Item picker style={styles.itemForm}>
-            <Left>
-              <Text>Tamaño:</Text>
-            </Left>
+        <Item picker style={styles.itemForm}>
+          <Left>
+            <Text>Sexo:</Text>
+          </Left>
+          <Picker
+            mode="dropdown"
+            selectedValue={perro.petSex}
+            onValueChange={(value) => setPerro({ ...perro, petSex: value })}
+          >
+            <Picker.Item label="macho" value="macho" />
+            <Picker.Item label="hembra" value="hembra" />
+          </Picker>
+        </Item>
 
-            <Picker
-              mode="dropdown"
-              selectedValue={perro.setSize}
-              onValueChange={(value) => setPerro({ ...perro, petSize: value })}
-            >
-              <Picker.Item label="chico" value="chico" />
-              <Picker.Item label="mediano" value="mediano" />
-              <Picker.Item label="grande" value="grande" />
-            </Picker>
-          </Item>
+        <Item picker style={styles.itemForm}>
+          <Left>
+            <Text>Tamaño:</Text>
+          </Left>
 
-           <Item picker style={styles.itemForm}>
+          <Picker
+            mode="dropdown"
+            selectedValue={perro.setSize}
+            onValueChange={(value) => setPerro({ ...perro, petSize: value })}
+          >
+            <Picker.Item label="chico" value="chico" />
+            <Picker.Item label="mediano" value="mediano" />
+            <Picker.Item label="grande" value="grande" />
+          </Picker>
+        </Item>
+
+        <Item picker style={styles.itemForm}>
           <Left>
             <Text>Color:</Text>
           </Left>
@@ -243,27 +248,31 @@ const FormMascota = ({ user, handlerMascotas }) => {
             />
           </Right>
         </Item>
-
-          <Form>
-            <Textarea
-              rowSpan={3}
-              bordered
-              style={{borderColor: '#fff', backgroundColor: '#fff', paddingTop: 5, borderRadius: 5 }}
-              placeholder="Descripción"
-              value={perro.petDescription}
-              onChangeText={(value) =>
-                setPerro({ ...perro, petDescription: value })
-              }
-            />
-          </Form>
-        
+        <Form>
+          <Textarea
+            rowSpan={3}
+            bordered
+            style={{ borderColor: colores.mild, borderWidth: 10 }}
+            placeholder="Descripción"
+            value={perro.petDescription}
+            onChangeText={(value) =>
+              setPerro({ ...perro, petDescription: value })
+            }
+          />
+        </Form>
         <Button
           block
           info
-          style={styles.btnFinal}
+          style={[
+            styles.btnFinal,
+            { backgroundColor: topCargas() == true ? "grey" : colores.mainFill },
+          ]}
           onPress={() => uploadPerro()}
+          disabled={topCargas()}
         >
-          <Label style={{ color: colores.light, fontSize: 20 }}>CARGAR</Label>
+          <Label style={{ color: colores.light, fontSize: 20 }}>
+            {topCargas ? "maximo de mascotas alcanzado" : "CARGAR"}
+          </Label>
         </Button>
       </View>
     </ScrollView>

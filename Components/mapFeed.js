@@ -7,12 +7,12 @@ import {
   Animated,
   Image,
   Dimensions,
+  TouchableOpacity,
 } from "react-native";
 import markerPet from "../assets/iconos/marker_paw.png";
 import markerMan from "../assets/iconos/marker_man.png";
 import MapView from "react-native-maps";
 import { generateInitialRegion } from "../helpers/getLocation";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { mostrarFoto } from "../helpers/imageService";
 import {  Card,  Icon,  Right, Header, Input, Item, Button, CardItem } from "native-base";
 import { tiempoTranscurrido } from "../helpers/getTimePass";
@@ -135,7 +135,7 @@ export default class MapFeed extends Component {
               );
             })}
         </MapView>
-        <SearchBar />
+        {/* <SearchBar /> */}
         <Animated.ScrollView
           horizontal
           scrollEventThrottle={1}
@@ -179,17 +179,35 @@ const CardFeedMap = ({ mascota, handlerRender }) => {
     <TouchableOpacity
       activeOpacity={0.8}
       key={mascota._id}
-      onPress={() => {handlerRender(mascota, "info")}}
+      onPress={() => {
+        handlerRender(mascota, "info");
+      }}
     >
       <Card style={styles.cardd}>
-        <View style={{ flexDirection: "column", height: "100%", width: "50%" }}>
+        <View style={{ position: "absolute", top: 6, right: 8 }}>
+          <Button
+            small
+            style={styles.button}
+            onPress={() => handlerRender(mascota, "chat")}
+          >
+            <Icon type="Entypo" name="chat" style={{ color: colores.main }} />
+          </Button>
+        </View>
+        <View
+          style={{
+            flexDirection: "column",
+            width: "50%",
+            marginBottom: 3,
+            marginTop: 3,
+            marginLeft: 3,
+          }}
+        >
           <Image
             source={{ uri: foto }}
             style={styles.cardImage}
             resizeMode="cover"
           />
         </View>
-
         <View style={{ flexDirection: "column-reverse" }}>
           <View style={{ flexDirection: "row", padding: 12 }}>
             <Icon
@@ -213,17 +231,14 @@ const CardFeedMap = ({ mascota, handlerRender }) => {
             <Text style={{ color: "grey" }}>{mascota.dist}</Text>
           </View>
 
-          <View style={{ flexDirection: "row", paddingLeft: 13 }}>
-            <Text style={{ fontWeight: "bold", color: colores.main, fontSize: 25, paddingBottom:15 }}>
+          <View
+            style={{ flexDirection: "row", paddingLeft: 14, paddingBottom: 5 }}
+          >
+            <Text
+              style={{ fontWeight: "bold", color: colores.main, fontSize: 20 }}
+            >
               {mascota.petName}
             </Text>
-            <Right >
-              <Icon
-                type="Entypo"
-                name="circle-with-plus"
-                style={{ color: colores.main, paddingBottom:10  }}
-              />
-            </Right>
           </View>
         </View>
       </Card>
@@ -343,5 +358,9 @@ const styles = StyleSheet.create({
     height: 30,
     width: 30,
     resizeMode: "contain",
+  },
+  button: {
+    color: colores.main,
+    backgroundColor: "#fff",
   },
 });
