@@ -77,13 +77,16 @@ async function getMascotas(user){
   }
     
   
-  return await fetch(`http://192.168.0.107:3011/api/mascotas/${user._id}`, {
-    method: "GET",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "multipart/form-data",
-    },
-  })
+  return await fetch(
+    `https://mascotass.herokuapp.com/api/mascotas/${user._id}`,
+    {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  )
     .then((response) => response.json())
     .then((res) => {
       if (res.ok && res.mascotas) {
