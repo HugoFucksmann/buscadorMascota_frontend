@@ -16,7 +16,7 @@ async function actualizarArchivo(file, perroId, token) {
     let match = /\.(\w+)$/.exec(filename);
     let type = match ? `image/${match[1]}` : `image`;
 
-    const url = `https://mascotass.herokuapp.com/api/upload/imgMascota/${perroId}`;
+    const url = `http://192.168.0.107:3011/api/upload/imgMascota/${perroId}`;
     let formData = new FormData();
  
     formData.append("imgMascota", { uri: localUri, name: filename, type });
@@ -34,7 +34,7 @@ async function actualizarArchivo(file, perroId, token) {
     .catch((e) => console.log(e));
 
     const data = await resp.json();
-   
+
     if (data.ok) {
       return data.nombreArchivo;
     } else {
@@ -77,20 +77,16 @@ async function getMascotas(user){
   }
     
   
-  return await fetch(
-    `https://mascotass.herokuapp.com/api/mascotas/${user._id}`,
-    {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "multipart/form-data",
-      },
-    }
-  )
+  return await fetch(`http://192.168.0.107:3011/api/mascotas/${user._id}`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "multipart/form-data",
+    },
+  })
     .then((response) => response.json())
     .then((res) => {
       if (res.ok && res.mascotas) {
-        
         return res.mascotas.map((mascota) => {
           let dist = distKM(mascota, user);
           if (dist < 1) {
@@ -111,7 +107,7 @@ async function getMascotas(user){
 
 async function crearMascota(perro, token, notification) {
  
-  const perroId = await fetch(`https://mascotass.herokuapp.com/api/mascotas/crear`, {
+  const perroId = await fetch(`http://192.168.0.107:3011/api/mascotas/crear`, {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -132,20 +128,21 @@ async function crearMascota(perro, token, notification) {
     
 }
 
-async function editarMascota(idMascota){
+async function editarMascota(newMascota){
   const token = await AsyncStorage.getItem('token')
-  const url = `https://mascotass.herokuapp.com/api/mascotas/${idMascota}`;
+  const url = `https://mascotass.herokuapp.com/api/mascotas/${newMascota._id}`;
   const resp = await fetch(url, {
     method: "PUT",
     headers: {
       Accept: "application/json",
       "Content-Type": "multipart/form-data",
-      token
+      token,
     },
-    body: formData,
+    body: JSON.stringify(newMascota),
   }).catch((e) => console.log(e));
 
   const data = await resp.json();
+  console.log(data);
 }
 
 async function eliminarMascota(idMascota){

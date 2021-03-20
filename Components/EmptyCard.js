@@ -6,11 +6,6 @@ import colores from '../Components/colorPalette'
 const EmptyCard = ({text}) => {
 
     return (
-      <View
-        style={{
-          width: Dimensions.get("window").width, marginTop: 30
-        }}
-      >
         <Card
           style={{
             alignSelf: "center",
@@ -24,7 +19,6 @@ const EmptyCard = ({text}) => {
             </Text>
           </CardItem>
         </Card>
-      </View>
     );
 }
 

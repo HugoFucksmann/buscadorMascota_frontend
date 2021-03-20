@@ -60,6 +60,7 @@ const FormMascota = ({ user, mascotas, handlerMascotas }) => {
   
   async function uploadPerro() {
     const token = await AsyncStorage.getItem("token");
+    
     let perroId = await crearMascota(perro, token, user.notification);
 
     if (!perroId) return alert("error al crear perro");
@@ -225,7 +226,7 @@ const FormMascota = ({ user, mascotas, handlerMascotas }) => {
 
             <Picker
               mode="dropdown"
-              selectedValue={perro.setSize}
+              selectedValue={perro.petSize}
               onValueChange={(value) => setPerro({ ...perro, petSize: value })}
             >
               <Picker.Item label="chico" value="chico" />

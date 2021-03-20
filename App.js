@@ -189,10 +189,6 @@ export default class App extends Component {
     } else {
       return (
         <Root>
-          {/* <Header style={styles.header}>
-            <ImageBackground source={banner} style={styles.headerBackground} />
-            <StatusBar style="auto" backgroundColor="#ffffff" />
-          </Header> */}
           <SafeAreaView style={{ flex: 6 }}>
             {this.renderSelectedTab()}
           </SafeAreaView>

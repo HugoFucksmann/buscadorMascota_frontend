@@ -5,8 +5,8 @@ import { GiftedChat } from "react-native-gifted-chat";
 import firebaseConfig from "../firebaseConfig";
 import { sendPushNotification } from "../helpers/notificationConfig";
 
-export default function Chat({ mascotaId, usuario, handlerRender }) {
-  const chatsRef = firebaseConfig().collection(mascotaId);
+export default function Chat({ mascota, usuario, handlerRender }) {
+  const chatsRef = firebaseConfig().collection(mascota._id);
   const [messages, setMessages] = useState([]);
   
 
@@ -41,17 +41,20 @@ export default function Chat({ mascotaId, usuario, handlerRender }) {
     },
     [messages]
   );
-
+    //TODO: ARREGLAR ESTO
   async function handleSend(messagess) {
     const writes = messagess.map((m) => chatsRef.add(m));
-
-    await Promise.all(writes).then(() =>
+    const gg = await chatsRef.get()
+    gg.forEach(doc => {
+     console.log(doc.id, ' => ', doc.data().user._id);
+    });
+    await Promise.all(writes).then(() => {
       sendPushNotification(
         usuario.notification,
         "enviaron un mensaje por tu perrito!!",
         messagess[0].text
-      )
-    );
+      );
+    });
   }
 
   return (

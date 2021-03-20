@@ -44,7 +44,7 @@ const Feed = ({mascotas, usuario}) => {
          break;
 
        case "chat":
-         return <Chat mascotaId={mascota._id} usuario={usuario} handlerRender={handlerRender} />;
+         return <Chat mascotaId={mascota} usuario={usuario} handlerRender={handlerRender} />;
          break;
 
        default:
