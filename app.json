@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "BusCan_iba",
-    "slug": "buscan_iba",
+    "name": "BusCan",
+    "slug": "buscan",
     "splash": {
       "image": "./assets/fondos/introF.png",
       "resizeMode": "cover",
