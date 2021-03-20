@@ -16,7 +16,7 @@ async function actualizarArchivo(file, perroId, token) {
     let match = /\.(\w+)$/.exec(filename);
     let type = match ? `image/${match[1]}` : `image`;
 
-    const url = `http://192.168.0.107:3011/api/upload/imgMascota/${perroId}`;
+    const url = `https://mascotass.herokuapp.com/api/upload/imgMascota/${perroId}`;
     let formData = new FormData();
  
     formData.append("imgMascota", { uri: localUri, name: filename, type });
@@ -107,7 +107,7 @@ async function getMascotas(user){
 
 async function crearMascota(perro, token, notification) {
  
-  const perroId = await fetch(`http://192.168.0.107:3011/api/mascotas/crear`, {
+  const perroId = await fetch(`https://mascotass.herokuapp.com/api/mascotas/crear`, {
     method: "POST",
     headers: {
       Accept: "application/json",
