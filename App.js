@@ -23,7 +23,6 @@ export default class App extends Component {
   }
 
   async componentDidMount() {
-    
     let user = await AsyncStorage.getItem("user");
     let isAuth = false;
 
@@ -69,7 +68,6 @@ export default class App extends Component {
             onPress={() => this.setState({ selectedTab: "formulario" })}
           >
             <Icon
-            
               type="FontAwesome"
               name="plus"
               style={{
@@ -130,6 +128,11 @@ export default class App extends Component {
     this.setState({ mascotas: mascotas, selectedTab: "perfil" });
     alert("se ha eliminado la mascota");
   }
+  async handlerEditMascotas() {
+    let mascotas = await getMascotas(this.state.user);
+    this.setState({ mascotas: mascotas, selectedTab: "perfil" });
+    alert("mascota editada");
+  }
 
   renderHeader() {
     return (
@@ -171,7 +174,8 @@ export default class App extends Component {
           <Botonera2
             mascotas={getMyPets(this.state.mascotas, this.state.user._id)}
             usuario={this.state.user}
-            handlerMascotas={() => this.handlerDeleteMascotas()}
+            handlerDeleteMascotas={() => this.handlerDeleteMascotas()}
+            handlerEditMascotas={() => this.handlerEditMascotas()}
           />
         );
 

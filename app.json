@@ -7,7 +7,7 @@
       "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
-    "version": "1.7.0",
+    "version": "1.8.0",
     "orientation": "portrait",
     "icon": "./assets/appLogo.png",
     "updates": {
@@ -20,7 +20,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.colodev.buscan",
-      "buildNumber": "1.7.0",
+      "buildNumber": "1.8.0",
       "config": {
         "googleMapsApiKey": "AIzaSyBTml0ABdTXFNKVNeODlr6i2NDNyUX3kmY"
       }
@@ -30,7 +30,7 @@
       "useNextNotificationsApi": true,
       "package": "com.colodev.buscan",
       "googleServicesFile": "./google-services.json",
-      "versionCode": 7,
+      "versionCode": 8,
       "adaptiveIcon": {
         "foregroundImage": "./assets/appLogo.png",
         "backgroundColor": "#FFFFFF"

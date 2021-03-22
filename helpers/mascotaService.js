@@ -3,8 +3,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Alert } from "react-native";
 import firebaseConfig from "../firebaseConfig";
 
-async function getToken(){
-  return await AsyncStorage.getItem('token')
+async function getToken() {
+  return await AsyncStorage.getItem("token");
 }
 
 async function actualizarArchivo(file, perroId, token) {
@@ -12,16 +12,14 @@ async function actualizarArchivo(file, perroId, token) {
     let localUri = file.uri;
     let filename = localUri.split("/").pop();
 
-    
     let match = /\.(\w+)$/.exec(filename);
     let type = match ? `image/${match[1]}` : `image`;
 
-    const url = `https://mascotass.herokuapp.com/api/upload/imgMascota/${perroId}`;
+    const url = `https://mascotass.herokuapp.com/api/upload/${perroId}`;
     let formData = new FormData();
- 
+
     formData.append("imgMascota", { uri: localUri, name: filename, type });
 
-    
     const resp = await fetch(url, {
       method: "PUT",
       headers: {
@@ -30,13 +28,12 @@ async function actualizarArchivo(file, perroId, token) {
         token: token,
       },
       body: formData,
-    })
-    .catch((e) => console.log(e));
+    }).catch((e) => console.log(e));
 
     const data = await resp.json();
 
     if (data.ok) {
-      return data.nombreArchivo;
+      return true;
     } else {
       return false;
     }
@@ -46,18 +43,18 @@ async function actualizarArchivo(file, perroId, token) {
   }
 }
 
-function getMyPets(mascotas, uid){
+function getMyPets(mascotas, uid) {
+  let miMascotas;
 
-  let miMascotas
-  
-  if(mascotas) {miMascotas = mascotas.filter((masco) => masco.usuario == uid); return miMascotas}
-  else miMascotas = false
+  if (mascotas) {
+    miMascotas = mascotas.filter((masco) => masco.usuario == uid);
+    return miMascotas;
+  } else miMascotas = false;
 
-  return miMascotas
+  return miMascotas;
 }
 
-async function getMascotas(user){
-
+async function getMascotas(user) {
   function deg2rad(deg) {
     return deg * (Math.PI / 180);
   }
@@ -75,8 +72,7 @@ async function getMascotas(user){
 
     return dist;
   }
-    
-  
+
   return await fetch(
     `https://mascotass.herokuapp.com/api/mascotas/${user._id}`,
     {
@@ -109,47 +105,47 @@ async function getMascotas(user){
 }
 
 async function crearMascota(perro, token, notification) {
- 
-  const perroId = await fetch(`https://mascotass.herokuapp.com/api/mascotas/crear`, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      token: token,
-    },
-    body: JSON.stringify({ perro, notification }),
-  })
+  const perroId = await fetch(
+    `https://mascotass.herokuapp.com/api/mascotas/crear`,
+    {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        token: token,
+      },
+      body: JSON.stringify({ perro, notification }),
+    }
+  )
     .then((res) => res.json())
     .then(({ mascota }) => mascota._id)
     .catch((e) => console.log(e));
-    
- 
-  if(!perroId) return false;
+
+  if (!perroId) return false;
 
   return perroId;
-
-    
 }
 
-async function editarMascota(newMascota){
-  const token = await AsyncStorage.getItem('token')
+async function editarMascota(newMascota) {
+  
+  const token = await AsyncStorage.getItem("token");
   const url = `https://mascotass.herokuapp.com/api/mascotas/${newMascota._id}`;
   const resp = await fetch(url, {
     method: "PUT",
+
     headers: {
       Accept: "application/json",
-      "Content-Type": "multipart/form-data",
+      "Content-Type": "application/json",
       token,
     },
-    body: JSON.stringify(newMascota),
+    body: JSON.stringify( newMascota ),
   }).catch((e) => console.log(e));
 
   const data = await resp.json();
-  console.log(data);
+  console.log('resuesta de server ', data);
 }
 
-async function eliminarMascota(idMascota){
-
+async function eliminarMascota(idMascota) {
   let result;
   const token = await AsyncStorage.getItem("token");
   const url = `https://mascotass.herokuapp.com/api/mascotas/${idMascota}`;
@@ -159,30 +155,25 @@ async function eliminarMascota(idMascota){
       Accept: "application/json",
       "Content-Type": "multipart/form-data",
       token,
-    }
+    },
   }).catch((e) => console.log(e));
 
   const data = await resp.json();
-  
-  if(!data.ok) {
-    result = false
-    
-  }
-  else {
+
+  if (data.ok) {
     clearCollection(idMascota);
-    result = true
-    
+    result = true;
+  } else {
+    result = false;
   }
 
-  return result
+  return result;
 }
 
 function clearCollection(path) {
- 
   let ref = firebaseConfig().collection(path);
   ref.onSnapshot((snapshot) => {
     snapshot.docs.forEach((doc) => {
-     
       ref.doc(doc.id).delete();
     });
   });
@@ -195,4 +186,4 @@ module.exports = {
   getMyPets,
   editarMascota,
   eliminarMascota,
-}; 
+};
