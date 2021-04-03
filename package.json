@@ -1,12 +1,12 @@
 {
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "env-cmd -f .env.development expo start",
-    "android": "env-cmd -f .env.prod expo start --android",
-    "ios": "env-cmd -f .env.prod expo start --ios",
-    "web": "env-cmd -f .env.prod expo start --web",
-    "eject": "env-cmd -f .env.prod expo eject",
-    "build": "env-cmd -f .env.prod expo build:web"
+    "start": "env-cmd -f .env expo start",
+    "android": "env-cmd -f .env expo start --android",
+    "ios": "env-cmd -f .env expo start --ios",
+    "web": "env-cmd -f .env expo start --web",
+    "eject": "env-cmd -f .env expo eject",
+    "build": "env-cmd -f .env expo build:web"
   },
   "dependencies": {
     "@firebase/firestore": "^2.2.0",
@@ -32,7 +32,6 @@
     "react-native-maps": "0.27.1",
     "react-native-reanimated": "~1.13.0",
     "react-native-switch-selector": "^2.1.4",
-    "react-native-web": "^0.15.0",
     "run": "^1.4.0",
     "start": "^5.1.0"
   },

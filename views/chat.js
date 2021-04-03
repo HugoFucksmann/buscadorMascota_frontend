@@ -1,15 +1,23 @@
 // @refresh reset
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState, useEffect, useCallback } from "react";
 import { BackHandler } from "react-native";
 import { GiftedChat } from "react-native-gifted-chat";
 import firebaseConfig from "../firebaseConfig";
 import { sendPushNotification } from "../helpers/notificationConfig";
+import { PROD_URL, PROD_URL2 } from "@env";
 
 export default function Chat({ mascota, usuario, handlerRender }) {
   const chatsRef = firebaseConfig().collection(mascota._id);
   const [messages, setMessages] = useState([]);
-  
-
+  const chatUser = {
+    name: usuario.name,
+    _id: usuario._id,
+    img: usuario.img,
+    notification: usuario.notification,
+    petName: mascota.petName,
+    petPicture: mascota.petPicture,
+  };
   useEffect(() => {
     const unsubscribe = chatsRef.onSnapshot((querySnapshot) => {
       const messagesFirestore = querySnapshot
@@ -17,9 +25,6 @@ export default function Chat({ mascota, usuario, handlerRender }) {
         .filter(({ type }) => type === "added")
         .map(({ doc }) => {
           const message = doc.data();
-          //createdAt is firebase.firestore.Timestamp instance
-          //https://firebase.google.com/docs/reference/js/firebase.firestore.Timestamp
-
           return { ...message, createdAt: message.createdAt.toDate() };
         })
         .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
@@ -28,6 +33,7 @@ export default function Chat({ mascota, usuario, handlerRender }) {
     });
     return () => {unsubscribe(); backHandler.remove()};
   }, []);
+  
   const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
     handlerRender(false, "tarjetas");
     return true;
@@ -41,20 +47,40 @@ export default function Chat({ mascota, usuario, handlerRender }) {
     },
     [messages]
   );
-    //TODO: ARREGLAR ESTO
+    
   async function handleSend(messagess) {
-    const writes = messagess.map((m) => chatsRef.add(m));
-    const gg = await chatsRef.get()
-    gg.forEach(doc => {
-     console.log(doc.id, ' => ', doc.data().user._id);
+    await messagess.map((m) => chatsRef.add(m));
+    let chatTokens =[];
+    const uIdMascota = mascota.usuario
+    const chats = await chatsRef.get()
+    chats.forEach((doc) => {
+      chatTokens = [...chatTokens, doc.data().user.notification];
     });
-    await Promise.all(writes).then(() => {
-      sendPushNotification(
-        usuario.notification,
-        "enviaron un mensaje por tu perrito!!",
-        messagess[0].text
-      );
-    });
+    await fetch(`${PROD_URL}/chat`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ chatTokens, uIdMascota }),
+    }).catch((e) => console.log(e));
+
+
+
+    let userChat = await AsyncStorage.getItem("chats");
+  
+    if(userChat){
+      userChat = JSON.parse(userChat);
+      userChat = [...userChat, mascota._id ];
+      userChat = userChat.filter((chat, index) => {
+        return userChat.indexOf(chat) === index;
+      });
+      await AsyncStorage.setItem("chats", JSON.stringify(userChat));
+    }else{
+      userChat = [mascota._id];
+      await AsyncStorage.setItem("chats", JSON.stringify(userChat));
+    }
+    
   }
 
   return (
@@ -64,7 +90,7 @@ export default function Chat({ mascota, usuario, handlerRender }) {
       isLoadingEarlier
       renderAvatar={null}
       messages={messages}
-      user={usuario}
+      user={chatUser}
       onSend={handleSend}
       scrollToBottom={true}
     />

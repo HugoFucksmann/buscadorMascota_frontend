@@ -7,7 +7,7 @@
       "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
-    "version": "1.8.0",
+    "version": "1.9.0",
     "orientation": "portrait",
     "icon": "./assets/appLogo.png",
     "updates": {
@@ -18,19 +18,21 @@
       "**/*"
     ],
     "ios": {
+      "icon": "./assets/appLogo.png",
       "supportsTablet": false,
       "bundleIdentifier": "com.colodev.buscan",
-      "buildNumber": "1.8.0",
+      "buildNumber": "1.9.0",
       "config": {
         "googleMapsApiKey": "AIzaSyBTml0ABdTXFNKVNeODlr6i2NDNyUX3kmY"
       }
     },
     "android": {
+      "icon": "./assets/appLogo.png",
       "enableDangerousExperimentalLeanBuilds": false,
       "useNextNotificationsApi": true,
       "package": "com.colodev.buscan",
       "googleServicesFile": "./google-services.json",
-      "versionCode": 8,
+      "versionCode": 9,
       "adaptiveIcon": {
         "foregroundImage": "./assets/appLogo.png",
         "backgroundColor": "#FFFFFF"
@@ -48,6 +50,13 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "description": ""
+    "description": "",
+    "notification": {
+      "icon": "./assets/appLogo.png",
+      "color": "#fff",
+      "iosDisplayInForeground": true,
+      "androidMode": "default",
+      "androidCollapsedTitle": "Updates from Colab.notes"
+    }
   }
 }

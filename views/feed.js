@@ -44,7 +44,7 @@ const Feed = ({mascotas, usuario}) => {
          break;
 
        case "chat":
-         return <Chat mascotaId={mascota} usuario={usuario} handlerRender={handlerRender} />;
+         return <Chat mascota={mascota} usuario={usuario} handlerRender={handlerRender} />;
          break;
 
        default:
@@ -148,106 +148,4 @@ const styles = StyleSheet.create({
 
 
 export default Feed;
-
-/**
- * /*   <Tabs
-              locked
-             tabBarUnderlineStyle={{ backgroundColor: colores.main, height: 2 }}
-             tabContainerStyle={{ height: 40 }}
-           >
-             <Tab
-               heading={
-                 <TabHeading style={{ backgroundColor: "#ffffff" }}>
-                   <Text>Feed</Text>
-                 </TabHeading>
-               }
-             >
-               <VirtualizedList
-                 data={mascotas}
-                 renderItem={RenderItem}
-                 keyExtractor={(item) => item._id}
-                 getItemCount={(data) => data.length}
-                 initialNumToRender={4}
-                 getItem={(data, index) => data[index]}
-               />
-             </Tab>
-             <Tab
-               heading={
-                 <TabHeading style={{ backgroundColor: "#ffffff" }}>
-                   <Text>Mapa</Text>
-                 </TabHeading>
-               }
-             >
-              
-                 <MapFeed usuario={usuario} mascotas={mascotas} />
-             
-             </Tab>
-           </Tabs> 
-           
-           
-           const MapaPerros = ({usuario, mascotas}) => {
-    let data = [];
-    if (!Array.isArray(mascotas)) data.push(mascotas);
-    else data = mascotas;
-  const [index, setIndex] = useState(0)
-  const [render, setRender] = useState({
-    ...data[0].location,
-    latitudeDelta: 0.0271,
-    longitudeDelta: 0.0272,
-  });
-
-  
-  const RenderItem = ({ item }) => {
-   
-    return (
-      <Card onto style={styles.cardMap}>
-        <Text>Holaa</Text>
-      </Card>
-    );
-  };
-
-  const fixImage = (content) =>
-    Platform.OS === "ios" ? (
-      content
-    ) : (
-      <Text style={styles.imageWrapper}>content</Text>
-    );
-
-
-
-  return (
-    <>
-      <MapView style={styles.fullScreen} region={render}>
-        {data.map((mascota) => (
-          <Marker
-            key={`${mascota._id}`}
-            coordinate={mascota.location}
-            tracksViewChanges={false}
-          >
-            <Text style={{ height: 40 }}>
-              <Image
-                source={markerPet}
-                style={{
-                  height: 30,
-                  width: 30,
-                  resizeMode: "contain",
-                }}
-              />
-            </Text>
-          </Marker>
-        ))}
-      </MapView>
-       <ScrollView style={styles.ViewFlotante}>
-        <FlatList
-          horizontal
-          data={data}
-          renderItem={RenderItem}
-          keyExtractor={(item) => item._id}
-        />
-      </ScrollView>
-
-    </>
-  );
-}
-           */
  

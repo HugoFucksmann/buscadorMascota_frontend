@@ -15,11 +15,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import colores from './Components/colorPalette';
 import { StatusBar } from 'expo-status-bar';
 import Botonera2 from "./views/botonera2";
-
+import { PROD_URL } from "@env";
 export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = { loading: true, selectedTab: "feed" };
+    
   }
 
   async componentDidMount() {
@@ -188,12 +189,13 @@ export default class App extends Component {
   render() {
     LogBox.ignoreLogs(["Remote debugger"]);
     LogBox.ignoreLogs(["Setting a timer"]);
+   
     if (this.state.loading) {
       return <LoadingView />;
     } else {
       return (
         <Root>
-          <SafeAreaView style={{ flex: 6 }}>
+          <SafeAreaView style={{ flex: 1 }}>
             {this.renderSelectedTab()}
           </SafeAreaView>
           {this.renderTabs()}
