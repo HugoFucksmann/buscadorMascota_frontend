@@ -1,15 +1,10 @@
 import React, { useState } from 'react';
-import { SafeAreaView, VirtualizedList, Text, StyleSheet, Image, Animated } from "react-native";
-import { Tabs, Tab, TabHeading, Card } from "native-base";
+import { SafeAreaView, VirtualizedList, Text, StyleSheet } from "react-native";
+import { Tabs, Tab, TabHeading, DefaultTabBar } from "native-base";
 import CardFeed from '../Components/card';
 import InfoPerro from '../Components/InfoPerro';
 import Chat from './chat';
 import colores from '../Components/colorPalette';
-import MapView, {Marker, Callout } from 'react-native-maps';
-import { FlatList, ScrollView } from 'react-native-gesture-handler';
-import markerPet from '../assets/iconos/marker_paw.png'
-import { Dimensions } from 'react-native';
-import Screens from '../Components/mapFeed'
 import MapFeed from '../Components/mapFeed';
 
 const Feed = ({mascotas, usuario}) => {
@@ -68,6 +63,11 @@ const TabsFeed = ({ usuario, mascotas, handlerRender }) => {
     );
   };
 
+  const renderTabBar = (props) => {
+    props.tabStyle = Object.create(props.tabStyle);
+    return <DefaultTabBar {...props} />;
+  };
+
 
   return (
     <Tabs
@@ -75,6 +75,7 @@ const TabsFeed = ({ usuario, mascotas, handlerRender }) => {
       tabBarUnderlineStyle={{ backgroundColor: colores.main, height: 2 }}
       tabContainerStyle={{ height: 40 }}
       tabBarPosition="bottom"
+      renderTabBar={renderTabBar}
     >
       <Tab
         heading={

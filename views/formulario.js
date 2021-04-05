@@ -30,8 +30,6 @@ const FormMascota = ({ user, mascotas, handlerMascotas }) => {
     petSex: "macho",
     petDescription: "",
     petColor: "marron",
-    petState: "perdido",
-    recovered: false,
     location: {
       longitude: 0,
       latitude: 0,
@@ -112,31 +110,32 @@ const FormMascota = ({ user, mascotas, handlerMascotas }) => {
   ];
 
   if (isLoading) return <LoadingView />;
-
-
- 
   
   return (
     <ImageBackground source={fondo} style={styles.image} resizeMode="repeat">
       <ScrollView>
         <View style={{ padding: 20 }}>
-          <SwitchSelector
-            style={styles.state}
-            initial={0}
-            onPress={(value) => setPerro({ ...perro, petState: value })}
-            textColor={colores.mainFill}
-            selectedColor={colores.light}
-            buttonColor={colores.mainFill}
-            hasPadding
-            fontSize={15}
-            borderRadius={20}
-            borderWidth={0}
-            options={[
-              { label: "Se perdió mi mascota", value: "perdido" },
-              { label: "Encontré animal perdido", value: "encontrado" },
-            ]}
-          />
-
+          <Card style={{ borderRadius: 20 }}>
+            <SwitchSelector
+              // style={styles.state}
+              initial={0}
+              onPress={(value) => setPerro({ ...perro, petName: value })}
+              textColor={colores.mainFill}
+              selectedColor={colores.light}
+              buttonColor={colores.mainFill}
+              hasPadding
+              fontSize={15}
+              borderRadius={20}
+              borderWidth={0}
+              options={[
+                { label: "Se perdió mi mascota", value: "" },
+                {
+                  label: "Encontré animal perdido",
+                  value: "se encontro perdido",
+                },
+              ]}
+            />
+          </Card>
           <Button
             block
             bordered={false}
@@ -186,75 +185,88 @@ const FormMascota = ({ user, mascotas, handlerMascotas }) => {
               </Text>
             </Card>
           </Card>
-          {perro.petState === "perdido" && (
-            <Item style={styles.itemForm}>
-              <Input
-                value={perro.petName}
-                onChangeText={(nombre) =>
-                  setPerro({ ...perro, petName: nombre })
-                }
-                placeholder="Nombre mascota"
-              />
-            </Item>
+          {perro.petName !== "se encontro perdido" && (
+            <Card style={styles.itemForm}>
+              <Item picker style={{ paddingLeft: 10 }}>
+                <Input
+                  value={perro.petName}
+                  onChangeText={(nombre) =>
+                    setPerro({ ...perro, petName: nombre })
+                  }
+                  placeholder="Nombre mascota"
+                />
+              </Item>
+            </Card>
           )}
 
-          <Item picker style={styles.itemForm}>
-            <Left>
-              <Text>Sexo:</Text>
-            </Left>
-            <Picker
-              mode="dropdown"
-              selectedValue={perro.petSex}
-              onValueChange={(value) => setPerro({ ...perro, petSex: value })}
-            >
-              <Picker.Item label="macho" value="macho" />
-              <Picker.Item label="hembra" value="hembra" />
-            </Picker>
-          </Item>
+          <Card style={styles.itemForm}>
+            <Item picker style={{ paddingLeft: 10 }}>
+              <Left>
+                <Text>Sexo:</Text>
+              </Left>
+              <Picker
+                mode="dropdown"
+                selectedValue={perro.petSex}
+                onValueChange={(value) => setPerro({ ...perro, petSex: value })}
+              >
+                <Picker.Item label="macho" value="macho" />
+                <Picker.Item label="hembra" value="hembra" />
+              </Picker>
+            </Item>
+          </Card>
 
-          <Item picker style={styles.itemForm}>
-            <Left>
-              <Text>Tamaño:</Text>
-            </Left>
+          <Card style={styles.itemForm}>
+            <Item picker style={{ paddingLeft: 10 }}>
+              <Left>
+                <Text>Tamaño:</Text>
+              </Left>
 
-            <Picker
-              mode="dropdown"
-              selectedValue={perro.petSize}
-              onValueChange={(value) => setPerro({ ...perro, petSize: value })}
-            >
-              <Picker.Item label="chico" value="chico" />
-              <Picker.Item label="mediano" value="mediano" />
-              <Picker.Item label="grande" value="grande" />
-            </Picker>
-          </Item>
+              <Picker
+                mode="dropdown"
+                selectedValue={perro.petSize}
+                onValueChange={(value) =>
+                  setPerro({ ...perro, petSize: value })
+                }
+              >
+                <Picker.Item label="chico" value="chico" />
+                <Picker.Item label="mediano" value="mediano" />
+                <Picker.Item label="grande" value="grande" />
+              </Picker>
+            </Item>
+          </Card>
 
-          <Item picker style={styles.itemForm}>
-            <Left>
-              <Text>Color:</Text>
-            </Left>
-            <Right>
-              <SwitchSelector
-                initial={2}
-                hasPadding
-                borderWidth={0}
-                options={switchOptions}
-                onPress={(value) => setPerro({ ...perro, petColor: value })}
-                style={styles.swSelector}
+          <Card style={styles.itemForm}>
+            <Item picker style={{ paddingLeft: 10 }}>
+              <Left>
+                <Text>Color:</Text>
+              </Left>
+              <Right>
+                <SwitchSelector
+                  initial={2}
+                  hasPadding
+                  borderWidth={0}
+                  options={switchOptions}
+                  onPress={(value) => setPerro({ ...perro, petColor: value })}
+                  style={styles.swSelector}
+                />
+              </Right>
+            </Item>
+          </Card>
+
+          <Card style={styles.itemForm}>
+            <Form>
+              <Textarea
+                rowSpan={3}
+                bordered
+                style={styles.textArea}
+                placeholder="Descripción"
+                value={perro.petDescription}
+                onChangeText={(value) =>
+                  setPerro({ ...perro, petDescription: value })
+                }
               />
-            </Right>
-          </Item>
-          <Form>
-            <Textarea
-              rowSpan={3}
-              bordered
-              style={styles.textArea}
-              placeholder="Descripción"
-              value={perro.petDescription}
-              onChangeText={(value) =>
-                setPerro({ ...perro, petDescription: value })
-              }
-            />
-          </Form>
+            </Form>
+          </Card>
           <Button
             block
             info
@@ -269,7 +281,7 @@ const FormMascota = ({ user, mascotas, handlerMascotas }) => {
             disabled={topCargas()}
           >
             <Label style={{ color: colores.light, fontSize: 20 }}>
-              {topCargas === true ? "maximo de carga alcanzado" : "CARGAR"}
+              {topCargas() === true ? "maximo de carga alcanzado" : "CARGAR"}
             </Label>
           </Button>
         </View>
@@ -282,12 +294,13 @@ const styles = StyleSheet.create({
   state: { marginTop: 20, marginBottom: 5 },
   itemForm: {
     marginBottom: 15,
-    borderBottomWidth: 0,
-    borderTopWidth: 0,
-    borderColor: colores.mild,
-    padding: 0,
-    paddingLeft: 10,
-    backgroundColor: "#fff",
+    borderBottomColor: colores.main,
+    borderBottomWidth: 3,
+    //borderTopWidth: 0,
+    //borderColor: colores.mild,
+    //padding: 0,
+    //paddingLeft: 10,
+    //backgroundColor: "#fff",
     borderRadius: 5,
   },
   imagen: {

@@ -62,8 +62,3 @@ export function generateInitialRegion(location){
     longitudeDelta: 0.040142817690068,
   };
 }
-
-/*
-latitudeDelta: 0.0052,
-        longitudeDelta: 0.0051,
-*/

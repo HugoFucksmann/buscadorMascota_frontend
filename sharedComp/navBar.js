@@ -19,15 +19,3 @@ export default function NavBar() {
     </Header>
   );
 }
-
-/* const styles = StyleSheet.create({
-  navBar: {
-    flex: 0.1,
-    backgroundColor: "white",
-    alignItems: "center",
-    justifyContent: "center",
-    //height: 100,
-    borderBottomRightRadius: 10,
-    borderBottomLeftRadius: 10,
-  },
-}); */

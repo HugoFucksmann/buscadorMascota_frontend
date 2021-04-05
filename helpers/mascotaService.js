@@ -1,4 +1,4 @@
-import { PROD_URL } from "@env";
+import { PROD_URL2, PROD_URL } from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Alert } from "react-native";
 import firebaseConfig from "../firebaseConfig";
@@ -54,7 +54,8 @@ function getMyPets(mascotas, uid) {
   return miMascotas;
 }
 
-async function getMascotas(user) {
+async function getMascotas2(user) {
+
   function deg2rad(deg) {
     return deg * (Math.PI / 180);
   }
@@ -73,16 +74,68 @@ async function getMascotas(user) {
     return dist;
   }
 
-  return await fetch(
-    `https://mascotass.herokuapp.com/api/mascotas/${user._id}`,
-    {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "multipart/form-data",
-      },
-    }
-  )
+  return await fetch(`${PROD_URL}/mascotas`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "multipart/form-data",
+    },
+  })
+    .then((response) => response.json())
+    .then((res) => {
+      if (res.ok) {
+        let mascotas = res.mascotas.sort((a, b) => {
+          let dist2a = distKM(user, a);
+          let dist2b = distKM(user, b);
+
+          return dist2a - dist2b;
+        });
+
+        return mascotas.map((mascota) => {
+          let dist = distKM(mascota, user);
+          if (dist < 1) {
+            dist = dist * 1000;
+            dist = Math.round(dist);
+            dist = `${dist} mts`;
+          } else {
+            dist = dist.toFixed(1);
+            dist = `${dist} km`;
+          }
+
+          return { ...mascota, dist: dist };
+        });
+      } else return false;
+    })
+    .catch((error) => console.error(error));
+}
+
+async function getMascotas(user) {
+
+  function deg2rad(deg) {
+    return deg * (Math.PI / 180);
+  }
+
+  function distKM(A, B) {
+    const R = 6371;
+    let aLat = parseFloat(A.location.latitude);
+    let aLon = parseFloat(A.location.longitude);
+    let bLat = parseFloat(B.location.latitude);
+    let bLon = parseFloat(B.location.longitude);
+
+    var dLat = 2 * R * Math.sin(deg2rad(aLat - bLat) / 2);
+    var dLon = 2 * R * Math.sin(deg2rad(aLon - bLon) / 2);
+    var dist = Math.sqrt(dLat ** 2 + dLon ** 2);
+
+    return dist;
+  }
+
+  return await fetch(`${PROD_URL}/mascotas/${user._id}`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "multipart/form-data",
+    },
+  })
     .then((response) => response.json())
     .then((res) => {
       if (res.ok && res.mascotas) {
@@ -104,19 +157,18 @@ async function getMascotas(user) {
     .catch((error) => console.error(error));
 }
 
+
+
 async function crearMascota(perro, token, notification) {
-  const perroId = await fetch(
-    `https://mascotass.herokuapp.com/api/mascotas/crear`,
-    {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        token: token,
-      },
-      body: JSON.stringify({ perro, notification }),
-    }
-  )
+  const perroId = await fetch(`${PROD_URL}/mascotas/crear`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      token: token,
+    },
+    body: JSON.stringify({ perro, notification }),
+  })
     .then((res) => res.json())
     .then(({ mascota }) => mascota._id)
     .catch((e) => console.log(e));
@@ -129,10 +181,10 @@ async function crearMascota(perro, token, notification) {
 async function editarMascota(newMascota) {
   
   const token = await AsyncStorage.getItem("token");
-  const url = `https://mascotass.herokuapp.com/api/mascotas/${newMascota._id}`;
+  const url = `${PROD_URL
+  }/mascotas/${newMascota._id}`;
   const resp = await fetch(url, {
     method: "PUT",
-
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
@@ -142,13 +194,14 @@ async function editarMascota(newMascota) {
   }).catch((e) => console.log(e));
 
   const data = await resp.json();
-  console.log('resuesta de server ', data);
+  if(data.ok) return true
+  else return false
 }
 
 async function eliminarMascota(idMascota) {
   let result;
   const token = await AsyncStorage.getItem("token");
-  const url = `https://mascotass.herokuapp.com/api/mascotas/${idMascota}`;
+  const url = `${PROD_URL}/mascotas/${idMascota}`;
   const resp = await fetch(url, {
     method: "DELETE",
     headers: {
@@ -186,4 +239,5 @@ module.exports = {
   getMyPets,
   editarMascota,
   eliminarMascota,
+  getMascotas2
 };

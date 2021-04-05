@@ -4,7 +4,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import { BackHandler } from "react-native";
 import { GiftedChat } from "react-native-gifted-chat";
 import firebaseConfig from "../firebaseConfig";
-import { sendPushNotification } from "../helpers/notificationConfig";
 import { PROD_URL, PROD_URL2 } from "@env";
 
 export default function Chat({ mascota, usuario, handlerRender }) {
@@ -17,6 +16,7 @@ export default function Chat({ mascota, usuario, handlerRender }) {
     notification: usuario.notification,
     petName: mascota.petName,
     petPicture: mascota.petPicture,
+    petId: mascota._id
   };
   useEffect(() => {
     const unsubscribe = chatsRef.onSnapshot((querySnapshot) => {

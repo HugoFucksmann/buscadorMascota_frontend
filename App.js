@@ -4,18 +4,17 @@ import { SafeAreaView, StyleSheet, ImageBackground, LogBox, Image, Alert } from 
 import { Root, Button, Footer, FooterTab, Icon, Header } from "native-base";
 import * as Font from "expo-font";
 
-import { googleLogin, isAuthenticated, usuarioRandom, actualizarLocation } from "./helpers/auth";
+import { googleLogin, isAuthenticated, usuarioRandom, actualizarLocation, usuarioRandom2, actualizarLocation2 } from "./helpers/auth";
 import Feed from './views/feed';
 import LoadingView from './views/pagCarga'
 import FormMascota from './views/formulario';
 import Login from './Components/login'
-import { getMascotas, getMyPets } from "./helpers/mascotaService";
+import { getMascotas, getMyPets, getMascotas2 } from "./helpers/mascotaService";
 import banner from './assets/banner.png';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import colores from './Components/colorPalette';
 import { StatusBar } from 'expo-status-bar';
 import Botonera2 from "./views/botonera2";
-import { PROD_URL } from "@env";
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -24,6 +23,7 @@ export default class App extends Component {
   }
 
   async componentDidMount() {
+    //await AsyncStorage.removeItem('chats');
     let user = await AsyncStorage.getItem("user");
     let isAuth = false;
 
@@ -32,20 +32,19 @@ export default class App extends Component {
       Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf"),
     });
 
-    if (!user) user = await usuarioRandom();
+    if (!user) user = await usuarioRandom2();
     else user = JSON.parse(user);
 
     if (user.google) isAuth = await isAuthenticated(user);
 
-    user = await actualizarLocation(user);
+    user = await actualizarLocation2(user);
 
-    let mascotas = await getMascotas(user);
-
+    let mascotas = await getMascotas2(user);
     this.setState({
-      loading: false,
       isAuth: isAuth,
       user: user,
       mascotas: mascotas,
+      loading: false,
     });
   }
 
@@ -173,7 +172,7 @@ export default class App extends Component {
       case "perfil":
         return (
           <Botonera2
-            mascotas={getMyPets(this.state.mascotas, this.state.user._id)}
+            mascotas={this.state.mascotas}
             usuario={this.state.user}
             handlerDeleteMascotas={() => this.handlerDeleteMascotas()}
             handlerEditMascotas={() => this.handlerEditMascotas()}

@@ -1,6 +1,7 @@
+import { min } from "react-native-reanimated";
 
 export function tiempoTranscurrido(horaCero) {
-  var nacimiento = new Date(1936, 11, 29);
+ 
   var hoy = new Date();
   let msj;
   var tiempoPasado = hoy - horaCero;
@@ -35,4 +36,34 @@ export function tiempoTranscurrido(horaCero) {
   else msj = `Hace ${dias} dias`;
  
   return msj;
+}
+
+
+export function getFechaChat(createdAt){
+  let date = new Date(createdAt.seconds * 1000);
+  let hoy = new Date()
+  let diaHoy = hoy.getDate()
+  let hora = date.getHours();
+  let minutos = date.getMinutes();
+  let dia = date.getDate();
+  let mes = date.getMonth()+1
+  let fechaFinal
+  
+  if(diaHoy === dia){
+    if (hora < 10 && minutos < 10) fechaFinal = `0${hora}:0${minutos} hs`;
+    else if (hora < 10 && minutos >= 10) fechaFinal = `0${hora}:${minutos} hs`;
+    else if (hora >= 10 && minutos < 10) fechaFinal = `${hora}:0${minutos} hs`;
+    else fechaFinal = `${hora}:${minutos} hs`;
+  }else{
+    if (dia < 10 && mes + 1 < 10) fechaFinal = `0${dia}/0${mes}`;
+    else if (dia >= 10 && mes + 1 < 10) fechaFinal = `${dia}/0${mes}`;
+    else if (dia < 10 && mes + 1 >= 10) fechaFinal = `0${dia}/${mes}`;
+    else fechaFinal = `${dia}/${mes}`;;
+  }
+  
+
+ 
+  
+  return fechaFinal;
+
 }

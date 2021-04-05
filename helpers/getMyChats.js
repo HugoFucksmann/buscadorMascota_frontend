@@ -4,7 +4,7 @@ import firebaseConfig from "../firebaseConfig";
 export async function getMyChats(){
     let result = [];
     let storageChats = await AsyncStorage.getItem('chats')
-    console.log("storageChats1 ", storageChats);
+    
     if (storageChats){
       storageChats = JSON.parse(storageChats);
       for (let i = 0; i < storageChats.length; i++) {
@@ -17,10 +17,7 @@ export async function getMyChats(){
             result = [...result, doc.data()];
           });
         }
-        else {
-          //storageChats.splice(i, 1); 
-          delete storageChats[i]
-        }
+        else delete storageChats[i];
          
       }
       let newArr = await storageChats.filter(Boolean);

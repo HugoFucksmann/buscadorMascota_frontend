@@ -18,10 +18,7 @@ import {
   Button,
   Right,
   Left,
-  Header,
-  Title,
   Body,
-  CardItem,
   Label,
   Form,
   Item,
@@ -31,9 +28,14 @@ import {
   Content,
   ListItem,
   List,
+  Spinner,
 } from "native-base";
 import { StatusBar } from "expo-status-bar";
-import { editarMascota, eliminarMascota } from "../helpers/mascotaService";
+import {
+  editarMascota,
+  eliminarMascota,
+  getMyPets,
+} from "../helpers/mascotaService";
 import { mostrarFoto } from "../helpers/imageService";
 import colores from "../Components/colorPalette";
 import banner from "../assets/banner.png";
@@ -43,6 +45,8 @@ import fondo from "../assets/fondos/app_background.png";
 import SwitchSelector from "react-native-switch-selector";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { getMyChats } from "../helpers/getMyChats";
+import Chat from "./chat";
+import { getFechaChat } from "../helpers/getTimePass";
 
 const Botonera2 = ({
   mascotas,
@@ -50,51 +54,49 @@ const Botonera2 = ({
   handlerDeleteMascotas,
   handlerEditMascotas,
 }) => {
-  /* let dataM = [];
-  if (mascotas) {
-    if (!Array.isArray(mascotas)) dataM.push(mascotas);
-    else dataM = mascotas;
-  } */
-  /* const [chats, setChats] = useState(false);
-  async function loadChats(){
-    let resp = await getMyChats()
-    
-    setChats(resp);
+  const [misMascotas, setMiMascotas] = useState({})
+  const [chat, setChat] = useState(false);
+  function handlerRender(mascota, param) {
+    setChat(mascota);
   }
 
   useEffect(() => {
-    loadChats();
-  },[]) */
+    setMiMascotas(getMyPets(mascotas, usuario._id));
+  },[])
 
   return (
     <>
       <StatusBar style="auto" />
-      <HeaderUser usuario={usuario} />
-      <ImageBackground source={fondo} style={styles.image} resizeMode="repeat">
-        <View style={{ height: "45%" }}>
-          {mascotas.length !== 0 ? (
-            <MyPetCards
-              miMascotas={mascotas}
-              handlerDeleteMascotas={handlerDeleteMascotas}
-              handlerEditMascotas={handlerEditMascotas}
-            />
-          ) : (
-            <View style={{padding: 10}}>
-              <EmptyCard text={"no tienes mascotas perdidas"} />
+      {!chat ? (
+        <>
+          <HeaderUser usuario={usuario} />
+          <ImageBackground
+            source={fondo}
+            style={styles.image}
+            resizeMode="repeat"
+          >
+            <View style={{ height: "45%" }}>
+              {misMascotas.length !== 0 ? (
+                <MyPetCards
+                  miMascotas={misMascotas}
+                  handlerDeleteMascotas={handlerDeleteMascotas}
+                  handlerEditMascotas={handlerEditMascotas}
+                  handlerChat={handlerRender}
+                />
+              ) : (
+                <View style={{ padding: 10 }}>
+                  <EmptyCard text={"no tienes mascotas perdidas"} />
+                </View>
+              )}
             </View>
-          )}
-        </View>
-        <ScrollView>
-          <MisChats />
-          {/* {chats ? (
-            <MisChats mascotas={mascotas} />
-          ) : (
-            <View style={{ paddingTop: 10 }}>
-              <EmptyCard text={"no tienes chats de mascotas"} />
-            </View>
-          )} */}
-        </ScrollView>
-      </ImageBackground>
+            <ScrollView >
+              <MisChats handlerRender={handlerRender} mascotas={mascotas} />
+            </ScrollView>
+          </ImageBackground>
+        </>
+      ) : (
+        <Chat mascota={chat} usuario={usuario} handlerRender={handlerRender} />
+      )}
     </>
   );
 };
@@ -111,13 +113,13 @@ const HeaderUser = ({ usuario }) => {
     >
       <ImageBackground source={backImg} style={styles.image}>
         <View style={{ flexDirection: "row-reverse", height: 20 }}>
-          <Button transparent>
+          {/* <Button transparent>
             <Icon
               type="EvilIcons"
               name="gear"
               style={{ fontSize: 30, color: colores.mild }}
             />
-          </Button>
+          </Button> */}
         </View>
         <Thumbnail
           large
@@ -143,12 +145,17 @@ const HeaderUser = ({ usuario }) => {
   );
 };
 
-const MisChats = () => {
+const MisChats = ({ handlerRender, mascotas }) => {
   const [chats, setChats] = useState("loading");
-
+  
   async function loadChats() {
     let resp = await getMyChats();
     setChats(resp);
+  }
+
+  async function handlerChat(petId) {   
+    let laMascota = await mascotas.filter((mascota) => mascota._id === petId);
+    handlerRender(laMascota[0], "chat");
   }
 
   useEffect(() => {
@@ -156,10 +163,13 @@ const MisChats = () => {
   }, []);
 
   function renderChats() {
-    
     switch (chats) {
       case "loading":
-        return <Text>Cargando !!!</Text>;
+        return (
+          <View>
+            <Spinner color="green" />
+          </View>
+        );
         break;
 
       case false:
@@ -172,14 +182,15 @@ const MisChats = () => {
 
       default:
         return chats.map((chat) => {
+          let fecha = getFechaChat(chat.createdAt);
           
-
           return (
             <TouchableOpacity
               key={chat._id}
-              //onPress={() => handlerRender(mascota, "info")}
+              onPress={() => handlerChat(chat.user.petId)}
+              style={{ marginBottom: 8 }}
             >
-              <ListItem avatar >
+              <ListItem avatar noBorder>
                 <Left>
                   <Thumbnail source={{ uri: chat.user.petPicture }} />
                 </Left>
@@ -187,10 +198,15 @@ const MisChats = () => {
                   <Text style={{ fontWeight: "bold" }}>
                     {chat.user.petName}
                   </Text>
-                  <Text>msj: {chat.text}</Text>
+                  <Text>
+                    ultimo msj:{" "}
+                    {chat.text.length > 42
+                      ? `${chat.text.slice(0, 40)}...`
+                      : chat.text}
+                  </Text>
                 </Body>
-                <Right style={{height: '95%'}}>
-                  <Text note>{chat.createdAt.toDate().toDateString()}</Text>
+                <Right>
+                  <Text note>{fecha}</Text>
                 </Right>
               </ListItem>
             </TouchableOpacity>
@@ -225,10 +241,20 @@ const MyPetCards = ({
   miMascotas,
   handlerDeleteMascotas,
   handlerEditMascotas,
+  handlerChat,
 }) => {
   const [isModal, setIsModal] = useState(false);
   const [mascota, setMascota] = useState({});
   let data = miMascotas;
+
+  async function editMascota(perro) {
+   
+    let itOk = await editarMascota(perro);
+    if (itOk) {
+      await handlerEditMascotas()
+      return setIsModal(false)
+    }else Alert("error al editar la mascota !");
+  }
 
   async function handlerEliminar(mascota) {
     let result = await eliminarMascota(mascota._id);
@@ -248,6 +274,7 @@ const MyPetCards = ({
         mascota={item}
         handlerEliminar={handlerEliminar}
         handlermodal={handlermodal}
+        handlerChat={handlerChat}
       />
     );
   };
@@ -269,96 +296,30 @@ const MyPetCards = ({
           setIsModal(false);
         }}
       >
-        <ModalContent
-          mascota={mascota}
-          handlerEditMascotas={handlerEditMascotas}
-        />
+        <ModalContent mascota={mascota} editMascota={editMascota} />
       </Modal>
     </>
   );
 };
 
-const CardPet2 = ({ mascota, handlerEliminar, handlermodal }) => {
-  //const [foto] = useState(mostrarFoto(mascota.petPicture));
-
+const CardPet = ({ mascota, handlerEliminar, handlermodal, handlerChat }) => {
   const createTwoButtonAlert = () =>
-    Alert.alert("Encontraste tu mascota ?", "My Alert Msg", [
-      {
-        text: "todavia no",
-        style: "cancel",
-      },
-      {
-        text: "si, ya la recupere",
-        onPress: () => {
-          handlerEliminar(mascota);
+    Alert.alert(
+      "Encontraste tu mascota ?",
+      "si aceptas se eliminara el registro de tu mascota",
+      [
+        {
+          text: "todavia no",
+          style: "cancel",
         },
-      },
-    ]);
-
-  return (
-    <Card key={mascota._id} style={styles.myPetCard}>
-      <Image source={{ uri: mascota.petPicture }} style={styles.imagenPet} />
-      <View
-        style={{
-          position: "absolute",
-          top: 5,
-          right: 20,
-          width: 80,
-          height: "80%",
-        }}
-      >
-        <Card style={{ borderRadius: 10, width: 90, padding: 5 }}>
-          <Text style={styles.textDesc}>{mascota.petName}</Text>
-          <Text style={styles.textDesc}>{mascota.petColor}</Text>
-          <Text style={styles.textDesc}>{mascota.petSex}</Text>
-          <Text style={styles.textDesc}>{mascota.petSize}</Text>
-        </Card>
-      </View>
-      <View flexDirection="row" style={styles.myPetContent}>
-        <Button
-          onPress={() => handlermodal(mascota)}
-          small
-          rounded
-          style={{
-            backgroundColor: colores.main,
-            width: 100,
-            marginRight: 10,
-          }}
-        >
-          <Icon fontSize="22" type="Feather" name="edit" />
-          <Text style={{ color: colores.mild }}>Editar</Text>
-        </Button>
-        <Button
-          onPress={() => createTwoButtonAlert()}
-          small
-          rounded
-          style={{
-            backgroundColor: colores.main,
-            marginRight: 10,
-          }}
-        >
-          <Icon fontSize="22" type="Feather" name="check-circle" />
-        </Button>
-      </View>
-    </Card>
-  );
-};
-
-const CardPet = ({ mascota, handlerEliminar, handlermodal }) => {
- 
-  const createTwoButtonAlert = () =>
-    Alert.alert("Encontraste tu mascota ?", "si aceptas se eliminara el registro de tu mascota", [
-      {
-        text: "todavia no",
-        style: "cancel",
-      },
-      {
-        text: "si, ya la recupere",
-        onPress: () => {
-          handlerEliminar(mascota);
+        {
+          text: "si, ya la recupere",
+          onPress: () => {
+            handlerEliminar(mascota);
+          },
         },
-      },
-    ]);
+      ]
+    );
 
   return (
     <Card key={mascota._id} style={styles.myPetCard}>
@@ -378,13 +339,37 @@ const CardPet = ({ mascota, handlerEliminar, handlermodal }) => {
           width: "100%",
         }}
       >
-        <Text style={{ color: "#f0f0f0", lineHeight: 24, fontWeight: 'bold' }}>Nombre: {mascota.petName}</Text>
-        <Text style={{ color: "#f0f0f0", lineHeight: 24, fontWeight: 'bold' }}>Sexo: {mascota.petSex}</Text>
-        <Text style={{ color: "#f0f0f0", lineHeight: 24, fontWeight: 'bold' }}>Color: {mascota.petColor}</Text>
-        <Text style={{ color: "#f0f0f0", lineHeight: 24, fontWeight: 'bold' }}>Tamaño: {mascota.petSize}</Text>
-        <Text style={{ color: "#f0f0f0", lineHeight: 24, fontWeight: 'bold' }}>Descripcion: {mascota.petDescription}</Text>
+        <Text style={{ color: "#f0f0f0", lineHeight: 24, fontWeight: "bold" }}>
+          Nombre: {mascota.petName}
+        </Text>
+        <Text style={{ color: "#f0f0f0", lineHeight: 24, fontWeight: "bold" }}>
+          Sexo: {mascota.petSex}
+        </Text>
+        <Text style={{ color: "#f0f0f0", lineHeight: 24, fontWeight: "bold" }}>
+          Color: {mascota.petColor}
+        </Text>
+        <Text style={{ color: "#f0f0f0", lineHeight: 24, fontWeight: "bold" }}>
+          Tamaño: {mascota.petSize}
+        </Text>
+        <Text style={{ color: "#f0f0f0", lineHeight: 24, fontWeight: "bold" }}>
+          Descripcion: {mascota.petDescription}
+        </Text>
       </View>
+
       <View flexDirection="row" style={styles.myPetContent}>
+        <Button
+          small
+          rounded
+          style={{
+            backgroundColor: colores.main,
+            width: 100,
+            marginRight: 10,
+          }}
+          onPress={() => handlerChat(mascota, 'chat')}
+        >
+          <Icon type="Entypo" name="chat" fontSize="22" />
+          <Text style={{ color: colores.mild }}>Chat</Text>
+        </Button>
         <Button
           onPress={() => handlermodal(mascota)}
           small
@@ -414,7 +399,7 @@ const CardPet = ({ mascota, handlerEliminar, handlermodal }) => {
   );
 };
 
-const ModalContent = ({ mascota, handlerEditMascotas }) => {
+const ModalContent = ({ mascota, editMascota }) => {
   const [perro, setPerro] = useState(mascota);
   const switchOptions = [
     {
@@ -435,10 +420,11 @@ const ModalContent = ({ mascota, handlerEditMascotas }) => {
     },
     { label: "Canela", value: "canela", activeColor: "#f0eddf" },
   ];
-  async function editMascota() {
-    await editarMascota(perro);
-    handlerEditMascotas();
-  }
+  /* async function editMascota() {
+    let itOk = await editarMascota(perro);
+    if (itOk) handlerEditMascotas();
+    else Alert("error al editar la mascota !");
+  } */
   return (
     <View
       style={{
@@ -515,7 +501,7 @@ const ModalContent = ({ mascota, handlerEditMascotas }) => {
           />
         </Form>
 
-        <Button block style={styles.btnFinal} onPress={() => editMascota()}>
+        <Button block style={styles.btnFinal} onPress={() => editMascota(perro)}>
           <Label style={{ color: colores.light, fontSize: 20 }}>Editar</Label>
         </Button>
       </View>
@@ -549,7 +535,7 @@ const styles = StyleSheet.create({
   },
   myPetContent: {
     position: "absolute",
-    bottom: 10,
+    bottom: 5,
     right: 0,
     zIndex: 100,
   },
