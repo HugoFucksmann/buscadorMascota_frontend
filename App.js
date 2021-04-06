@@ -41,9 +41,6 @@ export default class App extends Component {
       Roboto: require("native-base/Fonts/Roboto.ttf"),
       Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf"),
       NunitoLight: require("./assets/fonts/Nunito-Light.ttf"),
-      Font2: require("./assets/fonts/BreeSerif-Regular.ttf"),
-      kiwi: require("./assets/fonts/KiwiMaru-Medium.ttf"),
-      kiwi2: require("./assets/fonts/KiwiMaru-Regular.ttf"),
     });
 
     if (!user) user = await usuarioRandom2();
