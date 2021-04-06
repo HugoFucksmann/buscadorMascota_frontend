@@ -1,35 +1,49 @@
 import "react-native-gesture-handler";
-import React, { Component } from 'react';
-import { SafeAreaView, StyleSheet, ImageBackground, LogBox, Image, Alert } from "react-native";
+import React, { Component } from "react";
+import {
+  SafeAreaView,
+  StyleSheet,
+  ImageBackground,
+  LogBox,
+  Image,
+  Alert,
+  Text,
+} from "react-native";
 import { Root, Button, Footer, FooterTab, Icon, Header } from "native-base";
 import * as Font from "expo-font";
-
-import { googleLogin, isAuthenticated, usuarioRandom, actualizarLocation, usuarioRandom2, actualizarLocation2 } from "./helpers/auth";
-import Feed from './views/feed';
-import LoadingView from './views/pagCarga'
-import FormMascota from './views/formulario';
-import Login from './Components/login'
+import {
+  googleLogin,
+  isAuthenticated,
+  usuarioRandom2,
+  actualizarLocation2,
+} from "./helpers/auth";
+import Feed from "./views/feed";
+import LoadingView from "./views/pagCarga";
+import FormMascota from "./views/formulario";
+import Login from "./Components/login";
 import { getMascotas, getMyPets, getMascotas2 } from "./helpers/mascotaService";
-import banner from './assets/banner.png';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import colores from './Components/colorPalette';
-import { StatusBar } from 'expo-status-bar';
+import banner from "./assets/banner.png";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import colores from "./Components/colorPalette";
+import { StatusBar } from "expo-status-bar";
 import Botonera2 from "./views/botonera2";
 export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = { loading: true, selectedTab: "feed" };
-    
   }
 
   async componentDidMount() {
-    //await AsyncStorage.removeItem('chats');
     let user = await AsyncStorage.getItem("user");
     let isAuth = false;
 
     await Font.loadAsync({
       Roboto: require("native-base/Fonts/Roboto.ttf"),
       Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf"),
+      NunitoLight: require("./assets/fonts/Nunito-Light.ttf"),
+      Font2: require("./assets/fonts/BreeSerif-Regular.ttf"),
+      kiwi: require("./assets/fonts/KiwiMaru-Medium.ttf"),
+      kiwi2: require("./assets/fonts/KiwiMaru-Regular.ttf"),
     });
 
     if (!user) user = await usuarioRandom2();
@@ -188,7 +202,7 @@ export default class App extends Component {
   render() {
     LogBox.ignoreLogs(["Remote debugger"]);
     LogBox.ignoreLogs(["Setting a timer"]);
-   
+
     if (this.state.loading) {
       return <LoadingView />;
     } else {
@@ -235,7 +249,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     paddingTop: 11,
     paddingBottom: 11,
-    marginTop: 25
+    marginTop: 25,
   },
   headerBackground: {
     flex: 0.8,

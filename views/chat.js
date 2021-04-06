@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { BackHandler } from "react-native";
 import { GiftedChat } from "react-native-gifted-chat";
 import firebaseConfig from "../firebaseConfig";
-import { PROD_URL, PROD_URL2 } from "@env";
+import { PROD_URL } from "@env";
 
 export default function Chat({ mascota, usuario, handlerRender }) {
   const chatsRef = firebaseConfig().collection(mascota._id);

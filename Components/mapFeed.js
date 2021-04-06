@@ -10,11 +10,10 @@ import {
   TouchableOpacity,
 } from "react-native";
 import markerPet from "../assets/iconos/marker_paw.png";
-import markerMan from "../assets/iconos/marker_man.png";
 import MapView from "react-native-maps";
 import { generateInitialRegion } from "../helpers/getLocation";
 import { mostrarFoto } from "../helpers/imageService";
-import {  Card,  Icon,  Right, Header, Input, Item, Button, CardItem } from "native-base";
+import {  Card,  Icon, Input, Button, CardItem } from "native-base";
 import { tiempoTranscurrido } from "../helpers/getTimePass";
 import EmptyCard from "./EmptyCard";
 
@@ -216,7 +215,9 @@ const CardFeedMap = ({ mascota, handlerRender }) => {
               type="Fontisto"
               style={{ color: colores.main, fontSize: 20, paddingRight: 5 }}
             />
-            <Text style={{ color: "grey", fontSize: 13 }}>
+            <Text
+              style={{ color: "grey", fontSize: 13, fontFamily: "NunitoLight" }}
+            >
               {tiempoTranscurrido(mascota.date)}
             </Text>
           </View>
@@ -228,14 +229,21 @@ const CardFeedMap = ({ mascota, handlerRender }) => {
               type="MaterialCommunityIcons"
               style={{ color: colores.main, fontSize: 20, paddingRight: 5 }}
             />
-            <Text style={{ color: "grey" }}>{mascota.dist}</Text>
+            <Text style={{ color: "grey", fontFamily: "NunitoLight" }}>
+              {mascota.dist}
+            </Text>
           </View>
 
           <View
             style={{ flexDirection: "row", paddingLeft: 14, paddingBottom: 5 }}
           >
             <Text
-              style={{ fontWeight: "bold", color: colores.main, fontSize: 20 }}
+              style={{
+                fontWeight: "bold",
+                color: colores.main,
+                fontSize: 20,
+                fontFamily: "NunitoLight",
+              }}
             >
               {mascota.petName}
             </Text>

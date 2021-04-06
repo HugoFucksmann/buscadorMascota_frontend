@@ -80,7 +80,7 @@ const TabsFeed = ({ usuario, mascotas, handlerRender }) => {
       <Tab
         heading={
           <TabHeading style={{ backgroundColor: "#ffffff" }}>
-            <Text>Feed</Text>
+            <Text style={{ fontFamily: "NunitoLight" }}>Feed</Text>
           </TabHeading>
         }
       >
@@ -96,7 +96,7 @@ const TabsFeed = ({ usuario, mascotas, handlerRender }) => {
       <Tab
         heading={
           <TabHeading style={{ backgroundColor: "#ffffff" }}>
-            <Text>Mapa</Text>
+            <Text style={{ fontFamily: "NunitoLight" }}>Mapa</Text>
           </TabHeading>
         }
       >

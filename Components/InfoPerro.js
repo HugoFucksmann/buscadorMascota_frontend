@@ -104,16 +104,27 @@ export default function InfoPerro({ mascota, usuario, handlerRender }) {
            />
 
            <View style={{ flexDirection: "row", justifyContent: "center" }}>
-             <Text style={{ color: colores.main, fontSize: 25, marginTop: 15 }}>
-               {mascota.petName}
+             <Text
+               style={{
+                 color: colores.main,
+                 fontSize: 25,
+                 marginTop: 15,
+                 fontFamily: "NunitoLight",
+               }}
+             >
+               {mascota.petName.toUpperCase()}
              </Text>
            </View>
 
            <CardItem header>
-             <Text style={{ color: "grey" }}> Descripción: </Text>
+             <Text style={{ color: "grey", fontFamily: "NunitoLight" }}>
+               Descripción:
+             </Text>
            </CardItem>
            <CardItem style={{ marginTop: -15, marginBottom: 15 }}>
-             <Text style={{ color: "grey" }}>{mascota.petDescription}</Text>
+             <Text style={{ color: "grey", fontFamily: "NunitoLight" }}>
+               {mascota.petDescription}
+             </Text>
            </CardItem>
 
            <View style={{ flexDirection: "row", justifyContent: "center" }}>
@@ -128,17 +139,15 @@ export default function InfoPerro({ mascota, usuario, handlerRender }) {
              </Card>
            </View>
 
-          
-             <Button
-               info
-               block
-               onPress={() => handlerRender(false, "chat")}
-               style={styles.mainButtons}
-             >
-               <Text>Mensajes</Text>
-               <Icon name="message1" type="AntDesign" />
-             </Button>
-           
+           <Button
+             info
+             block
+             onPress={() => handlerRender(false, "chat")}
+             style={styles.mainButtons}
+           >
+             <Text style={{ fontFamily: "NunitoLight" }}>Mensajes</Text>
+             <Icon name="message1" type="AntDesign" />
+           </Button>
          </Card>
        </View>
      </Modal>
@@ -163,6 +172,7 @@ const styles = StyleSheet.create({
     marginBottom: "auto",
     letterSpacing: 1,
     color: colores.main,
+    fontFamily: "NunitoLight",
   },
   mainButtons: {
     borderRadius: 5,

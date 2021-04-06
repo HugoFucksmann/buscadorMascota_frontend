@@ -30,17 +30,17 @@ function CardFeed({mascota, usuario, handlerRender}) {
               type="MaterialCommunityIcons"
               style={{ color: colores.main }}
             />
-            <Text style={{ color: "grey" }}>{mascota.dist}</Text>
+            <Text style={{ color: "grey", fontFamily: "NunitoLight" }}>
+              {mascota.dist}
+            </Text>
           </Left>
-          {/* </CardItem>
-        <CardItem style={styles.headCard}> */}
           <Icon
             active
             name="date"
             type="Fontisto"
             style={{ color: colores.main }}
           />
-          <Text style={{ color: "grey" }}>
+          <Text style={{ color: "grey", fontFamily: "NunitoLight" }}>
             {tiempoTranscurrido(mascota.date)}
           </Text>
           <Right>

@@ -6,19 +6,25 @@ import colores from '../Components/colorPalette'
 const EmptyCard = ({text}) => {
 
     return (
-        <Card
-          style={{
-            alignSelf: "center",
-            alignContent: "center",
-            borderRadius: 5,
-          }}
-        >
-          <CardItem style={{ borderRadius: 5 }}>
-            <Text style={{ fontWeight: "bold", color: colores.main }}>
-             {text}
-            </Text>
-          </CardItem>
-        </Card>
+      <Card
+        style={{
+          alignSelf: "center",
+          alignContent: "center",
+          borderRadius: 5,
+        }}
+      >
+        <CardItem style={{ borderRadius: 5 }}>
+          <Text
+            style={{
+              fontWeight: "bold",
+              color: colores.main,
+              fontFamily: "NunitoLight",
+            }}
+          >
+            {text}
+          </Text>
+        </CardItem>
+      </Card>
     );
 }
 

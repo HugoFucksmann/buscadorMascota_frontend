@@ -112,15 +112,7 @@ const HeaderUser = ({ usuario }) => {
       }}
     >
       <ImageBackground source={backImg} style={styles.image}>
-        <View style={{ flexDirection: "row-reverse", height: 20 }}>
-          {/* <Button transparent>
-            <Icon
-              type="EvilIcons"
-              name="gear"
-              style={{ fontSize: 30, color: colores.mild }}
-            />
-          </Button> */}
-        </View>
+        <View style={{ flexDirection: "row-reverse", height: 20 }}></View>
         <Thumbnail
           large
           style={{
@@ -133,9 +125,10 @@ const HeaderUser = ({ usuario }) => {
         <Text
           style={{
             alignSelf: "center",
-            fontSize: 20,
+            fontSize: 22,
             marginTop: 10,
             color: colores.mild,
+            fontFamily: "NunitoLight",
           }}
         >
           {usuario.name}
@@ -195,18 +188,20 @@ const MisChats = ({ handlerRender, mascotas }) => {
                   <Thumbnail source={{ uri: chat.user.petPicture }} />
                 </Left>
                 <Body>
-                  <Text style={{ fontWeight: "bold" }}>
-                    {chat.user.petName}
+                  <Text style={{ fontFamily: "NunitoLight" }}>
+                    {chat.user.petName.toUpperCase()}
                   </Text>
-                  <Text>
-                    ultimo msj:{" "}
+                  <Text style={{ fontFamily: "NunitoLight" }}>
+                    ultimo msj:
                     {chat.text.length > 42
                       ? `${chat.text.slice(0, 40)}...`
                       : chat.text}
                   </Text>
                 </Body>
                 <Right>
-                  <Text note>{fecha}</Text>
+                  <Text style={{ fontFamily: "NunitoLight" }} note>
+                    {fecha}
+                  </Text>
                 </Right>
               </ListItem>
             </TouchableOpacity>
@@ -223,9 +218,9 @@ const MisChats = ({ handlerRender, mascotas }) => {
         <Body>
           <Text
             style={{
-              fontWeight: "bold",
               color: colores.main,
               textAlign: "center",
+              fontFamily: "NunitoLight",
             }}
           >
             CHATS
@@ -339,19 +334,49 @@ const CardPet = ({ mascota, handlerEliminar, handlermodal, handlerChat }) => {
           width: "100%",
         }}
       >
-        <Text style={{ color: "#f0f0f0", lineHeight: 24, fontWeight: "bold" }}>
+        <Text
+          style={{
+            color: "#f0f0f0",
+            lineHeight: 24,
+            fontFamily: "NunitoLight",
+          }}
+        >
           Nombre: {mascota.petName}
         </Text>
-        <Text style={{ color: "#f0f0f0", lineHeight: 24, fontWeight: "bold" }}>
+        <Text
+          style={{
+            color: "#f0f0f0",
+            lineHeight: 24,
+            fontFamily: "NunitoLight",
+          }}
+        >
           Sexo: {mascota.petSex}
         </Text>
-        <Text style={{ color: "#f0f0f0", lineHeight: 24, fontWeight: "bold" }}>
+        <Text
+          style={{
+            color: "#f0f0f0",
+            lineHeight: 24,
+            fontFamily: "NunitoLight",
+          }}
+        >
           Color: {mascota.petColor}
         </Text>
-        <Text style={{ color: "#f0f0f0", lineHeight: 24, fontWeight: "bold" }}>
+        <Text
+          style={{
+            color: "#f0f0f0",
+            lineHeight: 24,
+            fontFamily: "NunitoLight",
+          }}
+        >
           Tamaño: {mascota.petSize}
         </Text>
-        <Text style={{ color: "#f0f0f0", lineHeight: 24, fontWeight: "bold" }}>
+        <Text
+          style={{
+            color: "#f0f0f0",
+            lineHeight: 24,
+            fontFamily: "NunitoLight",
+          }}
+        >
           Descripcion: {mascota.petDescription}
         </Text>
       </View>
@@ -365,10 +390,12 @@ const CardPet = ({ mascota, handlerEliminar, handlermodal, handlerChat }) => {
             width: 100,
             marginRight: 10,
           }}
-          onPress={() => handlerChat(mascota, 'chat')}
+          onPress={() => handlerChat(mascota, "chat")}
         >
           <Icon type="Entypo" name="chat" fontSize="22" />
-          <Text style={{ color: colores.mild }}>Chat</Text>
+          <Text style={{ color: colores.mild, fontFamily: "NunitoLight" }}>
+            Chat
+          </Text>
         </Button>
         <Button
           onPress={() => handlermodal(mascota)}
@@ -381,7 +408,9 @@ const CardPet = ({ mascota, handlerEliminar, handlermodal, handlerChat }) => {
           }}
         >
           <Icon fontSize="22" type="Feather" name="edit" />
-          <Text style={{ color: colores.mild }}>Editar</Text>
+          <Text style={{ color: colores.mild, fontFamily: "NunitoLight" }}>
+            Editar
+          </Text>
         </Button>
         <Button
           onPress={() => createTwoButtonAlert()}
@@ -420,11 +449,6 @@ const ModalContent = ({ mascota, editMascota }) => {
     },
     { label: "Canela", value: "canela", activeColor: "#f0eddf" },
   ];
-  /* async function editMascota() {
-    let itOk = await editarMascota(perro);
-    if (itOk) handlerEditMascotas();
-    else Alert("error al editar la mascota !");
-  } */
   return (
     <View
       style={{
