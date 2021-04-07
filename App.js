@@ -27,7 +27,6 @@ import { StatusBar } from "expo-status-bar";
 import Botonera2 from "./views/botonera2";
 import * as Notifications from "expo-notifications";
 import { FadeInView } from "./AnimatedViews/fadeView";
-import { NativeRouter, Route, Link } from "react-router-native";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -104,14 +103,7 @@ export default class App extends Component {
     alert("mascota editada");
   }
 
-  renderHeader() {
-    return (
-      <Header style={styles.header}>
-        <ImageBackground source={banner} style={styles.headerBackground} />
-        <StatusBar style="auto" backgroundColor="#ffffff" />
-      </Header>
-    );
-  }
+  
 
   renderTabs() {
     return (
@@ -177,7 +169,7 @@ export default class App extends Component {
       case "feed":
         return (
           <>
-            {this.renderHeader()}
+            <HeaderBuscan />
             <FadeInView style={{ height: "90%", width: "100%" }}>
               <Feed mascotas={this.state.mascotas} usuario={this.state.user} />
             </FadeInView>
@@ -194,7 +186,7 @@ export default class App extends Component {
           );
         return (
           <>
-            {this.renderHeader()}
+            <HeaderBuscan />
             <FadeInView style={{ height: "90%", width: "100%" }}>
               <FormMascota
                 user={this.state.user}
@@ -233,17 +225,26 @@ export default class App extends Component {
     } else {
       return (
         <Root>
-          <NativeRouter>
-            <SafeAreaView style={{ flex: 1 }}>
+          <SafeAreaView style={{ flex: 1 }}>
+            <FadeInView style={{ height: "100%", width: "100%" }}>
               {this.renderSelectedTab()}
-            </SafeAreaView>
-            {this.renderTabs()}
-          </NativeRouter>
+            </FadeInView>
+          </SafeAreaView>
+          {this.renderTabs()}
         </Root>
       );
     }
   }
 }
+
+const HeaderBuscan = () => {
+  return (
+    <Header style={styles.header}>
+      <ImageBackground source={banner} style={styles.headerBackground} />
+      <StatusBar style="auto" backgroundColor="#ffffff" />
+    </Header>
+  );
+};
 
 const styles = StyleSheet.create({
   centeredView: {
