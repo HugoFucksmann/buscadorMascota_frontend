@@ -88,7 +88,7 @@ export default class MapFeed extends Component {
       
       const scale = this.animation.interpolate({
         inputRange,
-        outputRange: [1, 1.5, 1],
+        outputRange: [1, 1.7, 1],
         extrapolate: "clamp",
       });
       const opacity = this.animation.interpolate({
@@ -239,7 +239,7 @@ const CardFeedMap = ({ mascota, handlerRender }) => {
           >
             <Text
               style={{
-                fontWeight: "bold",
+                
                 color: colores.main,
                 fontSize: 20,
                 fontFamily: "NunitoLight",

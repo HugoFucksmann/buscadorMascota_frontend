@@ -1,5 +1,3 @@
-import { min } from "react-native-reanimated";
-
 export function tiempoTranscurrido(horaCero) {
  
   var hoy = new Date();

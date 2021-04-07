@@ -78,11 +78,9 @@ const FormMascota = ({ user, mascotas, handlerMascotas }) => {
     });
     if (!result.cancelled) {
       setImage(result.uri);
-      // ImagePicker saves the taken photo to disk and returns a local URI to it
       let localUri = result.uri;
       let filename = localUri.split("/").pop();
 
-      // Infer the type of the image
       let match = /\.(\w+)$/.exec(filename);
       let type = match ? `image/${match[1]}` : `image`;
       setFile(result);
@@ -125,7 +123,8 @@ const FormMascota = ({ user, mascotas, handlerMascotas }) => {
               buttonColor={colores.mainFill}
               hasPadding
               fontSize={15}
-              borderRadius={20}
+              textStyle={{ fontFamily: "NunitoLight" }}
+              selectedTextStyle={{ fontFamily: "NunitoLight" }}
               borderWidth={0}
               options={[
                 { label: "Se perdió mi mascota", value: "" },
@@ -143,7 +142,6 @@ const FormMascota = ({ user, mascotas, handlerMascotas }) => {
             info
             style={styles.buttonUnderImage}
           >
-            {/* <Icon type="AntDesign" name="downcircleo" />  */}
             {image ? (
               <Image source={{ uri: image }} style={styles.imagen} />
             ) : (
@@ -180,7 +178,13 @@ const FormMascota = ({ user, mascotas, handlerMascotas }) => {
                 padding: 5,
               }}
             >
-              <Text style={{ fontSize: 13, color: colores.main }}>
+              <Text
+                style={{
+                  fontSize: 13,
+                  color: colores.main,
+                  fontFamily: "NunitoLight",
+                }}
+              >
                 Indica dónde se perdió
               </Text>
             </Card>
@@ -194,6 +198,7 @@ const FormMascota = ({ user, mascotas, handlerMascotas }) => {
                     setPerro({ ...perro, petName: nombre })
                   }
                   placeholder="Nombre mascota"
+                  style={{ fontFamily: "NunitoLight" }}
                 />
               </Item>
             </Card>
@@ -202,12 +207,13 @@ const FormMascota = ({ user, mascotas, handlerMascotas }) => {
           <Card style={styles.itemForm}>
             <Item picker style={{ paddingLeft: 10 }}>
               <Left>
-                <Text>Sexo:</Text>
+                <Text style={{ fontFamily: "NunitoLight" }}>Sexo:</Text>
               </Left>
               <Picker
                 mode="dropdown"
                 selectedValue={perro.petSex}
                 onValueChange={(value) => setPerro({ ...perro, petSex: value })}
+                itemTextStyle={{ fontFamily: "NunitoLight" }}
               >
                 <Picker.Item label="macho" value="macho" />
                 <Picker.Item label="hembra" value="hembra" />
@@ -218,12 +224,13 @@ const FormMascota = ({ user, mascotas, handlerMascotas }) => {
           <Card style={styles.itemForm}>
             <Item picker style={{ paddingLeft: 10 }}>
               <Left>
-                <Text>Tamaño:</Text>
+                <Text style={{ fontFamily: "NunitoLight" }}>Tamaño:</Text>
               </Left>
 
               <Picker
                 mode="dropdown"
                 selectedValue={perro.petSize}
+                itemTextStyle={{ fontFamily: "NunitoLight" }}
                 onValueChange={(value) =>
                   setPerro({ ...perro, petSize: value })
                 }
@@ -238,10 +245,12 @@ const FormMascota = ({ user, mascotas, handlerMascotas }) => {
           <Card style={styles.itemForm}>
             <Item picker style={{ paddingLeft: 10 }}>
               <Left>
-                <Text>Color:</Text>
+                <Text style={{ fontFamily: "NunitoLight" }}>Color:</Text>
               </Left>
               <Right>
                 <SwitchSelector
+                  textStyle={{ fontFamily: "NunitoLight" }}
+                  selectedTextStyle={{ fontFamily: "NunitoLight" }}
                   initial={2}
                   hasPadding
                   borderWidth={0}
@@ -254,18 +263,16 @@ const FormMascota = ({ user, mascotas, handlerMascotas }) => {
           </Card>
 
           <Card style={styles.itemForm}>
-            <Form>
-              <Textarea
-                rowSpan={3}
-                bordered
-                style={styles.textArea}
-                placeholder="Descripción"
-                value={perro.petDescription}
-                onChangeText={(value) =>
-                  setPerro({ ...perro, petDescription: value })
-                }
-              />
-            </Form>
+            <Textarea
+              rowSpan={3}
+              bordered
+              style={styles.textArea}
+              placeholder="Descripción"
+              value={perro.petDescription}
+              onChangeText={(value) =>
+                setPerro({ ...perro, petDescription: value })
+              }
+            />
           </Card>
           <Button
             block
@@ -280,7 +287,13 @@ const FormMascota = ({ user, mascotas, handlerMascotas }) => {
             onPress={() => uploadPerro()}
             disabled={topCargas()}
           >
-            <Label style={{ color: colores.light, fontSize: 20 }}>
+            <Label
+              style={{
+                color: colores.light,
+                fontSize: 20,
+                fontFamily: "NunitoLight",
+              }}
+            >
               {topCargas() === true ? "maximo de carga alcanzado" : "CARGAR"}
             </Label>
           </Button>
@@ -296,11 +309,6 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     borderBottomColor: colores.main,
     borderBottomWidth: 3,
-    //borderTopWidth: 0,
-    //borderColor: colores.mild,
-    //padding: 0,
-    //paddingLeft: 10,
-    //backgroundColor: "#fff",
     borderRadius: 5,
   },
   imagen: {
@@ -343,6 +351,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderColor: "transparent",
     borderRadius: 5,
+    fontFamily: "NunitoLight",
   },
 });
 

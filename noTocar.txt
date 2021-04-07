@@ -167,3 +167,54 @@ return (
 );
 
 //-------------------------------------------------------------
+//---getMascotas-------------------
+async function getMascotas(user) {
+
+  function deg2rad(deg) {
+    return deg * (Math.PI / 180);
+  }
+
+  function distKM(A, B) {
+    const R = 6371;
+    let aLat = parseFloat(A.location.latitude);
+    let aLon = parseFloat(A.location.longitude);
+    let bLat = parseFloat(B.location.latitude);
+    let bLon = parseFloat(B.location.longitude);
+
+    var dLat = 2 * R * Math.sin(deg2rad(aLat - bLat) / 2);
+    var dLon = 2 * R * Math.sin(deg2rad(aLon - bLon) / 2);
+    var dist = Math.sqrt(dLat ** 2 + dLon ** 2);
+
+    return dist;
+  }
+
+  return await fetch(
+    `https://mascotass.herokuapp.com/api/mascotas/${user._id}`,
+    {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  )
+    .then((response) => response.json())
+    .then((res) => {
+      if (res.ok && res.mascotas) {
+        return res.mascotas.map((mascota) => {
+          let dist = distKM(mascota, user);
+          if (dist < 1) {
+            dist = dist * 1000;
+            dist = Math.round(dist);
+            dist = `${dist} mts`;
+          } else {
+            dist = dist.toFixed(1);
+            dist = `${dist} km`;
+          }
+
+          return { ...mascota, dist: dist };
+        });
+      } else return false;
+    })
+    .catch((error) => console.error(error));
+}

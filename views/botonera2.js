@@ -461,6 +461,7 @@ const ModalContent = ({ mascota, editMascota }) => {
         {perro.petState === "perdido" && (
           <Item style={styles.itemForm}>
             <Input
+              style={{ fontFamily: "NunitoLight" }}
               value={perro.petName}
               onChangeText={(nombre) => setPerro({ ...perro, petName: nombre })}
               placeholder="Nombre mascota"
@@ -469,7 +470,7 @@ const ModalContent = ({ mascota, editMascota }) => {
         )}
         <Item picker style={styles.itemForm}>
           <Left>
-            <Text>Sexo:</Text>
+            <Text style={{ fontFamily: "NunitoLight" }}>Sexo:</Text>
           </Left>
           <Picker
             mode="dropdown"
@@ -483,7 +484,7 @@ const ModalContent = ({ mascota, editMascota }) => {
 
         <Item picker style={styles.itemForm}>
           <Left>
-            <Text>Tamaño:</Text>
+            <Text style={{ fontFamily: "NunitoLight" }}>Tamaño:</Text>
           </Left>
 
           <Picker
@@ -499,7 +500,7 @@ const ModalContent = ({ mascota, editMascota }) => {
 
         <Item picker style={styles.itemForm}>
           <Left>
-            <Text>Color:</Text>
+            <Text style={{ fontFamily: "NunitoLight" }}>Color:</Text>
           </Left>
           <Right>
             <SwitchSelector
@@ -507,6 +508,8 @@ const ModalContent = ({ mascota, editMascota }) => {
               hasPadding
               borderWidth={0}
               options={switchOptions}
+              textStyle={{ fontFamily: "NunitoLight" }}
+              selectedTextStyle={{ fontFamily: "NunitoLight" }}
               onPress={(value) => setPerro({ ...perro, petColor: value })}
               style={styles.swSelector}
             />
@@ -525,7 +528,11 @@ const ModalContent = ({ mascota, editMascota }) => {
           />
         </Form>
 
-        <Button block style={styles.btnFinal} onPress={() => editMascota(perro)}>
+        <Button
+          block
+          style={styles.btnFinal}
+          onPress={() => editMascota(perro)}
+        >
           <Label style={{ color: colores.light, fontSize: 20 }}>Editar</Label>
         </Button>
       </View>
@@ -546,6 +553,7 @@ const styles = StyleSheet.create({
     elevation: 8,
     backgroundColor: colores.mainFill,
     borderRadius: 5,
+    fontFamily: "NunitoLight",
   },
   imagenPet: {
     width: null,
@@ -593,7 +601,6 @@ const styles = StyleSheet.create({
   textBox: {
     margin: 5,
     padding: 5,
-    //width: Dimensions.get("window").width - 110,
     backgroundColor: "white",
     borderRadius: 10,
     width: "70%",
@@ -615,6 +622,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderColor: "transparent",
     borderRadius: 5,
+    fontFamily: "NunitoLight",
   },
   swSelector: { width: 270, marginLeft: 20, padding: 5 },
   itemForm: {

@@ -5,9 +5,7 @@ import {
   StyleSheet,
   ImageBackground,
   LogBox,
-  Image,
   Alert,
-  Text,
 } from "react-native";
 import { Root, Button, Footer, FooterTab, Icon, Header } from "native-base";
 import * as Font from "expo-font";
@@ -27,6 +25,26 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import colores from "./Components/colorPalette";
 import { StatusBar } from "expo-status-bar";
 import Botonera2 from "./views/botonera2";
+import * as Notifications from "expo-notifications";
+import { FadeInView } from "./AnimatedViews/fadeView";
+import { NativeRouter, Route, Link } from "react-router-native";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: true,
+  }),
+});
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
+
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -67,6 +85,32 @@ export default class App extends Component {
     } else {
       return Alert("Error al intentar loguearse");
     }
+  }
+
+  async handlerNewMascotas() {
+    let mascotas = await getMascotas(this.state.user);
+    this.setState({ mascotas: mascotas, selectedTab: "perfil" });
+    alert("se ha creado la mascota correctamente");
+  }
+
+  async handlerDeleteMascotas() {
+    let mascotas = await getMascotas(this.state.user);
+    this.setState({ mascotas: mascotas, selectedTab: "perfil" });
+    alert("se ha eliminado la mascota");
+  }
+  async handlerEditMascotas() {
+    let mascotas = await getMascotas(this.state.user);
+    this.setState({ mascotas: mascotas, selectedTab: "perfil" });
+    alert("mascota editada");
+  }
+
+  renderHeader() {
+    return (
+      <Header style={styles.header}>
+        <ImageBackground source={banner} style={styles.headerBackground} />
+        <StatusBar style="auto" backgroundColor="#ffffff" />
+      </Header>
+    );
   }
 
   renderTabs() {
@@ -128,66 +172,50 @@ export default class App extends Component {
     );
   }
 
-  async handlerNewMascotas() {
-    let mascotas = await getMascotas(this.state.user);
-    this.setState({ mascotas: mascotas, selectedTab: "perfil" });
-    alert("se ha creado la mascota correctamente");
-  }
-
-  async handlerDeleteMascotas() {
-    let mascotas = await getMascotas(this.state.user);
-    this.setState({ mascotas: mascotas, selectedTab: "perfil" });
-    alert("se ha eliminado la mascota");
-  }
-  async handlerEditMascotas() {
-    let mascotas = await getMascotas(this.state.user);
-    this.setState({ mascotas: mascotas, selectedTab: "perfil" });
-    alert("mascota editada");
-  }
-
-  renderHeader() {
-    return (
-      <Header style={styles.header}>
-        <ImageBackground source={banner} style={styles.headerBackground} />
-        <StatusBar style="auto" backgroundColor="#ffffff" />
-      </Header>
-    );
-  }
-
   renderSelectedTab() {
     switch (this.state.selectedTab) {
       case "feed":
         return (
           <>
             {this.renderHeader()}
-            <Feed mascotas={this.state.mascotas} usuario={this.state.user} />
+            <FadeInView style={{ height: "90%", width: "100%" }}>
+              <Feed mascotas={this.state.mascotas} usuario={this.state.user} />
+            </FadeInView>
           </>
         );
         break;
 
       case "formulario":
         if (!this.state.isAuth)
-          return <Login handlerPress={() => this.googleAuth()} />;
+          return (
+            <FadeInView style={{ height: "100%", width: "100%" }}>
+              <Login handlerPress={() => this.googleAuth()} />
+            </FadeInView>
+          );
         return (
           <>
             {this.renderHeader()}
-            <FormMascota
-              user={this.state.user}
-              mascotas={getMyPets(this.state.mascotas, this.state.user._id)}
-              handlerMascotas={() => this.handlerNewMascotas()}
-            />
+            <FadeInView style={{ height: "90%", width: "100%" }}>
+              <FormMascota
+                user={this.state.user}
+                mascotas={getMyPets(this.state.mascotas, this.state.user._id)}
+                handlerMascotas={() => this.handlerNewMascotas()}
+              />
+            </FadeInView>
           </>
         );
         break;
 
       case "perfil":
         return (
-          <Botonera2
-            mascotas={this.state.mascotas}
-            usuario={this.state.user}
-            handlerDeleteMascotas={() => this.handlerDeleteMascotas()}
-            handlerEditMascotas={() => this.handlerEditMascotas()}
-          />
+          <FadeInView style={{ height: "100%", width: "100%" }}>
+            <Botonera2
+              mascotas={this.state.mascotas}
+              usuario={this.state.user}
+              handlerDeleteMascotas={() => this.handlerDeleteMascotas()}
+              handlerEditMascotas={() => this.handlerEditMascotas()}
+            />
+          </FadeInView>
         );
 
         break;
@@ -205,10 +233,12 @@ export default class App extends Component {
     } else {
       return (
         <Root>
-          <SafeAreaView style={{ flex: 1 }}>
-            {this.renderSelectedTab()}
-          </SafeAreaView>
-          {this.renderTabs()}
+          <NativeRouter>
+            <SafeAreaView style={{ flex: 1 }}>
+              {this.renderSelectedTab()}
+            </SafeAreaView>
+            {this.renderTabs()}
+          </NativeRouter>
         </Root>
       );
     }
