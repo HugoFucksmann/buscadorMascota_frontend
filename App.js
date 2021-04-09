@@ -1,5 +1,5 @@
 import "react-native-gesture-handler";
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import {
   SafeAreaView,
   StyleSheet,
@@ -9,12 +9,7 @@ import {
 } from "react-native";
 import { Root, Button, Footer, FooterTab, Icon, Header } from "native-base";
 import * as Font from "expo-font";
-import {
-  googleLogin,
-  isAuthenticated,
-  usuarioRandom2,
-  actualizarLocation2,
-} from "./helpers/auth";
+import { googleLogin, isAuthenticated, getUser } from "./helpers/auth";
 import Feed from "./views/feed";
 import LoadingView from "./views/pagCarga";
 import FormMascota from "./views/formulario";
@@ -27,6 +22,7 @@ import { StatusBar } from "expo-status-bar";
 import Botonera2 from "./views/botonera2";
 import * as Notifications from "expo-notifications";
 import { FadeInView } from "./AnimatedViews/fadeView";
+import { MascotasProvider } from "./context/mascotasContext";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -51,23 +47,19 @@ export default class App extends Component {
   }
 
   async componentDidMount() {
-    let user = await AsyncStorage.getItem("user");
     let isAuth = false;
-
     await Font.loadAsync({
       Roboto: require("native-base/Fonts/Roboto.ttf"),
       Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf"),
       NunitoLight: require("./assets/fonts/Nunito-Light.ttf"),
     });
 
-    if (!user) user = await usuarioRandom2();
-    else user = JSON.parse(user);
+    let user = await getUser();
 
     if (user.google) isAuth = await isAuthenticated(user);
 
-    user = await actualizarLocation2(user);
-
     let mascotas = await getMascotas2(user);
+
     this.setState({
       isAuth: isAuth,
       user: user,
@@ -102,8 +94,6 @@ export default class App extends Component {
     this.setState({ mascotas: mascotas, selectedTab: "perfil" });
     alert("mascota editada");
   }
-
-  
 
   renderTabs() {
     return (
@@ -179,21 +169,19 @@ export default class App extends Component {
 
       case "formulario":
         if (!this.state.isAuth)
-          return (
-            <FadeInView style={{ height: "100%", width: "100%" }}>
-              <Login handlerPress={() => this.googleAuth()} />
-            </FadeInView>
-          );
+          return <Login handlerPress={() => this.googleAuth()} />;
         return (
           <>
             <HeaderBuscan />
-            <FadeInView style={{ height: "90%", width: "100%" }}>
-              <FormMascota
-                user={this.state.user}
-                mascotas={getMyPets(this.state.mascotas, this.state.user._id)}
-                handlerMascotas={() => this.handlerNewMascotas()}
-              />
-            </FadeInView>
+           
+              <FadeInView style={{ height: "90%", width: "100%" }}>
+                <FormMascota
+                  user={this.state.user}
+                  mascotas={getMyPets(this.state.mascotas, this.state.user._id)}
+                  handlerMascotas={() => this.handlerNewMascotas()}
+                />
+              </FadeInView>
+            
           </>
         );
         break;
@@ -225,12 +213,15 @@ export default class App extends Component {
     } else {
       return (
         <Root>
-          <SafeAreaView style={{ flex: 1 }}>
-            <FadeInView style={{ height: "100%", width: "100%" }}>
+          <MascotasProvider
+            user={this.state.user}
+            mascotas={this.state.mascotas}
+          >
+            <SafeAreaView style={{ flex: 1 }}>
               {this.renderSelectedTab()}
-            </FadeInView>
-          </SafeAreaView>
-          {this.renderTabs()}
+            </SafeAreaView>
+            {this.renderTabs()}
+          </MascotasProvider>
         </Root>
       );
     }
@@ -285,5 +276,3 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
-
-

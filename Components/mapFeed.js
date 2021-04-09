@@ -16,76 +16,61 @@ import { mostrarFoto } from "../helpers/imageService";
 import {  Card,  Icon, Input, Button, CardItem } from "native-base";
 import { tiempoTranscurrido } from "../helpers/getTimePass";
 import EmptyCard from "./EmptyCard";
+import { MascotasContext } from "../context/mascotasContext";
 
 const { width } = Dimensions.get("window");
 const CARD_HEIGHT = 130;
 const CARD_WIDTH = width-100;
 
 export default class MapFeed extends Component {
+  static contextType = MascotasContext;
   constructor(props) {
     super(props);
     this.index = 0;
     this.animation = new Animated.Value(0);
     this.data = [];
-    if(this.props.mascotas){
-       if (!Array.isArray(this.props.mascotas))
-         this.data.push(this.props.mascotas);
-       else this.data = this.props.mascotas;
-
-       this.iniReg = generateInitialRegion(this.data[0].location);
-    }else{
-      this.iniReg = generateInitialRegion(this.props.usuario.location);
-    }
-   
-    
   }
 
   componentDidMount() {
-    // We should detect when scrolling has stopped then animate
-    // We should just debounce the event listener here
-    
-      this.animation.addListener(({ value }) => {
-        
-         
-          let index = Math.floor(value / CARD_WIDTH + 0.3); // animate 30% away from landing on the next item
+    this.animation.addListener(({ value }) => {
+      let index = Math.floor(value / CARD_WIDTH + 0.3); // animate 30% away from landing on the next item
 
-          if (index >= this.data.length) {
-            index = this.data.length - 1;
-          }
-          if (index <= 0) {
-            index = 0;
-          }
+      if (index >= this.context[0].length) {
+        index = this.context[0].length - 1;
+      }
+      if (index <= 0) {
+        index = 0;
+      }
 
-          clearTimeout(this.regionTimeout);
-          this.regionTimeout = setTimeout(() => {
-            if (this.index !== index) {
-              this.index = index;
-              const { location } = this.data[index];
+      clearTimeout(this.regionTimeout);
+      this.regionTimeout = setTimeout(() => {
+        if (this.index !== index) {
+          this.index = index;
+          const { location } = this.context[0][index];
 
-              this.map.animateToRegion(
-                {
-                  ...location,
-                  latitudeDelta: 0.04864195044303443,
-                  longitudeDelta: 0.040142817690068,
-                },
-                350
-              );
-            }
-          }, 10);
-        
-      });
+          this.map.animateToRegion(
+            {
+              ...location,
+              latitudeDelta: 0.04864195044303443,
+              longitudeDelta: 0.040142817690068,
+            },
+            350
+          );
+        }
+      }, 10);
+    });
   }
 
   render() {
-    
-    const interpolations = this.data.map((mascota, index) => {
-      
+    let mascotas = this.context[0]
+    let iniReg = generateInitialRegion(this.context[0][0].location);
+    const interpolations = mascotas.map((mascota, index) => {
       const inputRange = [
         (index - 1) * CARD_WIDTH,
         index * CARD_WIDTH,
         (index + 1) * CARD_WIDTH,
       ];
-      
+
       const scale = this.animation.interpolate({
         inputRange,
         outputRange: [1, 1.7, 1],
@@ -98,16 +83,17 @@ export default class MapFeed extends Component {
       });
       return { scale, opacity };
     });
-    
+
+   
     return (
       <View style={styles.container}>
         <MapView
           ref={(map) => (this.map = map)}
-          initialRegion={this.iniReg}
+          initialRegion={iniReg}
           style={styles.container}
         >
-          {this.data.length !== 0 &&
-            this.data.map((marker, index) => {
+          {mascotas.length !== 0 &&
+            mascotas.map((marker, index) => {
               const scaleStyle = {
                 transform: [
                   {
@@ -155,8 +141,8 @@ export default class MapFeed extends Component {
           style={styles.scrollView}
           contentContainerStyle={styles.endPadding}
         >
-          {this.data.length !== 0 ? (
-            this.data.map((mascota) => (
+          {mascotas.length !== 0 ? (
+            mascotas.map((mascota) => (
               <CardFeedMap
                 mascota={mascota}
                 key={mascota._id}

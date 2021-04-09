@@ -1,18 +1,20 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { StyleSheet, Image, Modal, Dimensions, TouchableOpacity  } from "react-native";
 import { Card, CardItem, Right, Left, Button, Icon, Text, Title } from "native-base";
 import InfoPerro from './InfoPerro';
 import { mostrarFoto } from '../helpers/imageService';
 import colores from '../Components/colorPalette';
 import { tiempoTranscurrido } from '../helpers/getTimePass';
+import { MascotasContext } from '../context/mascotasContext';
 
 function CardFeed({mascota, usuario, handlerRender}) {
+  const [ , , , , setMasco] = useContext(MascotasContext)
   const [foto] = useState(mostrarFoto(mascota.petPicture));
-
+ 
   return (
     <TouchableOpacity
       key={mascota._id}
-      onPress={() => handlerRender(mascota, "info")}
+      onPress={() => {setMasco(mascota), handlerRender(mascota, "info");}}
     >
       <Card style={styles.card}>
         <CardItem cardBody>

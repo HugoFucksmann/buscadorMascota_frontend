@@ -3,6 +3,17 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { registerForPushNotificationsAsync } from "./notificationConfig";
 import { myLocation2 } from "./getLocation";
 
+export async function getUser() {
+  let user = await AsyncStorage.getItem("user");
+   
+  if (!user) user = await usuarioRandom2();
+  else user = JSON.parse(user);
+
+  user = await actualizarLocation2(user);
+
+  return user;
+}
+
 export async function googleLogin(user) {
  
   try {

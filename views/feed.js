@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { SafeAreaView, VirtualizedList, Text, StyleSheet } from "react-native";
 import { Tabs, Tab, TabHeading, DefaultTabBar } from "native-base";
 import CardFeed from '../Components/card';
@@ -6,21 +6,13 @@ import InfoPerro from '../Components/InfoPerro';
 import Chat from './chat';
 import colores from '../Components/colorPalette';
 import MapFeed from '../Components/mapFeed';
+import { MascotasContext } from '../context/mascotasContext';
+import FeedTarj from '../modules/feedTarj';
 
 const Feed = ({mascotas, usuario}) => {
   
   const [mascota, setMascota] = useState(false);
   const [render, setRender] = useState('tarjetas');
-  
-  const RenderItem = ({item}) => {
-    return (
-      <CardFeed
-        mascota={item}
-        usuario={usuario}
-        handlerRender={handlerRender}
-      />
-    );
-  };
 
   function handlerRender(mascota, render) {
  
@@ -29,9 +21,10 @@ const Feed = ({mascotas, usuario}) => {
   }
   
   function renderFeed(){ 
+   
      switch (render) {
        case "tarjetas":
-         return <TabsFeed usuario={usuario} mascotas={mascotas} handlerRender={handlerRender} />                  
+         return <TabsFeed handlerRender={handlerRender} />                  
          break;
 
        case "info":
@@ -43,6 +36,7 @@ const Feed = ({mascotas, usuario}) => {
          break;
 
        default:
+        break
      }
   };
 
@@ -53,21 +47,14 @@ const Feed = ({mascotas, usuario}) => {
   );
  
 };
-// MapFeed
 
-const TabsFeed = ({ usuario, mascotas, handlerRender }) => {
 
-  const RenderItem = ({ item }) => {
-    return (
-      <CardFeed mascota={item} usuario={usuario} handlerRender={handlerRender} />
-    );
-  };
-
+const TabsFeed = ({ handlerRender }) => {
+  
   const renderTabBar = (props) => {
     props.tabStyle = Object.create(props.tabStyle);
     return <DefaultTabBar {...props} />;
   };
-
 
   return (
     <Tabs
@@ -84,14 +71,7 @@ const TabsFeed = ({ usuario, mascotas, handlerRender }) => {
           </TabHeading>
         }
       >
-        <VirtualizedList
-          data={mascotas}
-          renderItem={RenderItem}
-          keyExtractor={(item) => item._id}
-          getItemCount={(data) => data.length}
-          initialNumToRender={4}
-          getItem={(data, index) => data[index]}
-        />
+        <FeedTarj handlerRender={handlerRender} />
       </Tab>
       <Tab
         heading={
@@ -100,11 +80,7 @@ const TabsFeed = ({ usuario, mascotas, handlerRender }) => {
           </TabHeading>
         }
       >
-        <MapFeed
-          usuario={usuario}
-          mascotas={mascotas}
-          handlerRender={handlerRender}
-        />
+        <MapFeed handlerRender={handlerRender} />
       </Tab>
     </Tabs>
   );

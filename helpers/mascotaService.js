@@ -1,9 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import firebaseConfig from "../firebaseConfig";
 
-async function getToken() {
-  return await AsyncStorage.getItem("token");
-}
+
 
 async function actualizarArchivo(file, perroId, token) {
   try {
@@ -53,7 +51,7 @@ function getMyPets(mascotas, uid) {
 }
 
 async function getMascotas2(user) {
-
+ 
   function deg2rad(deg) {
     return deg * (Math.PI / 180);
   }
@@ -188,5 +186,5 @@ module.exports = {
   getMyPets,
   editarMascota,
   eliminarMascota,
-  getMascotas2
+  getMascotas2,
 };

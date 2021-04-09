@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import {
   ScrollView,
   View,
@@ -47,6 +47,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { getMyChats } from "../helpers/getMyChats";
 import Chat from "./chat";
 import { getFechaChat } from "../helpers/getTimePass";
+import { MascotasContext } from "../context/mascotasContext";
 
 const Botonera2 = ({
   mascotas,
@@ -54,27 +55,29 @@ const Botonera2 = ({
   handlerDeleteMascotas,
   handlerEditMascotas,
 }) => {
-  const [misMascotas, setMiMascotas] = useState({})
+  const [misMascotas, setMiMascotas] = useState({});
   const [chat, setChat] = useState(false);
+
   function handlerRender(mascota, param) {
     setChat(mascota);
   }
 
   useEffect(() => {
     setMiMascotas(getMyPets(mascotas, usuario._id));
-  },[])
-
+  }, []);
+  
   return (
-    <>
+    <View>
       <StatusBar style="auto" />
+
       {!chat ? (
         <>
           <HeaderUser usuario={usuario} />
-          <ImageBackground
+          {/* <ImageBackground
+            resizeMode="repeat"
             source={fondo}
             style={styles.image}
-            resizeMode="repeat"
-          >
+          > */}
             <View style={{ height: "45%" }}>
               {misMascotas.length !== 0 ? (
                 <MyPetCards
@@ -89,15 +92,15 @@ const Botonera2 = ({
                 </View>
               )}
             </View>
-            <ScrollView >
+            <ScrollView>
               <MisChats handlerRender={handlerRender} mascotas={mascotas} />
             </ScrollView>
-          </ImageBackground>
+     {/*      </ImageBackground> */}
         </>
       ) : (
         <Chat mascota={chat} usuario={usuario} handlerRender={handlerRender} />
       )}
-    </>
+    </View>
   );
 };
 
@@ -140,13 +143,13 @@ const HeaderUser = ({ usuario }) => {
 
 const MisChats = ({ handlerRender, mascotas }) => {
   const [chats, setChats] = useState("loading");
-  
+
   async function loadChats() {
     let resp = await getMyChats();
     setChats(resp);
   }
 
-  async function handlerChat(petId) {   
+  async function handlerChat(petId) {
     let laMascota = await mascotas.filter((mascota) => mascota._id === petId);
     handlerRender(laMascota[0], "chat");
   }
@@ -154,7 +157,7 @@ const MisChats = ({ handlerRender, mascotas }) => {
   useEffect(() => {
     loadChats();
   }, []);
-
+ 
   function renderChats() {
     switch (chats) {
       case "loading":
@@ -173,10 +176,18 @@ const MisChats = ({ handlerRender, mascotas }) => {
         );
         break;
 
+      case []:
+        return (
+          <View style={{ paddingTop: 10 }}>
+            <EmptyCard text={"no tienes chats de mascotas"} />
+          </View>
+        );
+        break;
+
       default:
         return chats.map((chat) => {
           let fecha = getFechaChat(chat.createdAt);
-          
+
           return (
             <TouchableOpacity
               key={chat._id}
@@ -238,17 +249,17 @@ const MyPetCards = ({
   handlerEditMascotas,
   handlerChat,
 }) => {
+  const [mascotas, setMascotas, user] = useContext(MascotasContext);
+  const data = useMemo(() => getMyPets(mascotas, user._id), [mascotas]);
   const [isModal, setIsModal] = useState(false);
   const [mascota, setMascota] = useState({});
-  let data = miMascotas;
 
   async function editMascota(perro) {
-   
     let itOk = await editarMascota(perro);
     if (itOk) {
-      await handlerEditMascotas()
-      return setIsModal(false)
-    }else Alert("error al editar la mascota !");
+      await handlerEditMascotas();
+      return setIsModal(false);
+    } else Alert("error al editar la mascota !");
   }
 
   async function handlerEliminar(mascota) {
@@ -298,6 +309,7 @@ const MyPetCards = ({
 };
 
 const CardPet = ({ mascota, handlerEliminar, handlermodal, handlerChat }) => {
+ 
   const createTwoButtonAlert = () =>
     Alert.alert(
       "Encontraste tu mascota ?",
@@ -314,8 +326,10 @@ const CardPet = ({ mascota, handlerEliminar, handlermodal, handlerChat }) => {
           },
         },
       ]
-    );
+  );
 
+  
+     
   return (
     <Card key={mascota._id} style={styles.myPetCard}>
       <Image
@@ -617,6 +631,7 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
     resizeMode: "cover",
+    justifyContent: "center",
   },
   textArea: {
     backgroundColor: "#fff",

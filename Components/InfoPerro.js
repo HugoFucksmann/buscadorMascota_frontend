@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import MapView, { Marker } from "react-native-maps";
 import { View, StyleSheet, Dimensions, Modal, Image } from "react-native";
 import { getMapLocation } from "../helpers/getLocation";
@@ -16,8 +16,10 @@ import LoadingView from "../views/pagCarga";
 import markerPet from "../assets/iconos/marker_paw.png";
 import markerMan from "../assets/iconos/marker_man.png";
 import fondo from "../assets/fondos/form_background.png"
+import { MascotasContext } from "../context/mascotasContext";
 
-export default function InfoPerro({ mascota, usuario, handlerRender }) {
+export default function InfoPerro({ mascotaa, usuarioo, handlerRender }) {
+  const [ , , usuario, mascota] = useContext(MascotasContext);
   const [foto] = useState(mostrarFoto(mascota.petPicture));
   const windowWidth = Dimensions.get("window").width;
 
@@ -69,8 +71,6 @@ export default function InfoPerro({ mascota, usuario, handlerRender }) {
       </MapView>
     );
   }
-
- 
 
    return (
      <Modal
