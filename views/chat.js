@@ -1,22 +1,25 @@
 // @refresh reset
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import { BackHandler } from "react-native";
 import { GiftedChat } from "react-native-gifted-chat";
 import firebaseConfig from "../firebaseConfig";
 import { PROD_URL } from "@env";
+import { MascotasContext } from "../context/mascotasContext";
+import { toogleMascotaContext } from "../context/toogleContext";
 
-export default function Chat({ mascota, usuario, handlerRender }) {
-  const chatsRef = firebaseConfig().collection(mascota._id);
+export default function Chat() {
+  const { usuario, mascota , handlerFeed } = useContext(toogleMascotaContext);
+  const chatsRef = firebaseConfig().collection( mascota._id);
   const [messages, setMessages] = useState([]);
   const chatUser = {
     name: usuario.name,
     _id: usuario._id,
     img: usuario.img,
     notification: usuario.notification,
-    petName: mascota.petName,
-    petPicture: mascota.petPicture,
-    petId: mascota._id
+    petName:  mascota.petName,
+    petPicture:  mascota.petPicture,
+    petId:  mascota._id
   };
   useEffect(() => {
     const unsubscribe = chatsRef.onSnapshot((querySnapshot) => {
@@ -35,7 +38,8 @@ export default function Chat({ mascota, usuario, handlerRender }) {
   }, []);
   
   const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
-    handlerRender(false, "tarjetas");
+   
+    handlerFeed({}, "tarjetas");
     return true;
   });
 
@@ -51,7 +55,7 @@ export default function Chat({ mascota, usuario, handlerRender }) {
   async function handleSend(messagess) {
     await messagess.map((m) => chatsRef.add(m));
     let chatTokens =[];
-    const uIdMascota = mascota.usuario
+    const uIdMascota =  mascota.usuario
     const chats = await chatsRef.get()
     chats.forEach((doc) => {
       chatTokens = [...chatTokens, doc.data().user.notification];
@@ -71,13 +75,13 @@ export default function Chat({ mascota, usuario, handlerRender }) {
   
     if(userChat){
       userChat = JSON.parse(userChat);
-      userChat = [...userChat, mascota._id ];
+      userChat = [...userChat,  mascota._id ];
       userChat = userChat.filter((chat, index) => {
         return userChat.indexOf(chat) === index;
       });
       await AsyncStorage.setItem("chats", JSON.stringify(userChat));
     }else{
-      userChat = [mascota._id];
+      userChat = [ mascota._id];
       await AsyncStorage.setItem("chats", JSON.stringify(userChat));
     }
     

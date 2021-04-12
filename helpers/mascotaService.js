@@ -29,7 +29,7 @@ async function actualizarArchivo(file, perroId, token) {
     const data = await resp.json();
 
     if (data.ok) {
-      return true;
+      return data.mascota;
     } else {
       return false;
     }
@@ -142,7 +142,7 @@ async function editarMascota(newMascota) {
   }).catch((e) => console.log(e));
 
   const data = await resp.json();
-  if(data.ok) return true
+  if(data.ok) return data.mascotaActualizado
   else return false
 }
 

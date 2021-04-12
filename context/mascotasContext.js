@@ -1,17 +1,13 @@
-import React, { useState, createContext, useEffect } from "react";
-import { set } from "react-native-reanimated";
-import { isAuthenticated, getUser } from "../helpers/auth";
-import { getMascotas2 } from "../helpers/mascotaService";
-import LoadingView from "../views/pagCarga";
+import React, { useState, createContext } from "react";
 
 export const MascotasContext = createContext();
 
 export const MascotasProvider = (props) => {
     const [mascotas, setMascotas] = useState(props.mascotas);
-    const [mascota, setMascota] = useState(false)
+    const [handlerMascota, setHandlerMascota] = useState({mascota: false, estado: 'tarjetas' })
     return (
       <MascotasContext.Provider
-        value={[mascotas, setMascotas, props.user, mascota, setMascota]}
+        value={[mascotas, setMascotas, props.user, handlerMascota, setHandlerMascota]}
       >
         {props.children}
       </MascotasContext.Provider>

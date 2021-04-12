@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { View,  Image,  Platform,  Text,  ScrollView,  StyleSheet, ImageBackground } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as ImagePicker from "expo-image-picker";
@@ -13,12 +13,14 @@ import colores from "../Components/colorPalette";
 import { Dimensions } from "react-native";
 import markerPet from '../assets/iconos/marker_paw.png'
 import fondo from "../assets/fondos/form_background.png"
+import { toogleMascotaContext } from "../context/toogleContext";
 
-const FormMascota = ({ user, mascotas, handlerMascotas }) => {
+const FormMascota = () => {
+  const { usuario, misMascotas, handlerMascota  } = useContext(toogleMascotaContext)
   const [image, setImage] = useState(null);
   const [file, setFile] = useState(null);
   const [ubi] = useState({
-    ...user.location,
+    ...usuario.location,
     latitudeDelta: 0.0052,
     longitudeDelta: 0.0051,
   });
@@ -38,7 +40,7 @@ const FormMascota = ({ user, mascotas, handlerMascotas }) => {
 
   function topCargas(){
     let disable
-    if(mascotas.length >= 3) disable = true
+    if(misMascotas.length >= 3) disable = true
     else disable = false
 
     return disable
@@ -59,14 +61,14 @@ const FormMascota = ({ user, mascotas, handlerMascotas }) => {
   async function uploadPerro() {
     const token = await AsyncStorage.getItem("token");
     
-    let perroId = await crearMascota(perro, token, user.notification);
+    let perroId = await crearMascota(perro, token, usuario.notification);
    
     if (!perroId) return alert("error al crear perro");
     else{
-        let result = await actualizarArchivo(file, perroId, token)
-        if (!result) alert("Error al cargar la imagen del perro!");
-        handlerMascotas();
-    }      
+        let mascota = await actualizarArchivo(file, perroId, token)
+        if (!mascota) alert("Error al cargar la imagen del perro!");
+        return handlerMascota('editar', mascota)
+    }
   }
 
   const pickImage = async () => {

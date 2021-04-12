@@ -8,6 +8,7 @@ import {
   Image,
   Dimensions,
   TouchableOpacity,
+  VirtualizedList,
 } from "react-native";
 import markerPet from "../assets/iconos/marker_paw.png";
 import MapView from "react-native-maps";
@@ -16,14 +17,14 @@ import { mostrarFoto } from "../helpers/imageService";
 import {  Card,  Icon, Input, Button, CardItem } from "native-base";
 import { tiempoTranscurrido } from "../helpers/getTimePass";
 import EmptyCard from "./EmptyCard";
-import { MascotasContext } from "../context/mascotasContext";
+import { toogleMascotaContext } from "../context/toogleContext";
 
 const { width } = Dimensions.get("window");
 const CARD_HEIGHT = 130;
 const CARD_WIDTH = width-100;
 
 export default class MapFeed extends Component {
-  static contextType = MascotasContext;
+  static contextType = toogleMascotaContext;
   constructor(props) {
     super(props);
     this.index = 0;
@@ -33,10 +34,10 @@ export default class MapFeed extends Component {
 
   componentDidMount() {
     this.animation.addListener(({ value }) => {
-      let index = Math.floor(value / CARD_WIDTH + 0.3); // animate 30% away from landing on the next item
-
-      if (index >= this.context[0].length) {
-        index = this.context[0].length - 1;
+      let index = Math.floor(value / CARD_WIDTH); // animate 30% away from landing on the next item
+      
+      if (index >= this.context.mascotas.length) {
+        index = this.context.mascotas.length - 1;
       }
       if (index <= 0) {
         index = 0;
@@ -46,7 +47,7 @@ export default class MapFeed extends Component {
       this.regionTimeout = setTimeout(() => {
         if (this.index !== index) {
           this.index = index;
-          const { location } = this.context[0][index];
+          const { location } = this.context.mascotas[index];
 
           this.map.animateToRegion(
             {
@@ -62,8 +63,9 @@ export default class MapFeed extends Component {
   }
 
   render() {
-    let mascotas = this.context[0]
-    let iniReg = generateInitialRegion(this.context[0][0].location);
+    let mascotas = this.context.mascotas
+    let  handlerFeed = this.context.handlerFeed
+    let iniReg = generateInitialRegion(this.context.mascotas[0].location);
     const interpolations = mascotas.map((mascota, index) => {
       const inputRange = [
         (index - 1) * CARD_WIDTH,
@@ -84,6 +86,11 @@ export default class MapFeed extends Component {
       return { scale, opacity };
     });
 
+    const RenderItem = ({ item }) => {
+      return (
+        <CardFeedMap mascota={item} handlerFeed={handlerFeed}  />
+      );
+    };
    
     return (
       <View style={styles.container}>
@@ -142,13 +149,22 @@ export default class MapFeed extends Component {
           contentContainerStyle={styles.endPadding}
         >
           {mascotas.length !== 0 ? (
-            mascotas.map((mascota) => (
+           /*  mascotas.map((mascota) => (
               <CardFeedMap
                 mascota={mascota}
                 key={mascota._id}
-                handlerRender={this.props.handlerRender}
+                setHandlerMascota={ setHandlerMascota}
               />
-            ))
+            )) */
+            <VirtualizedList
+            horizontal
+            data={mascotas}
+            renderItem={RenderItem}
+            keyExtractor={(item) => item._id}
+            getItemCount={(data) => data.length}
+            initialNumToRender={4}
+            getItem={(data, index) => data[index]}
+          />
           ) : (
             <EmptyCard text={"no hay perros perdidos"} />
           )}
@@ -158,14 +174,15 @@ export default class MapFeed extends Component {
   }
 }
 
-const CardFeedMap = ({ mascota, handlerRender }) => {
+
+const CardFeedMap = ({ mascota,  handlerFeed }) => {
   const foto = mostrarFoto(mascota.petPicture);
   return (
     <TouchableOpacity
       activeOpacity={0.8}
       key={mascota._id}
       onPress={() => {
-        handlerRender(mascota, "info");
+         handlerFeed(mascota, "info");
       }}
     >
       <Card style={styles.cardd}>
@@ -173,7 +190,7 @@ const CardFeedMap = ({ mascota, handlerRender }) => {
           <Button
             small
             style={styles.button}
-            onPress={() => handlerRender(mascota, "chat")}
+            onPress={() =>  handlerFeed(mascota, "chat")}
           >
             <Icon type="Entypo" name="chat" style={{ color: colores.main }} />
           </Button>

@@ -48,59 +48,33 @@ import { getMyChats } from "../helpers/getMyChats";
 import Chat from "./chat";
 import { getFechaChat } from "../helpers/getTimePass";
 import { MascotasContext } from "../context/mascotasContext";
+import { toogleMascotaContext } from "../context/toogleContext";
 
-const Botonera2 = ({
-  mascotas,
-  usuario,
-  handlerDeleteMascotas,
-  handlerEditMascotas,
-}) => {
-  const [misMascotas, setMiMascotas] = useState({});
-  const [chat, setChat] = useState(false);
+const Botonera2 = () => {
+  const { usuario, misMascotas, renderFeed } = useContext(toogleMascotaContext)
 
-  function handlerRender(mascota, param) {
-    setChat(mascota);
-  }
-
-  useEffect(() => {
-    setMiMascotas(getMyPets(mascotas, usuario._id));
-  }, []);
-  
+  if(renderFeed === 'chat') return <Chat />
   return (
-    <View>
+    <>
       <StatusBar style="auto" />
-
-      {!chat ? (
-        <>
-          <HeaderUser usuario={usuario} />
-          {/* <ImageBackground
-            resizeMode="repeat"
-            source={fondo}
-            style={styles.image}
-          > */}
-            <View style={{ height: "45%" }}>
-              {misMascotas.length !== 0 ? (
-                <MyPetCards
-                  miMascotas={misMascotas}
-                  handlerDeleteMascotas={handlerDeleteMascotas}
-                  handlerEditMascotas={handlerEditMascotas}
-                  handlerChat={handlerRender}
-                />
-              ) : (
-                <View style={{ padding: 10 }}>
-                  <EmptyCard text={"no tienes mascotas perdidas"} />
-                </View>
-              )}
-            </View>
-            <ScrollView>
-              <MisChats handlerRender={handlerRender} mascotas={mascotas} />
-            </ScrollView>
-     {/*      </ImageBackground> */}
-        </>
-      ) : (
-        <Chat mascota={chat} usuario={usuario} handlerRender={handlerRender} />
-      )}
-    </View>
+      <HeaderUser usuario={usuario} />
+      <ImageBackground
+        resizeMode="repeat"
+        source={fondo}
+        style={styles.image}
+      >
+        <View style={{ height: "45%" }}>
+          {misMascotas.length !== 0 ? (
+            <MyPetCards />
+          ) : (
+            <EmptyCard text={"no tienes mascotas perdidas"} />
+          )}
+        </View>
+        <ScrollView>
+          <MisChats />
+        </ScrollView>
+      </ImageBackground>
+    </>
   );
 };
 
@@ -141,20 +115,23 @@ const HeaderUser = ({ usuario }) => {
   );
 };
 
-const MisChats = ({ handlerRender, mascotas }) => {
-  const [chats, setChats] = useState("loading");
 
+const MisChats = () => {
+  const { mascotas, handlerFeed } = useContext(toogleMascotaContext)
+  const [chats, setChats] = useState("loading");
+  console.log('chats mischats ', chats);
   async function loadChats() {
     let resp = await getMyChats();
     setChats(resp);
   }
-
-  async function handlerChat(petId) {
-    let laMascota = await mascotas.filter((mascota) => mascota._id === petId);
-    handlerRender(laMascota[0], "chat");
+ 
+  function handlerChat(petId){
+    let [laMascota] = mascotas.filter((mascota) => mascota._id === petId);
+    handlerFeed(laMascota, "chat");
   }
-
+  
   useEffect(() => {
+   
     loadChats();
   }, []);
  
@@ -170,17 +147,9 @@ const MisChats = ({ handlerRender, mascotas }) => {
 
       case false:
         return (
-          <View style={{ paddingTop: 10 }}>
-            <EmptyCard text={"no tienes chats de mascotas"} />
-          </View>
-        );
-        break;
-
-      case []:
-        return (
-          <View style={{ paddingTop: 10 }}>
-            <EmptyCard text={"no tienes chats de mascotas"} />
-          </View>
+          <TouchableOpacity style={{ paddingTop: 10 }}>
+            <Text>HOLAAAA</Text>
+          </TouchableOpacity>
         );
         break;
 
@@ -243,44 +212,16 @@ const MisChats = ({ handlerRender, mascotas }) => {
   );
 };
 
-const MyPetCards = ({
-  miMascotas,
-  handlerDeleteMascotas,
-  handlerEditMascotas,
-  handlerChat,
-}) => {
-  const [mascotas, setMascotas, user] = useContext(MascotasContext);
-  const data = useMemo(() => getMyPets(mascotas, user._id), [mascotas]);
-  const [isModal, setIsModal] = useState(false);
-  const [mascota, setMascota] = useState({});
-
-  async function editMascota(perro) {
-    let itOk = await editarMascota(perro);
-    if (itOk) {
-      await handlerEditMascotas();
-      return setIsModal(false);
-    } else Alert("error al editar la mascota !");
-  }
-
-  async function handlerEliminar(mascota) {
-    let result = await eliminarMascota(mascota._id);
-    if (result) {
-      handlerDeleteMascotas();
-    }
-  }
-
-  function handlermodal(mascota) {
-    setMascota(mascota);
-    setIsModal(true);
-  }
+const MyPetCards = () => {
+  const { misMascotas, handlerMascota, handlerFeed } = useContext(toogleMascotaContext)
+  
 
   const RenderItem = ({ item }) => {
     return (
       <CardPet
         mascota={item}
-        handlerEliminar={handlerEliminar}
-        handlermodal={handlermodal}
-        handlerChat={handlerChat}
+        handlerFeed={handlerFeed}
+        handlerMascota={handlerMascota}
       />
     );
   };
@@ -290,47 +231,42 @@ const MyPetCards = ({
       <FlatList
         horizontal
         showsHorizontalScrollIndicator={false}
-        data={data}
+        data={misMascotas}
         renderItem={RenderItem}
         keyExtractor={(item) => item._id}
       />
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={isModal}
-        onRequestClose={() => {
-          setIsModal(false);
-        }}
-      >
-        <ModalContent mascota={mascota} editMascota={editMascota} />
-      </Modal>
+     
     </>
   );
 };
 
-const CardPet = ({ mascota, handlerEliminar, handlermodal, handlerChat }) => {
- 
-  const createTwoButtonAlert = () =>
-    Alert.alert(
-      "Encontraste tu mascota ?",
-      "si aceptas se eliminara el registro de tu mascota",
-      [
-        {
-          text: "todavia no",
-          style: "cancel",
-        },
-        {
-          text: "si, ya la recupere",
-          onPress: () => {
-            handlerEliminar(mascota);
-          },
-        },
-      ]
-  );
-
+const CardPet = ({ mascota, handlerFeed, handlerMascota }) => {
+  const [isModal, setIsModal] = useState(false);
   
+  const createTwoButtonAlert = () =>
+  Alert.alert(
+    "Encontraste tu mascota ?",
+    "si aceptas se eliminara el registro de tu mascota",
+    [
+      {
+        text: "todavia no",
+        style: "cancel",
+      },
+      {
+        text: "si, ya la recupere",
+        onPress: () => handlerEliminar(),
+      },
+    ]
+);
+
+  async function handlerEliminar(){
+    let result = await eliminarMascota(mascota._id)
+    if(result) return handlerMascota('eliminar', mascota) 
+    
+  }
+ 
      
-  return (
+  return (<>
     <Card key={mascota._id} style={styles.myPetCard}>
       <Image
         source={{ uri: mascota.petPicture }}
@@ -404,7 +340,7 @@ const CardPet = ({ mascota, handlerEliminar, handlermodal, handlerChat }) => {
             width: 100,
             marginRight: 10,
           }}
-          onPress={() => handlerChat(mascota, "chat")}
+          onPress={() => handlerFeed(mascota, 'chat')}
         >
           <Icon type="Entypo" name="chat" fontSize="22" />
           <Text style={{ color: colores.mild, fontFamily: "NunitoLight" }}>
@@ -412,7 +348,7 @@ const CardPet = ({ mascota, handlerEliminar, handlermodal, handlerChat }) => {
           </Text>
         </Button>
         <Button
-          onPress={() => handlermodal(mascota)}
+          onPress={() => setIsModal(true)} 
           small
           rounded
           style={{
@@ -439,11 +375,22 @@ const CardPet = ({ mascota, handlerEliminar, handlermodal, handlerChat }) => {
         </Button>
       </View>
     </Card>
-  );
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={isModal}
+      onRequestClose={() => {
+        setIsModal(false);
+      }}
+      >
+        <ModalContent mascota={mascota} handlerMascota={handlerMascota} />
+      </Modal>
+  </>);
 };
 
-const ModalContent = ({ mascota, editMascota }) => {
+const ModalContent = ({ mascota, handlerMascota }) => {
   const [perro, setPerro] = useState(mascota);
+
   const switchOptions = [
     {
       label: "Blanco",
@@ -463,6 +410,13 @@ const ModalContent = ({ mascota, editMascota }) => {
     },
     { label: "Canela", value: "canela", activeColor: "#f0eddf" },
   ];
+
+  async function handlerEditar(){
+    let result = await editarMascota(perro)
+    if(result) return handlerMascota('editar', result)
+  }
+
+
   return (
     <View
       style={{
@@ -545,7 +499,7 @@ const ModalContent = ({ mascota, editMascota }) => {
         <Button
           block
           style={styles.btnFinal}
-          onPress={() => editMascota(perro)}
+          onPress={() => handlerEditar()}
         >
           <Label style={{ color: colores.light, fontSize: 20 }}>Editar</Label>
         </Button>

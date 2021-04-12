@@ -1,55 +1,46 @@
-import React, { useContext, useState } from 'react';
-import { SafeAreaView, VirtualizedList, Text, StyleSheet } from "react-native";
+import React, { useContext } from 'react';
+import { SafeAreaView, Text, StyleSheet } from "react-native";
 import { Tabs, Tab, TabHeading, DefaultTabBar } from "native-base";
-import CardFeed from '../Components/card';
 import InfoPerro from '../Components/InfoPerro';
 import Chat from './chat';
 import colores from '../Components/colorPalette';
 import MapFeed from '../Components/mapFeed';
-import { MascotasContext } from '../context/mascotasContext';
 import FeedTarj from '../modules/feedTarj';
+import { toogleMascotaContext } from '../context/toogleContext';
 
-const Feed = ({mascotas, usuario}) => {
+const Feed = () => {
+  const { renderFeed } = useContext(toogleMascotaContext)
   
-  const [mascota, setMascota] = useState(false);
-  const [render, setRender] = useState('tarjetas');
-
-  function handlerRender(mascota, render) {
- 
-    if (mascota) setMascota(mascota);
-    setRender(render);
-  }
-  
-  function renderFeed(){ 
+  function handlerRenderFeed(){ 
    
-     switch (render) {
-       case "tarjetas":
-         return <TabsFeed handlerRender={handlerRender} />                  
-         break;
+    switch (renderFeed) {
+      case "tarjetas":
+        return <TabsFeed  />                  
+      break;
 
-       case "info":
-         return <InfoPerro mascota={mascota} usuario={usuario} handlerRender={handlerRender} />;
-         break;
+      case "info":
+        return <InfoPerro  />;
+      break;
 
-       case "chat":
-         return <Chat mascota={mascota} usuario={usuario} handlerRender={handlerRender} />;
-         break;
+      case "chat":
+        return <Chat  />;
+      break;
 
-       default:
-        break
-     }
+      default:
+      break
+    }
   };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-      {renderFeed()}
+      {handlerRenderFeed()}
     </SafeAreaView>
   );
  
 };
 
 
-const TabsFeed = ({ handlerRender }) => {
+const TabsFeed = () => {
   
   const renderTabBar = (props) => {
     props.tabStyle = Object.create(props.tabStyle);
@@ -71,7 +62,7 @@ const TabsFeed = ({ handlerRender }) => {
           </TabHeading>
         }
       >
-        <FeedTarj handlerRender={handlerRender} />
+        <FeedTarj  />
       </Tab>
       <Tab
         heading={
@@ -80,7 +71,7 @@ const TabsFeed = ({ handlerRender }) => {
           </TabHeading>
         }
       >
-        <MapFeed handlerRender={handlerRender} />
+        <MapFeed  />
       </Tab>
     </Tabs>
   );

@@ -1,5 +1,5 @@
 import "react-native-gesture-handler";
-import React, { Component, useState } from "react";
+import React, { Component, useContext, useState } from "react";
 import {
   SafeAreaView,
   StyleSheet,
@@ -22,7 +22,7 @@ import { StatusBar } from "expo-status-bar";
 import Botonera2 from "./views/botonera2";
 import * as Notifications from "expo-notifications";
 import { FadeInView } from "./AnimatedViews/fadeView";
-import { MascotasProvider } from "./context/mascotasContext";
+import ToogleMasoctaProvider, { toogleMascotaContext } from "./context/toogleContext";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -79,132 +79,24 @@ export default class App extends Component {
   }
 
   async handlerNewMascotas() {
-    let mascotas = await getMascotas(this.state.user);
+    let mascotas = await getMascotas2(this.state.user);
     this.setState({ mascotas: mascotas, selectedTab: "perfil" });
     alert("se ha creado la mascota correctamente");
   }
 
   async handlerDeleteMascotas() {
-    let mascotas = await getMascotas(this.state.user);
+    let mascotas = await getMascotas2(this.state.user);
     this.setState({ mascotas: mascotas, selectedTab: "perfil" });
     alert("se ha eliminado la mascota");
   }
   async handlerEditMascotas() {
-    let mascotas = await getMascotas(this.state.user);
+    let mascotas = await getMascotas2(this.state.user);
     this.setState({ mascotas: mascotas, selectedTab: "perfil" });
     alert("mascota editada");
   }
-
-  renderTabs() {
-    return (
-      <Footer style={styles.footer}>
-        <FooterTab style={{ backgroundColor: colores.mild }}>
-          <Button
-            style={styles.button}
-            active={this.state.selectedTab === "formulario"}
-            onPress={() => this.setState({ selectedTab: "formulario" })}
-          >
-            <Icon
-              type="FontAwesome"
-              name="plus"
-              style={{
-                color:
-                  this.state.selectedTab == "formulario"
-                    ? colores.main
-                    : colores.mild,
-              }}
-            />
-          </Button>
-          <Button
-            style={styles.button}
-            active={this.state.selectedTab === "feed"}
-            onPress={() => {
-              this.setState({ selectedTab: "feed" });
-            }}
-          >
-            <Icon
-              type="FontAwesome5"
-              name="paw"
-              style={{
-                color:
-                  this.state.selectedTab == "feed"
-                    ? colores.main
-                    : colores.mild,
-              }}
-            />
-          </Button>
-          <Button
-            style={styles.button}
-            active={this.state.selectedTab === "perfil"}
-            onPress={() => this.setState({ selectedTab: "perfil" })}
-          >
-            <Icon
-              type="FontAwesome"
-              name="user"
-              style={{
-                color:
-                  this.state.selectedTab == "perfil"
-                    ? colores.main
-                    : colores.mild,
-              }}
-            />
-          </Button>
-        </FooterTab>
-      </Footer>
-    );
-  }
-
-  renderSelectedTab() {
-    switch (this.state.selectedTab) {
-      case "feed":
-        return (
-          <>
-            <HeaderBuscan />
-            <FadeInView style={{ height: "90%", width: "100%" }}>
-              <Feed mascotas={this.state.mascotas} usuario={this.state.user} />
-            </FadeInView>
-          </>
-        );
-        break;
-
-      case "formulario":
-        if (!this.state.isAuth)
-          return <Login handlerPress={() => this.googleAuth()} />;
-        return (
-          <>
-            <HeaderBuscan />
-           
-              <FadeInView style={{ height: "90%", width: "100%" }}>
-                <FormMascota
-                  user={this.state.user}
-                  mascotas={getMyPets(this.state.mascotas, this.state.user._id)}
-                  handlerMascotas={() => this.handlerNewMascotas()}
-                />
-              </FadeInView>
-            
-          </>
-        );
-        break;
-
-      case "perfil":
-        return (
-          <FadeInView style={{ height: "100%", width: "100%" }}>
-            <Botonera2
-              mascotas={this.state.mascotas}
-              usuario={this.state.user}
-              handlerDeleteMascotas={() => this.handlerDeleteMascotas()}
-              handlerEditMascotas={() => this.handlerEditMascotas()}
-            />
-          </FadeInView>
-        );
-
-        break;
-
-      default:
-    }
-  }
-
+  
   render() {
+    
     LogBox.ignoreLogs(["Remote debugger"]);
     LogBox.ignoreLogs(["Setting a timer"]);
 
@@ -213,19 +105,120 @@ export default class App extends Component {
     } else {
       return (
         <Root>
-          <MascotasProvider
-            user={this.state.user}
-            mascotas={this.state.mascotas}
-          >
+          <ToogleMasoctaProvider  user={this.state.user}   mascotas={this.state.mascotas}>
             <SafeAreaView style={{ flex: 1 }}>
-              {this.renderSelectedTab()}
+            <RenderTabs isAuth={this.state.isAuth} />
             </SafeAreaView>
-            {this.renderTabs()}
-          </MascotasProvider>
+            <RenderButtomTabs />
+          </ToogleMasoctaProvider>
         </Root>
       );
     }
   }
+}
+
+const RenderButtomTabs = () => {
+  const {renderTabs, handlerTabs } = useContext(toogleMascotaContext)
+  return (
+    <Footer style={styles.footer}>
+      <FooterTab style={{ backgroundColor: colores.mild }}>
+        <Button
+          style={styles.button}
+          active={renderTabs === "formulario"}
+          onPress={() => handlerTabs("formulario")}
+        >
+          <Icon
+            type="FontAwesome"
+            name="plus"
+            style={{
+              color:
+              renderTabs === "formulario"
+                  ? colores.main
+                  : colores.mild,
+            }}
+          />
+        </Button>
+        <Button
+          style={styles.button}
+          active={renderTabs === "feed"}
+          onPress={() => handlerTabs("feed")}
+        >
+          <Icon
+            type="FontAwesome5"
+            name="paw"
+            style={{
+              color:
+                renderTabs == "feed"
+                  ? colores.main
+                  : colores.mild,
+            }}
+          />
+        </Button>
+        <Button
+          style={styles.button}
+          active={renderTabs === "perfil"}
+          onPress={() => handlerTabs("perfil")}
+        >
+          <Icon
+            type="FontAwesome"
+            name="user"
+            style={{
+              color:
+              renderTabs == "perfil"
+                  ? colores.main
+                  : colores.mild,
+            }}
+          />
+        </Button>
+      </FooterTab>
+    </Footer>
+  );
+
+}
+
+const RenderTabs = ({isAuth}) => {
+  const {renderTabs} = useContext(toogleMascotaContext)
+  
+  switch (renderTabs) {
+   
+    case "feed":
+      return (
+        <>
+          <HeaderBuscan />
+          <FadeInView style={{ height: "90%", width: "100%" }}>
+            <Feed  />
+          </FadeInView>
+        </>
+      );
+      break;
+
+    case "formulario":
+      if (!isAuth)
+        return <Login handlerPress={() => this.googleAuth()} />;
+      return (
+        <>
+          <HeaderBuscan />
+         
+          <FadeInView style={{ height: "90%", width: "100%" }}>
+            <FormMascota />
+          </FadeInView>
+        </>
+      );
+      break;
+
+    case "perfil":
+      return (
+        <FadeInView style={{ height: "100%", width: "100%" }}>
+          <Botonera2 />
+        </FadeInView>
+      );
+
+      break;
+
+    default:
+    break
+  }
+  
 }
 
 const HeaderBuscan = () => {

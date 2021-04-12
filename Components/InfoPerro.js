@@ -16,24 +16,24 @@ import LoadingView from "../views/pagCarga";
 import markerPet from "../assets/iconos/marker_paw.png";
 import markerMan from "../assets/iconos/marker_man.png";
 import fondo from "../assets/fondos/form_background.png"
-import { MascotasContext } from "../context/mascotasContext";
+import { toogleMascotaContext } from "../context/toogleContext";
 
-export default function InfoPerro({ mascotaa, usuarioo, handlerRender }) {
-  const [ , , usuario, mascota] = useContext(MascotasContext);
-  const [foto] = useState(mostrarFoto(mascota.petPicture));
+export default function InfoPerro() {
+  const { usuario, mascota , setMascota } = useContext(toogleMascotaContext);
+  const [foto] = useState(mostrarFoto( mascota.petPicture));
   const windowWidth = Dimensions.get("window").width;
 
   function renderMapInfo(){
   
     return (
       <MapView
-        region={getMapLocation(mascota.location, usuario.location)}
+        region={getMapLocation( mascota.location, usuario.location)}
         style={{ height: "100%", width: null }}
       >
         <Marker
           coordinate={{
-            longitude: mascota.location.longitude,
-            latitude: mascota.location.latitude,
+            longitude:  mascota.location.longitude,
+            latitude:  mascota.location.latitude,
           }}
           identifier="mkMascota"
           title="mascota"
@@ -71,14 +71,14 @@ export default function InfoPerro({ mascotaa, usuarioo, handlerRender }) {
       </MapView>
     );
   }
-
+ 
    return (
      <Modal
        animationType="slide"
        transparent={false}
        visible={true}
        presentationStyle="pageSheet"
-       onRequestClose={() => handlerRender(false, "tarjetas")}
+       onRequestClose={() => setMascota({}, 'tarjetas')}
      >
        <View style={{ height: 430, width: null }}>{renderMapInfo()}</View>
        <View>
@@ -112,7 +112,7 @@ export default function InfoPerro({ mascotaa, usuarioo, handlerRender }) {
                  fontFamily: "NunitoLight",
                }}
              >
-               {mascota.petName.toUpperCase()}
+               { mascota.petName.toUpperCase()}
              </Text>
            </View>
 
@@ -123,26 +123,26 @@ export default function InfoPerro({ mascotaa, usuarioo, handlerRender }) {
            </CardItem>
            <CardItem style={{ marginTop: -15, marginBottom: 15 }}>
              <Text style={{ color: "grey", fontFamily: "NunitoLight" }}>
-               {mascota.petDescription}
+               { mascota.petDescription}
              </Text>
            </CardItem>
 
            <View style={{ flexDirection: "row", justifyContent: "center" }}>
              <Card style={styles.charCard}>
-               <Text style={styles.cardText}>{mascota.petSex}</Text>
+               <Text style={styles.cardText}>{ mascota.petSex}</Text>
              </Card>
              <Card style={styles.charCard}>
-               <Text style={styles.cardText}>{mascota.petSize}</Text>
+               <Text style={styles.cardText}>{ mascota.petSize}</Text>
              </Card>
              <Card style={styles.charCard}>
-               <Text style={styles.cardText}>{mascota.petColor}</Text>
+               <Text style={styles.cardText}>{ mascota.petColor}</Text>
              </Card>
            </View>
 
            <Button
              info
              block
-             onPress={() => handlerRender(false, "chat")}
+             onPress={() => setMascota(mascota, 'chat')}
              style={styles.mainButtons}
            >
              <Text style={{ fontFamily: "NunitoLight" }}>Mensajes</Text>

@@ -1,18 +1,16 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { MascotasContext } from '../context/mascotasContext';
 import CardFeed from '../Components/card'
 import { VirtualizedList } from 'react-native';
+import { mostrarFoto } from '../helpers/imageService';
+import { toogleMascotaContext } from '../context/toogleContext';
 
-const FeedTarj = ({ handlerRender }) => {
-  const [mascotas, , usuario] = useContext(MascotasContext);
-
+const FeedTarj = () => {
+  const { mascotas, handlerFeed } = useContext(toogleMascotaContext);
+  
   const RenderItem = ({ item }) => {
     return (
-      <CardFeed
-        mascota={item}
-        usuario={usuario}
-        handlerRender={handlerRender}
-      />
+      <CardFeed mascota={item} handlerFeed={handlerFeed}  />
     );
   };
 

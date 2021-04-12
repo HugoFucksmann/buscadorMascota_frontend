@@ -6,6 +6,7 @@ import colores from '../Components/colorPalette'
 const EmptyCard = ({text}) => {
 
     return (
+      <View style={{ padding: 10 }}>
       <Card
         style={{
           alignSelf: "center",
@@ -25,6 +26,7 @@ const EmptyCard = ({text}) => {
           </Text>
         </CardItem>
       </Card>
+      </View>
     );
 }
 

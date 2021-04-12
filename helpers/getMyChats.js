@@ -6,6 +6,7 @@ export async function getMyChats(){
     let storageChats = await AsyncStorage.getItem('chats')
     
     if (storageChats){
+      console.log('aquii');
       storageChats = JSON.parse(storageChats);
       for (let i = 0; i < storageChats.length; i++) {
        
@@ -21,6 +22,7 @@ export async function getMyChats(){
          
       }
       let newArr = await storageChats.filter(Boolean);
+      
       await AsyncStorage.setItem("chats", JSON.stringify(newArr));
 
     }else result = false

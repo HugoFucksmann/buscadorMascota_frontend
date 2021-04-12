@@ -5,16 +5,14 @@ import InfoPerro from './InfoPerro';
 import { mostrarFoto } from '../helpers/imageService';
 import colores from '../Components/colorPalette';
 import { tiempoTranscurrido } from '../helpers/getTimePass';
-import { MascotasContext } from '../context/mascotasContext';
 
-function CardFeed({mascota, usuario, handlerRender}) {
-  const [ , , , , setMasco] = useContext(MascotasContext)
+function CardFeed({mascota,  handlerFeed}) {
   const [foto] = useState(mostrarFoto(mascota.petPicture));
  
   return (
     <TouchableOpacity
       key={mascota._id}
-      onPress={() => {setMasco(mascota), handlerRender(mascota, "info");}}
+      onPress={() =>  handlerFeed(mascota, 'info')}
     >
       <Card style={styles.card}>
         <CardItem cardBody>
@@ -49,7 +47,7 @@ function CardFeed({mascota, usuario, handlerRender}) {
             <Button
               small
               style={styles.button}
-              onPress={() => handlerRender(mascota, "chat")}
+              onPress={() =>  handlerFeed(mascota, 'chat')}
             >
               <Icon type="Entypo" name="chat" style={{ color: colores.main }} />
             </Button>
