@@ -9,6 +9,7 @@ import {
   Dimensions,
   TouchableOpacity,
   VirtualizedList,
+  FlatList
 } from "react-native";
 import markerPet from "../assets/iconos/marker_paw.png";
 import MapView from "react-native-maps";
@@ -156,15 +157,12 @@ export default class MapFeed extends Component {
                 setHandlerMascota={ setHandlerMascota}
               />
             )) */
-            <VirtualizedList
+            <FlatList
             horizontal
             data={mascotas}
             renderItem={RenderItem}
-            keyExtractor={(item) => item._id}
-            getItemCount={(data) => data.length}
-            initialNumToRender={4}
-            getItem={(data, index) => data[index]}
-          />
+            keyExtractor={(item) => item._id} 
+            />           
           ) : (
             <EmptyCard text={"no hay perros perdidos"} />
           )}

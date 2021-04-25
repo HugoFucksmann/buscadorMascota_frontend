@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { SafeAreaView, Text, StyleSheet } from "react-native";
 import { Tabs, Tab, TabHeading, DefaultTabBar } from "native-base";
 import InfoPerro from '../Components/InfoPerro';
-import Chat from './chat';
+import Chat from '../modules/chat';
 import colores from '../Components/colorPalette';
 import MapFeed from '../Components/mapFeed';
 import FeedTarj from '../modules/feedTarj';
@@ -38,7 +38,6 @@ const Feed = () => {
   );
  
 };
-
 
 const TabsFeed = () => {
   

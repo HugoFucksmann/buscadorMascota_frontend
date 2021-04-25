@@ -19,7 +19,7 @@ import fondo from "../assets/fondos/form_background.png"
 import { toogleMascotaContext } from "../context/toogleContext";
 
 export default function InfoPerro() {
-  const { usuario, mascota , setMascota } = useContext(toogleMascotaContext);
+  const { usuario, mascota , handlerFeed } = useContext(toogleMascotaContext);
   const [foto] = useState(mostrarFoto( mascota.petPicture));
   const windowWidth = Dimensions.get("window").width;
 
@@ -78,7 +78,7 @@ export default function InfoPerro() {
        transparent={false}
        visible={true}
        presentationStyle="pageSheet"
-       onRequestClose={() => setMascota({}, 'tarjetas')}
+       onRequestClose={() => handlerFeed({}, 'tarjetas')}
      >
        <View style={{ height: 430, width: null }}>{renderMapInfo()}</View>
        <View>
@@ -142,7 +142,7 @@ export default function InfoPerro() {
            <Button
              info
              block
-             onPress={() => setMascota(mascota, 'chat')}
+             onPress={() => handlerFeed(mascota, 'chat')}
              style={styles.mainButtons}
            >
              <Text style={{ fontFamily: "NunitoLight" }}>Mensajes</Text>

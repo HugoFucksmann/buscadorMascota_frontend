@@ -6,7 +6,6 @@ export async function getMyChats(){
     let storageChats = await AsyncStorage.getItem('chats')
     
     if (storageChats){
-      console.log('aquii');
       storageChats = JSON.parse(storageChats);
       for (let i = 0; i < storageChats.length; i++) {
        

@@ -1,5 +1,4 @@
 import React, { useContext, useState } from 'react'
-import { MascotasContext } from '../context/mascotasContext';
 import CardFeed from '../Components/card'
 import { VirtualizedList } from 'react-native';
 import { mostrarFoto } from '../helpers/imageService';

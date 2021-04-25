@@ -1,11 +1,10 @@
 // @refresh reset
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState, useEffect, useCallback, useContext } from "react";
-import { BackHandler } from "react-native";
+import { BackHandler, SafeAreaView } from "react-native";
 import { GiftedChat } from "react-native-gifted-chat";
 import firebaseConfig from "../firebaseConfig";
 import { PROD_URL } from "@env";
-import { MascotasContext } from "../context/mascotasContext";
 import { toogleMascotaContext } from "../context/toogleContext";
 
 export default function Chat() {
@@ -88,7 +87,8 @@ export default function Chat() {
   }
 
   return (
-    <GiftedChat
+   
+        <GiftedChat
       placeholder="escribe aqui..."
       renderUsernameOnMessage
       isLoadingEarlier
@@ -98,5 +98,6 @@ export default function Chat() {
       onSend={handleSend}
       scrollToBottom={true}
     />
+  
   );
 }

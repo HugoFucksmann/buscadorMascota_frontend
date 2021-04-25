@@ -1,15 +1,14 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import {
-  ActivityIndicator,
   ImageBackground,
   View,
   Text,
   StyleSheet,
   Animated,
-  Dimensions,
+
 } from "react-native";
 import perroNegro from "../assets/fondos/introF.png";
-import colores from "../Components/colorPalette";
+
 
 export default function LoadingView() {
 
@@ -39,7 +38,7 @@ export default function LoadingView() {
 }
 
 const FadeInView = (props) => {
-  const fadeAnim = useRef(new Animated.Value(0)).current; // Initial value for opacity: 0
+  const fadeAnim = useRef(new Animated.Value(0.4)).current; // Initial value for opacity: 0
 
   React.useEffect(() => {
     Animated.timing(fadeAnim, {
