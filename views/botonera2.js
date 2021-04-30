@@ -30,38 +30,33 @@ import {
 	List,
 	Spinner,
 } from 'native-base';
-import { StatusBar } from 'expo-status-bar';
+
 import {
 	editarMascota,
 	eliminarMascota,
 	getMyPets,
 } from '../helpers/mascotaService';
 import colores from '../Components/colorPalette';
-
+import backImg from '../assets/fondos/user_background.png';
 import EmptyCard from '../Components/EmptyCard';
 
 import fondo from '../assets/fondos/app_background.png';
 import SwitchSelector from 'react-native-switch-selector';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { getMyChats } from '../helpers/getMyChats';
-import Chat from '../modules/chat';
+
 import { getFechaChat } from '../helpers/getTimePass';
-import { toogleMascotaContext } from '../context/toogleContext';
+import { MascotaContext } from '../context/mascotasContext';
+import { useNavigation } from '@react-navigation/core';
+import { mostrarFoto } from '../helpers/imageService';
 
 const Botonera2 = () => {
-	const { misMascotas, renderFeed } = useContext(toogleMascotaContext);
-
-	if (renderFeed === 'chat') return <Chat />;
 	return (
 		<>
-			<StatusBar style='auto' />
+			<HeaderUser />
 			<ImageBackground resizeMode='repeat' source={fondo} style={styles.image}>
 				<View style={{ height: '45%' }}>
-					{misMascotas.length !== 0 ? (
-						<MyPetCards />
-					) : (
-						<EmptyCard text={'no tienes mascotas perdidas'} />
-					)}
+					<MyPetCards />
 				</View>
 				<ScrollView>
 					<MisChats />
@@ -71,8 +66,260 @@ const Botonera2 = () => {
 	);
 };
 
-const MisChats = React.memo(() => {
-	const { mascotas, handlerFeed } = useContext(toogleMascotaContext);
+const HeaderUser = () => {
+	const { usuario } = useContext(MascotaContext);
+	const fotoPerfil = mostrarFoto(usuario.img);
+	return (
+		<View
+			style={{
+				height: 160,
+				paddingTop: 10,
+				backgroundColor: colores.main,
+			}}
+		>
+			<ImageBackground source={backImg} style={styles.image}>
+				<Thumbnail
+					large
+					square
+					style={{
+						alignSelf: 'center',
+						borderWidth: 4,
+						borderColor: '#f2f2f2',
+						borderRadius: 15,
+					}}
+					source={{ uri: fotoPerfil }}
+				/>
+				<Text
+					style={{
+						alignSelf: 'center',
+						fontSize: 22,
+						marginTop: 10,
+						color: colores.mild,
+						fontFamily: 'NunitoLight',
+					}}
+				>
+					{usuario.name}
+				</Text>
+			</ImageBackground>
+		</View>
+	);
+};
+
+const MyPetCards = () => {
+	const { misMascotas, handlerMascota } = useContext(MascotaContext);
+
+	const RenderItem = ({ item }) => {
+		return <CardPet mascota={item} handlerMascota={handlerMascota} />;
+	};
+	if (misMascotas.length === 0)
+		return <EmptyCard text='no tienes mascotas perdidas' />;
+	return (
+		<>
+			<FlatList
+				horizontal
+				showsHorizontalScrollIndicator={false}
+				data={misMascotas}
+				renderItem={RenderItem}
+				keyExtractor={(item) => item._id}
+			/>
+		</>
+	);
+};
+
+const CardPet = ({ mascota, handlerMascota }) => {
+	const [isModal, setIsModal] = useState(false);
+	const navigation = useNavigation();
+	const createTwoButtonAlert = () =>
+		Alert.alert(
+			'Encontraste tu mascota ?',
+			'si aceptas se eliminara el registro de tu mascota',
+			[
+				{
+					text: 'todavia no',
+					style: 'cancel',
+				},
+				{
+					text: 'si, ya la recupere',
+					onPress: () => handlerEliminar(),
+				},
+			]
+		);
+
+	async function handlerEliminar() {
+		let result = await eliminarMascota(mascota._id);
+		if (result) return handlerMascota('eliminar', mascota);
+	}
+
+	return (
+		<>
+			<Card
+				key={mascota._id}
+				style={[
+					styles.myPetCard,
+					{
+						flexDirection: 'row',
+						borderRightWidth: 6,
+						borderColor: colores.main,
+					},
+				]}
+			>
+				<TouchableOpacity
+					onPress={() => navigation.navigate('infoM', mascota)}
+					style={{
+						borderRadius: 25,
+						height: '100%',
+						width: 160,
+						marginLeft: -10,
+					}}
+				>
+					<Image
+						style={{ borderRadius: 25, height: '100%' }}
+						source={{ uri: mascota.petPicture }}
+					/>
+				</TouchableOpacity>
+				<View
+					style={{
+						paddingLeft: 10,
+						paddingTop: 5,
+					}}
+				>
+					<Text
+						style={{
+							color: 'black',
+							lineHeight: 22,
+							fontFamily: 'NunitoLight',
+						}}
+					>
+						Nombre: {mascota.petName}
+					</Text>
+					<Text
+						style={{
+							color: '#000',
+							lineHeight: 22,
+							fontFamily: 'NunitoLight',
+						}}
+					>
+						Sexo: {mascota.petSex}
+					</Text>
+					<Text
+						style={{
+							color: '#000',
+							lineHeight: 22,
+							fontFamily: 'NunitoLight',
+						}}
+					>
+						Color: {mascota.petColor}
+					</Text>
+					<Text
+						style={{
+							color: '#000',
+							lineHeight: 22,
+							fontFamily: 'NunitoLight',
+						}}
+					>
+						Tamaño: {mascota.petSize}
+					</Text>
+					<Text
+						style={{
+							color: '#000',
+							lineHeight: 22,
+							fontFamily: 'NunitoLight',
+						}}
+					>
+						desc: {mascota.petDescription.slice(0, 18)}...
+					</Text>
+
+					<View flexDirection='row' style={{ marginLeft: 5 }}>
+						<Button
+							rounded
+							small
+							style={{
+								backgroundColor: '#fff',
+								elevation: 4,
+								marginRight: 10,
+								width: 48,
+								height: 48,
+								marginTop: 4,
+							}}
+							onPress={() => navigation.navigate('chat', mascota)}
+						>
+							<Icon
+								type='Entypo'
+								name='chat'
+								style={{
+									color: colores.main,
+									position: 'absolute',
+									right: -48,
+								}}
+							/>
+						</Button>
+						<Button
+							onPress={() => setIsModal(true)}
+							small
+							rounded
+							style={{
+								backgroundColor: '#fff',
+								elevation: 4,
+								marginRight: 10,
+								width: 48,
+								height: 48,
+								marginTop: 4,
+							}}
+						>
+							<Icon
+								fontSize='22'
+								style={{
+									color: colores.main,
+									position: 'absolute',
+									right: -48,
+								}}
+								type='Feather'
+								name='edit'
+							/>
+						</Button>
+						<Button
+							onPress={() => createTwoButtonAlert()}
+							small
+							rounded
+							style={{
+								backgroundColor: '#fff',
+								elevation: 4,
+								marginRight: 10,
+								width: 48,
+								height: 48,
+								marginTop: 4,
+							}}
+						>
+							<Icon
+								style={{
+									color: colores.main,
+									position: 'absolute',
+									right: -48,
+								}}
+								type='Feather'
+								name='check-circle'
+							/>
+						</Button>
+					</View>
+				</View>
+			</Card>
+			<Modal
+				animationType='slide'
+				transparent={true}
+				visible={isModal}
+				onRequestClose={() => {
+					setIsModal(false);
+				}}
+			>
+				<ModalContent mascota={mascota} handlerMascota={handlerMascota} />
+			</Modal>
+		</>
+	);
+};
+
+const MisChats = () => {
+	const { mascotas } = useContext(MascotaContext);
+	const navigation = useNavigation();
 	const [chats, setChats] = useState('loading');
 
 	async function loadChats() {
@@ -82,7 +329,7 @@ const MisChats = React.memo(() => {
 
 	function handlerChat(petId) {
 		let [laMascota] = mascotas.filter((mascota) => mascota._id === petId);
-		handlerFeed(laMascota, 'chat');
+		navigation.navigate('chat', laMascota);
 	}
 
 	useEffect(() => {
@@ -102,7 +349,7 @@ const MisChats = React.memo(() => {
 			case false:
 				return (
 					<TouchableOpacity style={{ paddingTop: 10 }}>
-						<Text>HOLAAAA</Text>
+						<EmptyCard />
 					</TouchableOpacity>
 				);
 				break;
@@ -164,182 +411,6 @@ const MisChats = React.memo(() => {
 			<List>{renderChats()}</List>
 		</Content>
 	);
-});
-
-const MyPetCards = () => {
-	const { misMascotas, handlerMascota, handlerFeed } = useContext(
-		toogleMascotaContext
-	);
-
-	const RenderItem = ({ item }) => {
-		return (
-			<CardPet
-				mascota={item}
-				handlerFeed={handlerFeed}
-				handlerMascota={handlerMascota}
-			/>
-		);
-	};
-
-	return (
-		<>
-			<FlatList
-				horizontal
-				showsHorizontalScrollIndicator={false}
-				data={misMascotas}
-				renderItem={RenderItem}
-				keyExtractor={(item) => item._id}
-			/>
-		</>
-	);
-};
-
-const CardPet = ({ mascota, handlerFeed, handlerMascota }) => {
-	const [isModal, setIsModal] = useState(false);
-
-	const createTwoButtonAlert = () =>
-		Alert.alert(
-			'Encontraste tu mascota ?',
-			'si aceptas se eliminara el registro de tu mascota',
-			[
-				{
-					text: 'todavia no',
-					style: 'cancel',
-				},
-				{
-					text: 'si, ya la recupere',
-					onPress: () => handlerEliminar(),
-				},
-			]
-		);
-
-	async function handlerEliminar() {
-		let result = await eliminarMascota(mascota._id);
-		if (result) return handlerMascota('eliminar', mascota);
-	}
-
-	return (
-		<>
-			<Card key={mascota._id} style={styles.myPetCard}>
-				<Image
-					source={{ uri: mascota.petPicture }}
-					style={[styles.image, { borderRadius: 25 }]}
-				/>
-				<View
-					style={{
-						position: 'absolute',
-						top: 0,
-						left: 0,
-						borderRadius: 25,
-						padding: 15,
-						backgroundColor: 'rgba(0,0,0,0.5)',
-						height: '100%',
-						width: '100%',
-					}}
-				>
-					<Text
-						style={{
-							color: '#f0f0f0',
-							lineHeight: 24,
-							fontFamily: 'NunitoLight',
-						}}
-					>
-						Nombre: {mascota.petName}
-					</Text>
-					<Text
-						style={{
-							color: '#f0f0f0',
-							lineHeight: 24,
-							fontFamily: 'NunitoLight',
-						}}
-					>
-						Sexo: {mascota.petSex}
-					</Text>
-					<Text
-						style={{
-							color: '#f0f0f0',
-							lineHeight: 24,
-							fontFamily: 'NunitoLight',
-						}}
-					>
-						Color: {mascota.petColor}
-					</Text>
-					<Text
-						style={{
-							color: '#f0f0f0',
-							lineHeight: 24,
-							fontFamily: 'NunitoLight',
-						}}
-					>
-						Tamaño: {mascota.petSize}
-					</Text>
-					<Text
-						style={{
-							color: '#f0f0f0',
-							lineHeight: 24,
-							fontFamily: 'NunitoLight',
-						}}
-					>
-						Descripcion: {mascota.petDescription}
-					</Text>
-				</View>
-
-				<View flexDirection='row' style={styles.myPetContent}>
-					<Button
-						small
-						rounded
-						style={{
-							backgroundColor: colores.main,
-							width: 100,
-							marginRight: 10,
-						}}
-						onPress={() => handlerFeed(mascota, 'chat')}
-					>
-						<Icon type='Entypo' name='chat' fontSize='22' />
-						<Text style={{ color: colores.mild, fontFamily: 'NunitoLight' }}>
-							Chat
-						</Text>
-					</Button>
-					<Button
-						onPress={() => setIsModal(true)}
-						small
-						rounded
-						style={{
-							backgroundColor: colores.main,
-							width: 100,
-							marginRight: 10,
-						}}
-					>
-						<Icon fontSize='22' type='Feather' name='edit' />
-						<Text style={{ color: colores.mild, fontFamily: 'NunitoLight' }}>
-							Editar
-						</Text>
-					</Button>
-					<Button
-						onPress={() => createTwoButtonAlert()}
-						small
-						rounded
-						style={{
-							backgroundColor: colores.main,
-							marginRight: 10,
-						}}
-					>
-						<Icon fontSize='22' type='Feather' name='check-circle' />
-					</Button>
-				</View>
-			</Card>
-			<Modal
-				animationType='slide'
-				transparent={true}
-				visible={isModal}
-				onRequestClose={() => {
-					setIsModal(false);
-				}}
-			>
-				<ModalContent mascota={mascota} handlerMascota={handlerMascota} />
-			</Modal>
-		</>
-	);
 };
 
 const ModalContent = ({ mascota, handlerMascota }) => {
@@ -378,65 +449,85 @@ const ModalContent = ({ mascota, handlerMascota }) => {
 				backgroundColor: 'rgba(0,0,0,0.7)',
 			}}
 		>
-			<View style={{ backgroundColor: colores.light, padding: 10 }}>
-				{perro.petState === 'perdido' && (
-					<Item style={styles.itemForm}>
-						<Input
-							style={{ fontFamily: 'NunitoLight' }}
-							value={perro.petName}
-							onChangeText={(nombre) => setPerro({ ...perro, petName: nombre })}
-							placeholder='Nombre mascota'
-						/>
-					</Item>
+			<View
+				style={{
+					backgroundColor: colores.light,
+					padding: 15,
+					paddingTop: 20,
+					borderTopRightRadius: 20,
+					borderTopLeftRadius: 20,
+				}}
+			>
+				{perro.petName !== 'Perdido!!' && (
+					<Card style={styles.itemForm}>
+						<Item picker style={{ paddingLeft: 10 }}>
+							<Input
+								value={perro.petName}
+								onChangeText={(nombre) =>
+									setPerro({ ...perro, petName: nombre })
+								}
+								placeholder='Nombre mascota'
+								style={{ fontFamily: 'NunitoLight' }}
+							/>
+						</Item>
+					</Card>
 				)}
-				<Item picker style={styles.itemForm}>
-					<Left>
-						<Text style={{ fontFamily: 'NunitoLight' }}>Sexo:</Text>
-					</Left>
-					<Picker
-						mode='dropdown'
-						selectedValue={perro.petSex}
-						onValueChange={(value) => setPerro({ ...perro, petSex: value })}
-					>
-						<Picker.Item label='macho' value='macho' />
-						<Picker.Item label='hembra' value='hembra' />
-					</Picker>
-				</Item>
+				<Card style={styles.itemForm}>
+					<Item picker style={{ paddingLeft: 10 }}>
+						<Left>
+							<Text style={{ fontFamily: 'NunitoLight' }}>Sexo:</Text>
+						</Left>
+						<Picker
+							mode='dropdown'
+							selectedValue={perro.petSex}
+							onValueChange={(value) => setPerro({ ...perro, petSex: value })}
+							itemTextStyle={{ fontFamily: 'NunitoLight' }}
+						>
+							<Picker.Item label='macho' value='macho' />
+							<Picker.Item label='hembra' value='hembra' />
+						</Picker>
+					</Item>
+				</Card>
 
-				<Item picker style={styles.itemForm}>
-					<Left>
-						<Text style={{ fontFamily: 'NunitoLight' }}>Tamaño:</Text>
-					</Left>
+				<Card style={styles.itemForm}>
+					<Item picker style={{ paddingLeft: 10 }}>
+						<Left>
+							<Text style={{ fontFamily: 'NunitoLight' }}>Tamaño:</Text>
+						</Left>
 
-					<Picker
-						mode='dropdown'
-						selectedValue={perro.setSize}
-						onValueChange={(value) => setPerro({ ...perro, petSize: value })}
-					>
-						<Picker.Item label='chico' value='chico' />
-						<Picker.Item label='mediano' value='mediano' />
-						<Picker.Item label='grande' value='grande' />
-					</Picker>
-				</Item>
+						<Picker
+							mode='dropdown'
+							selectedValue={perro.petSize}
+							itemTextStyle={{ fontFamily: 'NunitoLight' }}
+							onValueChange={(value) => setPerro({ ...perro, petSize: value })}
+						>
+							<Picker.Item label='chico' value='chico' />
+							<Picker.Item label='mediano' value='mediano' />
+							<Picker.Item label='grande' value='grande' />
+						</Picker>
+					</Item>
+				</Card>
 
-				<Item picker style={styles.itemForm}>
-					<Left>
-						<Text style={{ fontFamily: 'NunitoLight' }}>Color:</Text>
-					</Left>
-					<Right>
-						<SwitchSelector
-							initial={2}
-							hasPadding
-							borderWidth={0}
-							options={switchOptions}
-							textStyle={{ fontFamily: 'NunitoLight' }}
-							selectedTextStyle={{ fontFamily: 'NunitoLight' }}
-							onPress={(value) => setPerro({ ...perro, petColor: value })}
-							style={styles.swSelector}
-						/>
-					</Right>
-				</Item>
-				<Form>
+				<Card style={styles.itemForm}>
+					<Item picker style={{ paddingLeft: 10 }}>
+						<Left>
+							<Text style={{ fontFamily: 'NunitoLight' }}>Color:</Text>
+						</Left>
+						<Right>
+							<SwitchSelector
+								textStyle={{ fontFamily: 'NunitoLight' }}
+								selectedTextStyle={{ fontFamily: 'NunitoLight' }}
+								initial={2}
+								hasPadding
+								borderWidth={0}
+								options={switchOptions}
+								onPress={(value) => setPerro({ ...perro, petColor: value })}
+								style={styles.swSelector}
+							/>
+						</Right>
+					</Item>
+				</Card>
+				<Card style={styles.itemForm}>
 					<Textarea
 						rowSpan={3}
 						bordered
@@ -447,7 +538,7 @@ const ModalContent = ({ mascota, handlerMascota }) => {
 							setPerro({ ...perro, petDescription: value })
 						}
 					/>
-				</Form>
+				</Card>
 
 				<Button block style={styles.btnFinal} onPress={() => handlerEditar()}>
 					<Label style={{ color: colores.light, fontSize: 20 }}>Editar</Label>
@@ -459,7 +550,7 @@ const ModalContent = ({ mascota, handlerMascota }) => {
 
 const styles = StyleSheet.create({
 	myPetCard: {
-		height: 200,
+		height: 150,
 		width: Dimensions.get('window').width - 50,
 		borderRadius: 25,
 		marginLeft: 20,

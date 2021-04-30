@@ -11,6 +11,10 @@
   "dependencies": {
     "@firebase/firestore": "^2.2.0",
     "@react-native-async-storage/async-storage": "^1.14.1",
+    "@react-native-community/masked-view": "0.1.10",
+    "@react-navigation/bottom-tabs": "^5.11.10",
+    "@react-navigation/native": "^5.9.4",
+    "@react-navigation/stack": "^5.14.4",
     "env-cmd": "^10.1.0",
     "expo": "^40.0.1",
     "expo-cli": "4.3.0",
@@ -33,6 +37,8 @@
     "react-native-gifted-chat": "^0.16.3",
     "react-native-maps": "0.27.1",
     "react-native-reanimated": "~1.13.0",
+    "react-native-safe-area-context": "3.1.9",
+    "react-native-screens": "~2.15.2",
     "react-native-switch-selector": "^2.1.4",
     "run": "^1.4.0",
     "start": "^5.1.0"

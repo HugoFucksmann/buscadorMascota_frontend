@@ -35,12 +35,10 @@ import colores from '../Components/colorPalette';
 import { Dimensions } from 'react-native';
 import markerPet from '../assets/iconos/marker_paw.png';
 import fondo from '../assets/fondos/form_background.png';
-import { toogleMascotaContext } from '../context/toogleContext';
+import { MascotaContext } from '../context/mascotasContext';
 
-const FormMascota = () => {
-	const { usuario, misMascotas, handlerMascota } = useContext(
-		toogleMascotaContext
-	);
+const FormMascota = ({ navigation }) => {
+	const { usuario, misMascotas, handlerMascota } = useContext(MascotaContext);
 	const [image, setImage] = useState(null);
 	const [file, setFile] = useState(null);
 
@@ -94,7 +92,9 @@ const FormMascota = () => {
 		else {
 			let mascota = await actualizarArchivo(file, perroId, token);
 			if (!mascota) alert('Error al cargar la imagen del perro!');
-			return handlerMascota('editar', mascota);
+			console.log('mascota ', mascota);
+			handlerMascota('crear', mascota);
+			return navigation.navigate('perfil');
 		}
 	}
 
@@ -159,7 +159,7 @@ const FormMascota = () => {
 								{ label: 'Se perdió mi mascota', value: '' },
 								{
 									label: 'Encontré animal perdido',
-									value: 'se encontro perdido',
+									value: 'Perdido!!',
 								},
 							]}
 						/>
@@ -218,7 +218,7 @@ const FormMascota = () => {
 							</Text>
 						</Card>
 					</Card>
-					{perro.petName !== 'se encontro perdido' && (
+					{perro.petName !== 'Perdido!!' && (
 						<Card style={styles.itemForm}>
 							<Item picker style={{ paddingLeft: 10 }}>
 								<Input

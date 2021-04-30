@@ -1,34 +1,36 @@
 import React, { createContext, Component } from 'react';
 import { Alert } from 'react-native';
+import { googleLogin } from '../helpers/auth';
 import { getMyPets } from '../helpers/mascotaService';
 
-export const toogleMascotaContext = createContext();
+export const MascotaContext = createContext();
 
-class ToogleMasoctaProvider extends Component {
-	state = {
-		toogle: false,
-		mascota: {},
-		mascotas: {},
-		renderFeed: 'tarjetas',
-		renderTabs: 'feed',
-		usuario: {},
-		misMascotas: {},
+class MasoctaProvider extends Component {
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			mascota: {},
+			mascotas: props.mascotas,
+			usuario: props.user,
+			misMascotas: {},
+			isAuth: props.isAuth,
+		};
+	}
+
+	handlerAuth = (auth, user) => {
+		this.setState({ isAuth: auth, usuario: user });
 	};
-
-	setToogle = () => {
-		this.setState({ toogle: !this.state.toogle });
-	};
-
-	handlerFeed = (mascota, render) =>
-		this.setState({ mascota: mascota, renderFeed: render });
-	handlerTabs = (render) => this.setState({ renderTabs: render });
 
 	handlerMascota = (action, mascota) => {
 		switch (action) {
 			case 'crear':
 				let newMascotas = this.state.mascotas;
+
 				newMascotas.push(mascota);
-				this.setState({ mascotas: newMascotas, renderTabs: 'perfil' });
+
+				this.setState({ mascotas: newMascotas });
+				return Alert.alert('mascota cargada !');
 				break;
 			case 'editar':
 				let updateMascotas = this.state.mascotas;
@@ -36,7 +38,7 @@ class ToogleMasoctaProvider extends Component {
 					if (masco._id === mascota._id)
 						return (updateMascotas[index] = mascota);
 				});
-				this.setState({ mascotas: updateMascotas, renderTabs: 'perfil' });
+				this.setState({ mascotas: updateMascotas });
 				return Alert.alert('mascota actualizada!');
 				break;
 			case 'eliminar':
@@ -45,7 +47,7 @@ class ToogleMasoctaProvider extends Component {
 					if (masco._id === mascota._id)
 						return mascotaEliminada.splice(index, 1);
 				});
-				this.setState({ mascotas: mascotaEliminada, renderTabs: 'perfil' });
+				this.setState({ mascotas: mascotaEliminada });
 				return Alert.alert('se elimino la mascota correctamente');
 				break;
 			default:
@@ -54,27 +56,23 @@ class ToogleMasoctaProvider extends Component {
 	};
 
 	render() {
-		this.state.mascotas = this.props.mascotas;
-		this.state.usuario = this.props.user;
 		this.state.misMascotas = getMyPets(
-			this.props.mascotas,
-			this.props.user._id
+			this.state.mascotas,
+			this.state.usuario._id
 		);
 
 		return (
-			<toogleMascotaContext.Provider
+			<MascotaContext.Provider
 				value={{
 					...this.state,
-					setToogle: this.setToogle,
-					handlerFeed: this.handlerFeed,
+					handlerAuth: this.handlerAuth,
 					handlerMascota: this.handlerMascota,
-					handlerTabs: this.handlerTabs,
 				}}
 			>
 				{this.props.children}
-			</toogleMascotaContext.Provider>
+			</MascotaContext.Provider>
 		);
 	}
 }
 
-export default ToogleMasoctaProvider;
+export default MasoctaProvider;

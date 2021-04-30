@@ -1,375 +1,359 @@
-import React, { Component } from "react";
-import colores from '../Components/colorPalette'
+import React, { Component } from 'react';
+import colores from '../Components/colorPalette';
 import {
-  StyleSheet,
-  Text,
-  View,
-  Animated,
-  Image,
-  Dimensions,
-  TouchableOpacity,
-  VirtualizedList,
-  FlatList
-} from "react-native";
-import markerPet from "../assets/iconos/marker_paw.png";
-import MapView from "react-native-maps";
-import { generateInitialRegion } from "../helpers/getLocation";
-import { mostrarFoto } from "../helpers/imageService";
-import {  Card,  Icon, Input, Button, CardItem } from "native-base";
-import { tiempoTranscurrido } from "../helpers/getTimePass";
-import EmptyCard from "./EmptyCard";
-import { toogleMascotaContext } from "../context/toogleContext";
-
-const { width } = Dimensions.get("window");
+	StyleSheet,
+	Text,
+	View,
+	Animated,
+	Image,
+	Dimensions,
+	TouchableOpacity,
+} from 'react-native';
+import markerPet from '../assets/iconos/marker_paw.png';
+import MapView from 'react-native-maps';
+import { generateInitialRegion } from '../helpers/getLocation';
+import { mostrarFoto } from '../helpers/imageService';
+import { Card, Icon, Input, Button, CardItem } from 'native-base';
+import { tiempoTranscurrido } from '../helpers/getTimePass';
+import EmptyCard from './EmptyCard';
+import { MascotaContext } from '../context/mascotasContext';
+import { useNavigation } from '@react-navigation/native';
+const { width } = Dimensions.get('window');
 const CARD_HEIGHT = 130;
-const CARD_WIDTH = width-100;
+const CARD_WIDTH = width - 100;
 
 export default class MapFeed extends Component {
-  static contextType = toogleMascotaContext;
-  constructor(props) {
-    super(props);
-    this.index = 0;
-    this.animation = new Animated.Value(0);
-    this.data = [];
-  }
+	static contextType = MascotaContext;
+	constructor(props) {
+		super(props);
+		this.index = 0;
+		this.animation = new Animated.Value(0);
+		this.data = [];
+	}
 
-  componentDidMount() {
-    this.animation.addListener(({ value }) => {
-      let index = Math.floor(value / CARD_WIDTH); // animate 30% away from landing on the next item
-      
-      if (index >= this.context.mascotas.length) {
-        index = this.context.mascotas.length - 1;
-      }
-      if (index <= 0) {
-        index = 0;
-      }
+	componentDidMount() {
+		this.animation.addListener(({ value }) => {
+			let index = Math.floor(value / CARD_WIDTH); // animate 30% away from landing on the next item
 
-      clearTimeout(this.regionTimeout);
-      this.regionTimeout = setTimeout(() => {
-        if (this.index !== index) {
-          this.index = index;
-          const { location } = this.context.mascotas[index];
+			if (index >= this.context.mascotas.length) {
+				index = this.context.mascotas.length - 1;
+			}
+			if (index <= 0) {
+				index = 0;
+			}
 
-          this.map.animateToRegion(
-            {
-              ...location,
-              latitudeDelta: 0.04864195044303443,
-              longitudeDelta: 0.040142817690068,
-            },
-            350
-          );
-        }
-      }, 10);
-    });
-  }
+			clearTimeout(this.regionTimeout);
+			this.regionTimeout = setTimeout(() => {
+				if (this.index !== index) {
+					this.index = index;
+					const { location } = this.context.mascotas[index];
 
-  render() {
-    let mascotas = this.context.mascotas
-    let  handlerFeed = this.context.handlerFeed
-    let iniReg = generateInitialRegion(this.context.mascotas[0].location);
-    const interpolations = mascotas.map((mascota, index) => {
-      const inputRange = [
-        (index - 1) * CARD_WIDTH,
-        index * CARD_WIDTH,
-        (index + 1) * CARD_WIDTH,
-      ];
+					this.map.animateToRegion(
+						{
+							...location,
+							latitudeDelta: 0.04864195044303443,
+							longitudeDelta: 0.040142817690068,
+						},
+						350
+					);
+				}
+			}, 10);
+		});
+	}
 
-      const scale = this.animation.interpolate({
-        inputRange,
-        outputRange: [1, 1.7, 1],
-        extrapolate: "clamp",
-      });
-      const opacity = this.animation.interpolate({
-        inputRange,
-        outputRange: [0.35, 1, 0.35],
-        extrapolate: "clamp",
-      });
-      return { scale, opacity };
-    });
+	render() {
+		let mascotas = this.context.mascotas;
+		let handlerFeed = this.context.handlerFeed;
+		let iniReg = generateInitialRegion(this.context.mascotas[0].location);
+		const interpolations = mascotas.map((mascota, index) => {
+			const inputRange = [
+				(index - 1) * CARD_WIDTH,
+				index * CARD_WIDTH,
+				(index + 1) * CARD_WIDTH,
+			];
 
-    const RenderItem = ({ item }) => {
-      return (
-        <CardFeedMap mascota={item} handlerFeed={handlerFeed}  />
-      );
-    };
-   
-    return (
-      <View style={styles.container}>
-        <MapView
-          ref={(map) => (this.map = map)}
-          initialRegion={iniReg}
-          style={styles.container}
-        >
-          {mascotas.length !== 0 &&
-            mascotas.map((marker, index) => {
-              const scaleStyle = {
-                transform: [
-                  {
-                    scale: interpolations[index].scale,
-                  },
-                ],
-              };
-              const opacityStyle = {
-                opacity: interpolations[index].opacity,
-              };
+			const scale = this.animation.interpolate({
+				inputRange,
+				outputRange: [1, 1.7, 1],
+				extrapolate: 'clamp',
+			});
+			const opacity = this.animation.interpolate({
+				inputRange,
+				outputRange: [0.35, 1, 0.35],
+				extrapolate: 'clamp',
+			});
+			return { scale, opacity };
+		});
 
-              return (
-                <MapView.Marker
-                  key={`${index}${Date.now()}`}
-                  coordinate={marker.location}
-                >
-                  <Animated.View style={[styles.markerWrap, opacityStyle]}>
-                    <Animated.View style={[styles.ring, scaleStyle]} />
-                    <Text style={{ height: 40 }}>
-                      <Image source={markerPet} style={styles.markerImage} />
-                    </Text>
-                  </Animated.View>
-                </MapView.Marker>
-              );
-            })}
-        </MapView>
-        {/* <SearchBar /> */}
-        <Animated.ScrollView
-          horizontal
-          scrollEventThrottle={1}
-          showsHorizontalScrollIndicator={false}
-          snapToInterval={CARD_WIDTH + 15}
-          onScroll={Animated.event(
-            [
-              {
-                nativeEvent: {
-                  contentOffset: {
-                    x: this.animation,
-                  },
-                },
-              },
-            ],
-            { useNativeDriver: true }
-          )}
-          style={styles.scrollView}
-          contentContainerStyle={styles.endPadding}
-        >
-          {mascotas.length !== 0 ? (
-           /*  mascotas.map((mascota) => (
-              <CardFeedMap
-                mascota={mascota}
-                key={mascota._id}
-                setHandlerMascota={ setHandlerMascota}
-              />
-            )) */
-            <FlatList
-            horizontal
-            data={mascotas}
-            renderItem={RenderItem}
-            keyExtractor={(item) => item._id} 
-            />           
-          ) : (
-            <EmptyCard text={"no hay perros perdidos"} />
-          )}
-        </Animated.ScrollView>
-      </View>
-    );
-  }
+		const RenderItem = ({ item }) => {
+			return <CardFeedMap mascota={item} handlerFeed={handlerFeed} />;
+		};
+
+		return (
+			<View style={styles.container}>
+				<MapView
+					ref={(map) => (this.map = map)}
+					initialRegion={iniReg}
+					style={styles.container}
+				>
+					{mascotas.length !== 0 &&
+						mascotas.map((marker, index) => {
+							const scaleStyle = {
+								transform: [
+									{
+										scale: interpolations[index].scale,
+									},
+								],
+							};
+							const opacityStyle = {
+								opacity: interpolations[index].opacity,
+							};
+
+							return (
+								<MapView.Marker
+									key={`${index}${Date.now()}`}
+									coordinate={marker.location}
+								>
+									<Animated.View style={[styles.markerWrap, opacityStyle]}>
+										<Animated.View style={[styles.ring, scaleStyle]} />
+										<Text style={{ height: 40 }}>
+											<Image source={markerPet} style={styles.markerImage} />
+										</Text>
+									</Animated.View>
+								</MapView.Marker>
+							);
+						})}
+				</MapView>
+				{/* <SearchBar /> */}
+
+				{mascotas.length !== 0 ? (
+					<Animated.FlatList
+						contentContainerStyle={styles.endPadding}
+						scrollEventThrottle={1}
+						showsHorizontalScrollIndicator={false}
+						snapToInterval={CARD_WIDTH + 15}
+						onScroll={Animated.event(
+							[
+								{
+									nativeEvent: {
+										contentOffset: {
+											x: this.animation,
+										},
+									},
+								},
+							],
+							{ useNativeDriver: true }
+						)}
+						style={styles.scrollView}
+						contentContainerStyle={styles.endPadding}
+						horizontal
+						data={mascotas}
+						renderItem={RenderItem}
+						keyExtractor={(item) => item._id}
+					/>
+				) : (
+					<EmptyCard text={'no hay perros perdidos'} />
+				)}
+			</View>
+		);
+	}
 }
 
+const CardFeedMap = ({ mascota }) => {
+	const navigation = useNavigation();
+	const foto = mostrarFoto(mascota.petPicture);
+	return (
+		<TouchableOpacity
+			activeOpacity={0.8}
+			key={mascota._id}
+			onPress={() => navigation.navigate('infoM', mascota)}
+		>
+			<Card style={styles.cardd}>
+				<View style={{ position: 'absolute', top: 4, right: 8 }}>
+					<Button
+						small
+						style={styles.button}
+						onPress={() => navigation.navigate('chat', mascota)}
+					>
+						<Icon type='Entypo' name='chat' style={{ color: colores.main }} />
+					</Button>
+				</View>
+				<View
+					style={{
+						flexDirection: 'column',
+						width: '50%',
+						marginBottom: 3,
+						marginTop: 3,
+						marginLeft: 3,
+					}}
+				>
+					<Image
+						source={{ uri: foto }}
+						style={styles.cardImage}
+						resizeMode='cover'
+					/>
+				</View>
+				<View style={{ flexDirection: 'column-reverse' }}>
+					<View style={{ flexDirection: 'row', padding: 12 }}>
+						<Icon
+							active
+							name='date'
+							type='Fontisto'
+							style={{ color: colores.main, fontSize: 20, paddingRight: 5 }}
+						/>
+						<Text
+							style={{ color: 'grey', fontSize: 13, fontFamily: 'NunitoLight' }}
+						>
+							{tiempoTranscurrido(mascota.date)}
+						</Text>
+					</View>
 
-const CardFeedMap = ({ mascota,  handlerFeed }) => {
-  const foto = mostrarFoto(mascota.petPicture);
-  return (
-    <TouchableOpacity
-      activeOpacity={0.8}
-      key={mascota._id}
-      onPress={() => {
-         handlerFeed(mascota, "info");
-      }}
-    >
-      <Card style={styles.cardd}>
-        <View style={{ position: "absolute", top: 6, right: 8 }}>
-          <Button
-            small
-            style={styles.button}
-            onPress={() =>  handlerFeed(mascota, "chat")}
-          >
-            <Icon type="Entypo" name="chat" style={{ color: colores.main }} />
-          </Button>
-        </View>
-        <View
-          style={{
-            flexDirection: "column",
-            width: "50%",
-            marginBottom: 3,
-            marginTop: 3,
-            marginLeft: 3,
-          }}
-        >
-          <Image
-            source={{ uri: foto }}
-            style={styles.cardImage}
-            resizeMode="cover"
-          />
-        </View>
-        <View style={{ flexDirection: "column-reverse" }}>
-          <View style={{ flexDirection: "row", padding: 12 }}>
-            <Icon
-              active
-              name="date"
-              type="Fontisto"
-              style={{ color: colores.main, fontSize: 20, paddingRight: 5 }}
-            />
-            <Text
-              style={{ color: "grey", fontSize: 13, fontFamily: "NunitoLight" }}
-            >
-              {tiempoTranscurrido(mascota.date)}
-            </Text>
-          </View>
+					<View style={{ flexDirection: 'row', paddingLeft: 12 }}>
+						<Icon
+							active
+							name='map-marker-radius'
+							type='MaterialCommunityIcons'
+							style={{ color: colores.main, fontSize: 20, paddingRight: 5 }}
+						/>
+						<Text style={{ color: 'grey', fontFamily: 'NunitoLight' }}>
+							{mascota.dist}
+						</Text>
+					</View>
 
-          <View style={{ flexDirection: "row", paddingLeft: 12 }}>
-            <Icon
-              active
-              name="map-marker-radius"
-              type="MaterialCommunityIcons"
-              style={{ color: colores.main, fontSize: 20, paddingRight: 5 }}
-            />
-            <Text style={{ color: "grey", fontFamily: "NunitoLight" }}>
-              {mascota.dist}
-            </Text>
-          </View>
-
-          <View
-            style={{ flexDirection: "row", paddingLeft: 14, paddingBottom: 5 }}
-          >
-            <Text
-              style={{
-                
-                color: colores.main,
-                fontSize: 20,
-                fontFamily: "NunitoLight",
-              }}
-            >
-              {mascota.petName}
-            </Text>
-          </View>
-        </View>
-      </Card>
-    </TouchableOpacity>
-  );
+					<View
+						style={{ flexDirection: 'row', paddingLeft: 14, paddingBottom: 5 }}
+					>
+						<Text
+							style={{
+								color: colores.main,
+								fontSize: 20,
+								fontFamily: 'NunitoLight',
+							}}
+						>
+							{mascota.petName}
+						</Text>
+					</View>
+				</View>
+			</Card>
+		</TouchableOpacity>
+	);
 };
 
 const SearchBar = () => {
-
-  return (
-    <View
-      style={{
-        position: "absolute",
-        top: 20,
-        width: Dimensions.get("window").width - 100,
-        alignSelf: "center",
-      }}
-    >
-      <Card style={{ borderRadius: 20}}>
-        <CardItem style={{flexDirection: 'row', height: 40, borderRadius: 20}}>
-          <Icon name="ios-search" />
-          <Input placeholder="buscar" />
-         
-        </CardItem>
-      </Card>
-    </View>
-  );
-}
+	return (
+		<View
+			style={{
+				position: 'absolute',
+				top: 20,
+				width: Dimensions.get('window').width - 100,
+				alignSelf: 'center',
+			}}
+		>
+			<Card style={{ borderRadius: 20 }}>
+				<CardItem
+					style={{ flexDirection: 'row', height: 40, borderRadius: 20 }}
+				>
+					<Icon name='ios-search' />
+					<Input placeholder='buscar' />
+				</CardItem>
+			</Card>
+		</View>
+	);
+};
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  fullScreen: {
-    ...StyleSheet.absoluteFillObject,
-  },
-  scrollView: {
-    position: "absolute",
-    bottom: 20,
-    left: 0,
-    right: 0,
-    //paddingVertical: 10,
-    zIndex: 100,
-  },
-  endPadding: {
-    paddingRight: width - CARD_WIDTH,
-  },
-  cardd: {
-    flexDirection: "row",
-    marginLeft: 15,
-    height: CARD_HEIGHT,
-    width: CARD_WIDTH,
-    overflow: "hidden",
-    borderRadius: 15,
-    borderRightWidth: 6,
-    borderColor: colores.main,
-  },
-  card: {
-    flexDirection: "row",
-    elevation: 2,
-    backgroundColor: "#FFF",
-    marginLeft: 15,
-    shadowColor: "#000",
-    shadowRadius: 5,
-    shadowOpacity: 0.3,
-    shadowOffset: { x: 2, y: -2 },
-    height: CARD_HEIGHT,
-    width: CARD_WIDTH,
-    //overflow: "hidden",
-    borderRadius: 15,
-    borderRightWidth: 6,
-    borderRightColor: colores.main,
-  },
-  cardImage: {
-    flex: 1,
-    width: "100%",
-    height: "100%",
-    alignSelf: "center",
-    borderBottomLeftRadius: 15,
-    borderTopLeftRadius: 15,
-  },
-  textContent: {
-    flex: 1,
-  },
-  cardtitle: {
-    fontSize: 12,
-    marginTop: 5,
-    fontWeight: "bold",
-  },
-  cardDescription: {
-    fontSize: 12,
-    color: "#444",
-  },
-  markerWrap: {
-    alignItems: "center",
-    justifyContent: "center",
-    height: 65,
-    width: 65,
-  },
-  /* marker: {
+	container: {
+		flex: 1,
+	},
+	fullScreen: {
+		...StyleSheet.absoluteFillObject,
+	},
+	scrollView: {
+		position: 'absolute',
+		bottom: 20,
+		left: 0,
+		right: 0,
+		//paddingVertical: 10,
+		zIndex: 100,
+	},
+	endPadding: {
+		paddingRight: width - CARD_WIDTH,
+	},
+	cardd: {
+		flexDirection: 'row',
+		marginLeft: 15,
+		height: CARD_HEIGHT,
+		width: CARD_WIDTH,
+		//overflow: 'hidden',
+		borderRadius: 15,
+		borderRightWidth: 6,
+		borderColor: colores.main,
+	},
+	card: {
+		flexDirection: 'row',
+		elevation: 2,
+		backgroundColor: '#FFF',
+		marginLeft: 15,
+		shadowColor: '#000',
+		shadowRadius: 5,
+		shadowOpacity: 0.3,
+		shadowOffset: { x: 2, y: -2 },
+		height: CARD_HEIGHT,
+		width: CARD_WIDTH,
+		//overflow: "hidden",
+		borderRadius: 15,
+		borderRightWidth: 6,
+		borderRightColor: colores.main,
+	},
+	cardImage: {
+		alignSelf: 'center',
+		width: '106%',
+		height: '106%',
+		borderRadius: 15,
+		marginLeft: -10,
+		marginTop: '-3%',
+	},
+	textContent: {
+		flex: 1,
+	},
+	cardtitle: {
+		fontSize: 12,
+		marginTop: 5,
+		fontWeight: 'bold',
+	},
+	cardDescription: {
+		fontSize: 12,
+		color: '#444',
+	},
+	markerWrap: {
+		alignItems: 'center',
+		justifyContent: 'center',
+		height: 65,
+		width: 65,
+	},
+	/* marker: {
     width: 8,
     height: 8,
     borderRadius: 4,
     backgroundColor: "rgba(130,4,150, 0.9)",
   }, */
-  ring: {
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    backgroundColor: colores.mainTenueUno,
-    position: "absolute",
-    bottom: 7,
-    borderWidth: 2,
-    borderColor: colores.main,
-  },
-  markerImage: {
-    height: 30,
-    width: 30,
-    resizeMode: "contain",
-  },
-  button: {
-    color: colores.main,
-    backgroundColor: "#fff",
-  },
+	ring: {
+		width: 16,
+		height: 16,
+		borderRadius: 8,
+		backgroundColor: colores.mainTenueUno,
+		position: 'absolute',
+		bottom: 7,
+		borderWidth: 2,
+		borderColor: colores.main,
+	},
+	markerImage: {
+		height: 30,
+		width: 30,
+		resizeMode: 'contain',
+	},
+	button: {
+		color: colores.main,
+		backgroundColor: '#fff',
+	},
 });

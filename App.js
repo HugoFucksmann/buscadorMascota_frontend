@@ -1,25 +1,26 @@
 import 'react-native-gesture-handler';
 import React, { Component, useContext } from 'react';
 import { StyleSheet, LogBox, Alert, SafeAreaView } from 'react-native';
-import { Root } from 'native-base';
+import { Icon, Root } from 'native-base';
 import * as Font from 'expo-font';
-import { googleLogin, isAuthenticated, getUser } from './helpers/auth';
+import { isAuthenticated, getUser } from './helpers/auth';
 import Feed from './views/feed';
 import LoadingView from './views/pagCarga';
 import FormMascota from './views/formulario';
 import HeaderBuscan from './Components/headerBusCan';
 import Login from './Components/login';
 import { getMascotas2 } from './helpers/mascotaService';
-
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import colores from './Components/colorPalette';
-
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Botonera2 from './views/botonera2';
-import { FadeInView } from './AnimatedViews/fadeView';
-import ToogleMasoctaProvider, {
-	toogleMascotaContext,
-} from './context/toogleContext';
-import RenderButtomTabs from './Components/buttomTabs';
+import MasoctaProvider, { MascotaContext } from './context/mascotasContext';
+import Chat from './modules/chat';
+import InfoPerro from './Components/InfoPerro';
+
+const Tab = createBottomTabNavigator();
+const ModalStack = createStackNavigator();
 
 export default class App extends Component {
 	constructor(props) {
@@ -49,16 +50,6 @@ export default class App extends Component {
 		});
 	}
 
-	async googleAuth() {
-		let user = await googleLogin(this.state.user);
-		if (user) {
-			await AsyncStorage.setItem('user', JSON.stringify(user));
-			this.setState({ isAuth: true, user: user });
-		} else {
-			return Alert('Error al intentar loguearse');
-		}
-	}
-
 	render() {
 		LogBox.ignoreLogs(['Remote debugger']);
 		LogBox.ignoreLogs(['Setting a timer']);
@@ -66,51 +57,88 @@ export default class App extends Component {
 		if (this.state.loading) {
 			return <LoadingView />;
 		}
+
+		function MainContent() {
+			const { isAuth } = useContext(MascotaContext);
+
+			return (
+				<>
+					<HeaderBuscan />
+					<Tab.Navigator
+						initialRouteName='feed'
+						detachInactiveScreens
+						screenOptions={({ route }) => ({
+							tabBarIcon: ({ focused, color, size }) => {
+								let iconName;
+								let iconType;
+
+								if (route.name === 'formulario') {
+									iconName = 'plus';
+									iconType = 'FontAwesome';
+									color = focused ? colores.main : colores.mild;
+								} else if (route.name === 'feed') {
+									iconName = 'paw';
+									iconType = 'FontAwesome5';
+									color = focused ? colores.main : colores.mild;
+								} else if (route.name === 'perfil') {
+									iconName = 'user';
+									iconType = 'FontAwesome';
+									color = focused ? colores.main : colores.mild;
+								}
+
+								// You can return any component that you like here!
+								return (
+									<Icon
+										type={iconType}
+										name={iconName}
+										style={{ color: color, fontSize: 25 }}
+									/>
+								);
+							},
+						})}
+						tabBarOptions={{
+							showLabel: false,
+						}}
+					>
+						{isAuth === true ? (
+							<Tab.Screen name='formulario' component={FormMascota} />
+						) : (
+							<Tab.Screen name='formulario' component={Login} />
+						)}
+						<Tab.Screen name='feed' component={Feed} />
+						<Tab.Screen name='perfil' component={Botonera2} />
+					</Tab.Navigator>
+				</>
+			);
+		}
+
 		return (
 			<Root>
-				<ToogleMasoctaProvider
-					user={this.state.user}
-					mascotas={this.state.mascotas}
-				>
-					<HeaderBuscan />
-					<SafeAreaView style={{ flex: 1 }}>
-						<FadeInView style={{ flex: 1 }}>
-							<RenderTabs isAuth={this.state.isAuth} />
-						</FadeInView>
-					</SafeAreaView>
-					<RenderButtomTabs />
-				</ToogleMasoctaProvider>
+				<NavigationContainer>
+					<MasoctaProvider
+						user={this.state.user}
+						mascotas={this.state.mascotas}
+						isAuth={this.state.isAuth}
+					>
+						<SafeAreaView style={{ flex: 1 }}>
+							<ModalStack.Navigator
+								//mode='modal'
+								initialRouteName='main'
+								screenOptions={{
+									headerShown: false,
+								}}
+							>
+								<ModalStack.Screen name='main' component={MainContent} />
+								<ModalStack.Screen name='chat' component={Chat} />
+								<ModalStack.Screen name='infoM' component={InfoPerro} />
+							</ModalStack.Navigator>
+						</SafeAreaView>
+					</MasoctaProvider>
+				</NavigationContainer>
 			</Root>
 		);
 	}
 }
-
-const RenderTabs = ({ isAuth }) => {
-	const { renderTabs } = useContext(toogleMascotaContext);
-
-	switch (renderTabs) {
-		case 'feed':
-			return <Feed />;
-			break;
-
-		case 'formulario':
-			if (!isAuth) return <Login handlerPress={() => this.googleAuth()} />;
-			return (
-				<>
-					<FormMascota />
-				</>
-			);
-			break;
-
-		case 'perfil':
-			return <Botonera2 />;
-
-			break;
-
-		default:
-			break;
-	}
-};
 
 const styles = StyleSheet.create({
 	centeredView: {

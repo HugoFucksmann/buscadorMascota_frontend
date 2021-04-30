@@ -27,7 +27,7 @@ async function actualizarArchivo(file, perroId, token) {
 		}).catch((e) => console.log(e));
 
 		const data = await resp.json();
-
+		console.log('data ', data);
 		if (data.ok) {
 			return data.mascota;
 		} else {
