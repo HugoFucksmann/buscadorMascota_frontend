@@ -18,9 +18,13 @@ import Botonera2 from './views/botonera2';
 import MasoctaProvider, { MascotaContext } from './context/mascotasContext';
 import Chat from './modules/chat';
 import InfoPerro from './Components/InfoPerro';
+import { Dimensions } from 'react-native';
 
 const Tab = createBottomTabNavigator();
 const ModalStack = createStackNavigator();
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 export default class App extends Component {
 	constructor(props) {
@@ -66,7 +70,6 @@ export default class App extends Component {
 					<HeaderBuscan />
 					<Tab.Navigator
 						initialRouteName='feed'
-						detachInactiveScreens
 						screenOptions={({ route }) => ({
 							tabBarIcon: ({ focused, color, size }) => {
 								let iconName;
@@ -85,8 +88,6 @@ export default class App extends Component {
 									iconType = 'FontAwesome';
 									color = focused ? colores.main : colores.mild;
 								}
-
-								// You can return any component that you like here!
 								return (
 									<Icon
 										type={iconType}
@@ -120,9 +121,9 @@ export default class App extends Component {
 						mascotas={this.state.mascotas}
 						isAuth={this.state.isAuth}
 					>
-						<SafeAreaView style={{ flex: 1 }}>
+						<SafeAreaView style={{ height: windowHeight, width: windowWidth }}>
 							<ModalStack.Navigator
-								//mode='modal'
+								mode='modal'
 								initialRouteName='main'
 								screenOptions={{
 									headerShown: false,
@@ -139,43 +140,3 @@ export default class App extends Component {
 		);
 	}
 }
-
-const styles = StyleSheet.create({
-	centeredView: {
-		flex: 1,
-		justifyContent: 'center',
-		alignItems: 'center',
-	},
-	text: {
-		color: 'white',
-		fontSize: 42,
-		fontWeight: 'bold',
-		textAlign: 'center',
-		backgroundColor: '#00000030',
-	},
-	button: {
-		backgroundColor: 'white',
-		borderRadius: 0,
-	},
-	footer: {
-		backgroundColor: null,
-		flexDirection: 'row',
-		color: colores.main,
-		borderTopWidth: 3,
-		borderTopColor: colores.mild,
-	},
-	header: {
-		height: 50,
-		backgroundColor: 'white',
-		borderBottomColor: colores.mild,
-		borderBottomWidth: 2,
-		paddingTop: 11,
-		paddingBottom: 11,
-		marginTop: 25,
-	},
-	headerBackground: {
-		flex: 0.8,
-		resizeMode: 'cover',
-		justifyContent: 'center',
-	},
-});

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 import { StyleSheet, Image, Dimensions, TouchableOpacity } from 'react-native';
 import { Card, CardItem, Right, Left, Button, Icon, Text } from 'native-base';
 import { mostrarFoto } from '../helpers/imageService';
@@ -8,7 +8,6 @@ import { useNavigation } from '@react-navigation/native';
 
 function CardFeed({ mascota }) {
 	const navigation = useNavigation();
-	const [foto] = useState(mostrarFoto(mascota.petPicture));
 
 	return (
 		<TouchableOpacity
@@ -18,7 +17,7 @@ function CardFeed({ mascota }) {
 			<Card style={styles.card}>
 				<CardItem cardBody>
 					<Image
-						source={{ uri: foto }}
+						source={{ uri: mascota.petPicture }}
 						style={{ height: 220, width: null, flex: 1 }}
 					/>
 				</CardItem>
@@ -76,4 +75,4 @@ const styles = StyleSheet.create({
 	headCard: { height: 40 },
 });
 
-export default CardFeed;
+export default memo(CardFeed);

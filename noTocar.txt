@@ -218,3 +218,46 @@ async function getMascotas(user) {
     })
     .catch((error) => console.error(error));
 }
+
+
+
+//notificar al dueño de la mascota y a los usuarios del chat
+		/* const uIdMascota = mascota.usuario;
+		const chats = await chatsRef.get();
+		chats.forEach((doc) => {
+			chatTokens = [...chatTokens, doc.data().user.notification];
+		});
+		await fetch(`${PROD_URL}/chat`, {
+			method: 'POST',
+			headers: {
+				Accept: 'application/json',
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ chatTokens, uIdMascota }),
+		}).catch((e) => console.log(e)); */
+		//----------------------------------------------------------
+    
+    //SearchBar------------------------------------
+    const SearchBar = () => {
+	return (
+		<View
+			style={{
+				position: 'absolute',
+				top: 20,
+				width: Dimensions.get('window').width - 100,
+				alignSelf: 'center',
+			}}
+		>
+			<Card style={{ borderRadius: 20 }}>
+				<CardItem
+					style={{ flexDirection: 'row', height: 40, borderRadius: 20 }}
+				>
+					<Icon name='ios-search' />
+					<Input placeholder='buscar' />
+				</CardItem>
+			</Card>
+		</View>
+	);
+};
+
+//---------------------------------------------------------------

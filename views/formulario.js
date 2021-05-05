@@ -24,6 +24,7 @@ import {
 	Right,
 	Body,
 	CardItem,
+	Spinner,
 } from 'native-base';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SwitchSelector from 'react-native-switch-selector';
@@ -41,6 +42,7 @@ const FormMascota = ({ navigation }) => {
 	const { usuario, misMascotas, handlerMascota } = useContext(MascotaContext);
 	const [image, setImage] = useState(null);
 	const [file, setFile] = useState(null);
+	const [onPressLoading, setOnPressLoading] = useState(false);
 
 	const [ubi] = useState({
 		...usuario.location,
@@ -60,6 +62,12 @@ const FormMascota = ({ navigation }) => {
 			latitude: 0,
 		},
 	});
+
+	function validateForm() {
+		return (
+			file !== null && perro.location.latitude !== 0 && perro.petName.length > 0
+		);
+	}
 
 	function topCargas() {
 		let disable;
@@ -84,16 +92,20 @@ const FormMascota = ({ navigation }) => {
 	}, []);
 
 	async function uploadPerro() {
+		setOnPressLoading(true);
 		const token = await AsyncStorage.getItem('token');
 
 		let perroId = await crearMascota(perro, token, usuario.notification);
 
-		if (!perroId) return alert('error al crear perro');
-		else {
+		if (!perroId) {
+			setOnPressLoading(false);
+			return alert('error al crear perro');
+		} else {
 			let mascota = await actualizarArchivo(file, perroId, token);
 			if (!mascota) alert('Error al cargar la imagen del perro!');
-			console.log('mascota ', mascota);
 			handlerMascota('crear', mascota);
+
+			setOnPressLoading(false);
 			return navigation.navigate('perfil');
 		}
 	}
@@ -103,7 +115,7 @@ const FormMascota = ({ navigation }) => {
 			mediaTypes: ImagePicker.MediaTypeOptions.All,
 			allowsEditing: true,
 			aspect: [4, 3],
-			quality: 1,
+			quality: 0.7,
 		});
 		if (!result.cancelled) {
 			setImage(result.uri);
@@ -144,7 +156,6 @@ const FormMascota = ({ navigation }) => {
 				<View style={{ padding: 20 }}>
 					<Card style={{ borderRadius: 20 }}>
 						<SwitchSelector
-							// style={styles.state}
 							initial={0}
 							onPress={(value) => setPerro({ ...perro, petName: value })}
 							textColor={colores.mainFill}
@@ -310,21 +321,29 @@ const FormMascota = ({ navigation }) => {
 							styles.btnFinal,
 							{
 								backgroundColor:
-									topCargas() == true ? 'grey' : colores.mainFill,
+									!validateForm() ||
+									topCargas() == true ||
+									onPressLoading == true
+										? 'grey'
+										: colores.mainFill,
 							},
 						]}
 						onPress={async () => await uploadPerro()}
-						disabled={topCargas()}
+						disabled={!validateForm() || topCargas() || onPressLoading}
 					>
-						<Label
-							style={{
-								color: colores.light,
-								fontSize: 20,
-								fontFamily: 'NunitoLight',
-							}}
-						>
-							{topCargas() === true ? 'maximo de carga alcanzado' : 'CARGAR'}
-						</Label>
+						{onPressLoading ? (
+							<Spinner color='green' />
+						) : (
+							<Label
+								style={{
+									color: colores.light,
+									fontSize: 20,
+									fontFamily: 'NunitoLight',
+								}}
+							>
+								{topCargas() === true ? 'maximo de carga alcanzado' : 'CARGAR'}
+							</Label>
+						)}
 					</Button>
 				</View>
 			</ScrollView>

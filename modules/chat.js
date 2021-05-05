@@ -1,7 +1,12 @@
 // @refresh reset
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState, useEffect, useCallback, useContext } from 'react';
-import { BackHandler, ImageBackground } from 'react-native';
+import {
+	BackHandler,
+	ImageBackground,
+	KeyboardAvoidingView,
+	Platform,
+} from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat';
 import firebaseConfig from '../firebaseConfig';
 import { PROD_URL } from '@env';
@@ -11,7 +16,7 @@ import EmptyCard from '../Components/EmptyCard';
 import fondo from '../assets/fondos/app_background.png';
 
 export default function Chat({ route, navigation }) {
-	const { usuario, handlerFeed } = useContext(MascotaContext);
+	const { usuario, handlerMyChats } = useContext(MascotaContext);
 	let mascota = route.params;
 	const chatsRef = firebaseConfig().collection(mascota._id);
 	const [messages, setMessages] = useState([]);
@@ -19,7 +24,6 @@ export default function Chat({ route, navigation }) {
 
 	const chatUser = {
 		name: usuario.name,
-		_id: usuario._id,
 		img: usuario.img,
 		notification: usuario.notification,
 		petName: mascota.petName,
@@ -62,38 +66,25 @@ export default function Chat({ route, navigation }) {
 	);
 
 	async function handleSend(messagess) {
-		await messagess.map((m) => chatsRef.add(m));
 		let chatTokens = [];
 
-		const uIdMascota = mascota.usuario;
-		const chats = await chatsRef.get();
-		chats.forEach((doc) => {
-			chatTokens = [...chatTokens, doc.data().user.notification];
-		});
-
-		await fetch(`${PROD_URL}/chat`, {
-			method: 'POST',
-			headers: {
-				Accept: 'application/json',
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({ chatTokens, uIdMascota }),
-		}).catch((e) => console.log(e));
+		await messagess.map((m) => chatsRef.add(m));
 
 		let userChat = await AsyncStorage.getItem('chats');
-		//TODO: Mejorar ver ------
 		if (userChat) {
 			userChat = JSON.parse(userChat);
 			userChat = [...userChat, mascota._id];
+
 			userChat = userChat.filter((chat, index) => {
 				return userChat.indexOf(chat) === index;
 			});
 			await AsyncStorage.setItem('chats', JSON.stringify(userChat));
+			return handlerMyChats();
 		} else {
+			handlerMyChats();
 			userChat = [mascota._id];
 			await AsyncStorage.setItem('chats', JSON.stringify(userChat));
 		}
-		//-----------------------
 	}
 
 	return (
@@ -110,7 +101,6 @@ export default function Chat({ route, navigation }) {
 				placeholder='escribe aqui...'
 				renderUsernameOnMessage
 				isLoadingEarlier
-				//renderAvatar={null}
 				messages={messages}
 				user={chatUser}
 				isLoadingEarlier
@@ -150,6 +140,7 @@ export default function Chat({ route, navigation }) {
 							<Input
 								onChangeText={(text) => setMsj(text)}
 								placeholder='escribir...'
+								value={msj}
 								style={{
 									backgroundColor: '#ebebeb',
 									borderRadius: 25,
@@ -160,7 +151,10 @@ export default function Chat({ route, navigation }) {
 				)}
 				renderSend={(onSend) => (
 					<Button
-						onPress={() => onSend({ text: msj })}
+						onPress={() => {
+							onSend({ text: msj });
+							setMsj('');
+						}}
 						icon
 						rounded
 						small
@@ -177,6 +171,7 @@ export default function Chat({ route, navigation }) {
 					</Button>
 				)}
 			/>
+			{Platform.OS === 'android' && <KeyboardAvoidingView behavior='padding' />}
 		</ImageBackground>
 	);
 }

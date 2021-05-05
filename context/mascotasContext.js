@@ -1,6 +1,5 @@
 import React, { createContext, Component } from 'react';
 import { Alert } from 'react-native';
-import { googleLogin } from '../helpers/auth';
 import { getMyPets } from '../helpers/mascotaService';
 
 export const MascotaContext = createContext();
@@ -26,11 +25,14 @@ class MasoctaProvider extends Component {
 		switch (action) {
 			case 'crear':
 				let newMascotas = this.state.mascotas;
-
-				newMascotas.push(mascota);
+				if (newMascotas) newMascotas.unshift(mascota);
+				else newMascotas = mascota;
 
 				this.setState({ mascotas: newMascotas });
-				return Alert.alert('mascota cargada !');
+				return Alert.alert(
+					'mascota cargada !',
+					'duracion de la busqueda: 6 dias'
+				);
 				break;
 			case 'editar':
 				let updateMascotas = this.state.mascotas;
@@ -42,17 +44,21 @@ class MasoctaProvider extends Component {
 				return Alert.alert('mascota actualizada!');
 				break;
 			case 'eliminar':
-				let mascotaEliminada = this.state.mascotas;
-				mascotaEliminada = mascotaEliminada.map((masco, index) => {
-					if (masco._id === mascota._id)
-						return mascotaEliminada.splice(index, 1);
-				});
-				this.setState({ mascotas: mascotaEliminada });
-				return Alert.alert('se elimino la mascota correctamente');
+				let mascotasElim = this.state.mascotas.filter(
+					(masco) => masco._id !== mascota._id
+				);
+
+				this.setState({ mascotas: mascotasElim });
+
+				return Alert.alert('se elimino el registro de la mascota');
 				break;
 			default:
 				break;
 		}
+	};
+
+	handlerMyChats = () => {
+		return;
 	};
 
 	render() {
@@ -67,6 +73,7 @@ class MasoctaProvider extends Component {
 					...this.state,
 					handlerAuth: this.handlerAuth,
 					handlerMascota: this.handlerMascota,
+					handlerMyChats: this.handlerMyChats,
 				}}
 			>
 				{this.props.children}

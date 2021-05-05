@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, memo } from 'react';
 import colores from '../Components/colorPalette';
 import {
 	StyleSheet,
@@ -12,8 +12,7 @@ import {
 import markerPet from '../assets/iconos/marker_paw.png';
 import MapView from 'react-native-maps';
 import { generateInitialRegion } from '../helpers/getLocation';
-import { mostrarFoto } from '../helpers/imageService';
-import { Card, Icon, Input, Button, CardItem } from 'native-base';
+import { Card, Icon, Button } from 'native-base';
 import { tiempoTranscurrido } from '../helpers/getTimePass';
 import EmptyCard from './EmptyCard';
 import { MascotaContext } from '../context/mascotasContext';
@@ -32,72 +31,81 @@ export default class MapFeed extends Component {
 	}
 
 	componentDidMount() {
-		this.animation.addListener(({ value }) => {
-			let index = Math.floor(value / CARD_WIDTH); // animate 30% away from landing on the next item
+		if (this.context.mascotas !== false) {
+			this.animation.addListener(({ value }) => {
+				let index = Math.floor(value / CARD_WIDTH); // animate 30% away from landing on the next item
 
-			if (index >= this.context.mascotas.length) {
-				index = this.context.mascotas.length - 1;
-			}
-			if (index <= 0) {
-				index = 0;
-			}
-
-			clearTimeout(this.regionTimeout);
-			this.regionTimeout = setTimeout(() => {
-				if (this.index !== index) {
-					this.index = index;
-					const { location } = this.context.mascotas[index];
-
-					this.map.animateToRegion(
-						{
-							...location,
-							latitudeDelta: 0.04864195044303443,
-							longitudeDelta: 0.040142817690068,
-						},
-						350
-					);
+				if (index >= this.context.mascotas.length) {
+					index = this.context.mascotas.length - 1;
 				}
-			}, 10);
-		});
+				if (index <= 0) {
+					index = 0;
+				}
+
+				clearTimeout(this.regionTimeout);
+				this.regionTimeout = setTimeout(() => {
+					if (this.index !== index) {
+						this.index = index;
+						const { location } = this.context.mascotas[index];
+
+						this.map.animateToRegion(
+							{
+								...location,
+								latitudeDelta: 0.04864195044303443,
+								longitudeDelta: 0.040142817690068,
+							},
+							350
+						);
+					}
+				}, 10);
+			});
+		}
 	}
 
+	renderItem = ({ item }) => <CardFeedMap mascota={item} />;
+
 	render() {
+		let iniReg;
+		let interpolations;
 		let mascotas = this.context.mascotas;
-		let handlerFeed = this.context.handlerFeed;
-		let iniReg = generateInitialRegion(this.context.mascotas[0].location);
-		const interpolations = mascotas.map((mascota, index) => {
-			const inputRange = [
-				(index - 1) * CARD_WIDTH,
-				index * CARD_WIDTH,
-				(index + 1) * CARD_WIDTH,
-			];
+		if (mascotas !== false) {
+			iniReg = generateInitialRegion(mascotas[0].location);
+			interpolations = mascotas.map((mascota, index) => {
+				const inputRange = [
+					(index - 1) * CARD_WIDTH,
+					index * CARD_WIDTH,
+					(index + 1) * CARD_WIDTH,
+				];
 
-			const scale = this.animation.interpolate({
-				inputRange,
-				outputRange: [1, 1.7, 1],
-				extrapolate: 'clamp',
+				const scale = this.animation.interpolate({
+					inputRange,
+					outputRange: [1, 1.7, 1],
+					extrapolate: 'clamp',
+				});
+				const opacity = this.animation.interpolate({
+					inputRange,
+					outputRange: [0.35, 1, 0.35],
+					extrapolate: 'clamp',
+				});
+				return { scale, opacity };
 			});
-			const opacity = this.animation.interpolate({
-				inputRange,
-				outputRange: [0.35, 1, 0.35],
-				extrapolate: 'clamp',
-			});
-			return { scale, opacity };
-		});
-
-		const RenderItem = ({ item }) => {
-			return <CardFeedMap mascota={item} handlerFeed={handlerFeed} />;
-		};
+		} else
+			iniReg = {
+				latitude: 0,
+				longitude: 0,
+				latitudeDelta: 0.0052,
+				longitudeDelta: 0.0051,
+			};
 
 		return (
 			<View style={styles.container}>
-				<MapView
-					ref={(map) => (this.map = map)}
-					initialRegion={iniReg}
-					style={styles.container}
-				>
-					{mascotas.length !== 0 &&
-						mascotas.map((marker, index) => {
+				{mascotas !== false && (
+					<MapView
+						ref={(map) => (this.map = map)}
+						initialRegion={iniReg}
+						style={styles.container}
+					>
+						{mascotas.map((marker, index) => {
 							const scaleStyle = {
 								transform: [
 									{
@@ -123,11 +131,11 @@ export default class MapFeed extends Component {
 								</MapView.Marker>
 							);
 						})}
-				</MapView>
-				{/* <SearchBar /> */}
-
-				{mascotas.length !== 0 ? (
+					</MapView>
+				)}
+				{mascotas !== false ? (
 					<Animated.FlatList
+						windowSize={3}
 						contentContainerStyle={styles.endPadding}
 						scrollEventThrottle={1}
 						showsHorizontalScrollIndicator={false}
@@ -148,20 +156,22 @@ export default class MapFeed extends Component {
 						contentContainerStyle={styles.endPadding}
 						horizontal
 						data={mascotas}
-						renderItem={RenderItem}
+						renderItem={this.renderItem}
 						keyExtractor={(item) => item._id}
+						initialNumToRender={8}
+						maxToRenderPerBatch={8}
 					/>
 				) : (
-					<EmptyCard text={'no hay perros perdidos'} />
+					<EmptyCard text={'no hay mascotas perdidas'} />
 				)}
 			</View>
 		);
 	}
 }
 
-const CardFeedMap = ({ mascota }) => {
+const CardFeedMap = memo(({ mascota }) => {
 	const navigation = useNavigation();
-	const foto = mostrarFoto(mascota.petPicture);
+
 	return (
 		<TouchableOpacity
 			activeOpacity={0.8}
@@ -188,7 +198,7 @@ const CardFeedMap = ({ mascota }) => {
 					}}
 				>
 					<Image
-						source={{ uri: foto }}
+						source={{ uri: mascota.petPicture }}
 						style={styles.cardImage}
 						resizeMode='cover'
 					/>
@@ -237,43 +247,17 @@ const CardFeedMap = ({ mascota }) => {
 			</Card>
 		</TouchableOpacity>
 	);
-};
-
-const SearchBar = () => {
-	return (
-		<View
-			style={{
-				position: 'absolute',
-				top: 20,
-				width: Dimensions.get('window').width - 100,
-				alignSelf: 'center',
-			}}
-		>
-			<Card style={{ borderRadius: 20 }}>
-				<CardItem
-					style={{ flexDirection: 'row', height: 40, borderRadius: 20 }}
-				>
-					<Icon name='ios-search' />
-					<Input placeholder='buscar' />
-				</CardItem>
-			</Card>
-		</View>
-	);
-};
+});
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-	},
-	fullScreen: {
-		...StyleSheet.absoluteFillObject,
 	},
 	scrollView: {
 		position: 'absolute',
 		bottom: 20,
 		left: 0,
 		right: 0,
-		//paddingVertical: 10,
 		zIndex: 100,
 	},
 	endPadding: {
@@ -284,26 +268,9 @@ const styles = StyleSheet.create({
 		marginLeft: 15,
 		height: CARD_HEIGHT,
 		width: CARD_WIDTH,
-		//overflow: 'hidden',
 		borderRadius: 15,
 		borderRightWidth: 6,
 		borderColor: colores.main,
-	},
-	card: {
-		flexDirection: 'row',
-		elevation: 2,
-		backgroundColor: '#FFF',
-		marginLeft: 15,
-		shadowColor: '#000',
-		shadowRadius: 5,
-		shadowOpacity: 0.3,
-		shadowOffset: { x: 2, y: -2 },
-		height: CARD_HEIGHT,
-		width: CARD_WIDTH,
-		//overflow: "hidden",
-		borderRadius: 15,
-		borderRightWidth: 6,
-		borderRightColor: colores.main,
 	},
 	cardImage: {
 		alignSelf: 'center',
@@ -313,30 +280,12 @@ const styles = StyleSheet.create({
 		marginLeft: -10,
 		marginTop: '-3%',
 	},
-	textContent: {
-		flex: 1,
-	},
-	cardtitle: {
-		fontSize: 12,
-		marginTop: 5,
-		fontWeight: 'bold',
-	},
-	cardDescription: {
-		fontSize: 12,
-		color: '#444',
-	},
 	markerWrap: {
 		alignItems: 'center',
 		justifyContent: 'center',
 		height: 65,
 		width: 65,
 	},
-	/* marker: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: "rgba(130,4,150, 0.9)",
-  }, */
 	ring: {
 		width: 16,
 		height: 16,

@@ -9,6 +9,7 @@ import {
 	AUTH2_BUSCAN_WEB,
 	PROD_URL,
 } from '@env';
+
 export async function getUser() {
 	let user = await AsyncStorage.getItem('user');
 

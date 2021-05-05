@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
 	ScrollView,
 	View,
@@ -20,7 +20,6 @@ import {
 	Left,
 	Body,
 	Label,
-	Form,
 	Item,
 	Input,
 	Textarea,
@@ -31,11 +30,7 @@ import {
 	Spinner,
 } from 'native-base';
 
-import {
-	editarMascota,
-	eliminarMascota,
-	getMyPets,
-} from '../helpers/mascotaService';
+import { editarMascota, eliminarMascota } from '../helpers/mascotaService';
 import colores from '../Components/colorPalette';
 import backImg from '../assets/fondos/user_background.png';
 import EmptyCard from '../Components/EmptyCard';
@@ -55,7 +50,7 @@ const Botonera2 = () => {
 		<>
 			<HeaderUser />
 			<ImageBackground resizeMode='repeat' source={fondo} style={styles.image}>
-				<View style={{ height: '45%' }}>
+				<View style={{ height: '50%' }}>
 					<MyPetCards />
 				</View>
 				<ScrollView>
@@ -122,6 +117,20 @@ const MyPetCards = () => {
 				renderItem={RenderItem}
 				keyExtractor={(item) => item._id}
 			/>
+			<ListItem style={{ marginRight: 20 }}>
+				<Body>
+					<Text
+						style={{
+							color: colores.main,
+							textAlign: 'center',
+							fontFamily: 'NunitoLight',
+							marginLeft: 20,
+						}}
+					>
+						CHATS
+					</Text>
+				</Body>
+			</ListItem>
 		</>
 	);
 };
@@ -147,7 +156,7 @@ const CardPet = ({ mascota, handlerMascota }) => {
 
 	async function handlerEliminar() {
 		let result = await eliminarMascota(mascota._id);
-		if (result) return handlerMascota('eliminar', mascota);
+		if (result) handlerMascota('eliminar', mascota);
 	}
 
 	return (
@@ -229,7 +238,7 @@ const CardPet = ({ mascota, handlerMascota }) => {
 						desc: {mascota.petDescription.slice(0, 18)}...
 					</Text>
 
-					<View flexDirection='row' style={{ marginLeft: 5 }}>
+					<View flexDirection='row'>
 						<Button
 							rounded
 							small
@@ -237,8 +246,8 @@ const CardPet = ({ mascota, handlerMascota }) => {
 								backgroundColor: '#fff',
 								elevation: 4,
 								marginRight: 10,
-								width: 48,
-								height: 48,
+								width: 51,
+								height: 51,
 								marginTop: 4,
 							}}
 							onPress={() => navigation.navigate('chat', mascota)}
@@ -248,8 +257,6 @@ const CardPet = ({ mascota, handlerMascota }) => {
 								name='chat'
 								style={{
 									color: colores.main,
-									position: 'absolute',
-									right: -48,
 								}}
 							/>
 						</Button>
@@ -261,17 +268,14 @@ const CardPet = ({ mascota, handlerMascota }) => {
 								backgroundColor: '#fff',
 								elevation: 4,
 								marginRight: 10,
-								width: 48,
-								height: 48,
+								width: 51,
+								height: 51,
 								marginTop: 4,
 							}}
 						>
 							<Icon
-								fontSize='22'
 								style={{
 									color: colores.main,
-									position: 'absolute',
-									right: -48,
 								}}
 								type='Feather'
 								name='edit'
@@ -285,16 +289,14 @@ const CardPet = ({ mascota, handlerMascota }) => {
 								backgroundColor: '#fff',
 								elevation: 4,
 								marginRight: 10,
-								width: 48,
-								height: 48,
+								width: 51,
+								height: 51,
 								marginTop: 4,
 							}}
 						>
 							<Icon
 								style={{
 									color: colores.main,
-									position: 'absolute',
-									right: -48,
 								}}
 								type='Feather'
 								name='check-circle'
@@ -320,7 +322,7 @@ const CardPet = ({ mascota, handlerMascota }) => {
 const MisChats = () => {
 	const { mascotas } = useContext(MascotaContext);
 	const navigation = useNavigation();
-	const [chats, setChats] = useState('loading');
+	const [chats, setChats] = useState(false);
 
 	async function loadChats() {
 		let resp = await getMyChats();
@@ -333,82 +335,55 @@ const MisChats = () => {
 	}
 
 	useEffect(() => {
-		loadChats();
-	}, []);
-
-	function renderChats() {
-		switch (chats) {
-			case 'loading':
-				return (
-					<View>
-						<Spinner color='green' />
-					</View>
-				);
-				break;
-
-			case false:
-				return (
-					<TouchableOpacity style={{ paddingTop: 10 }}>
-						<EmptyCard />
-					</TouchableOpacity>
-				);
-				break;
-
-			default:
-				return chats.map((chat) => {
-					let fecha = getFechaChat(chat.createdAt);
-
-					return (
-						<TouchableOpacity
-							key={chat._id}
-							onPress={() => handlerChat(chat.user.petId)}
-							style={{ marginBottom: 8 }}
-						>
-							<ListItem avatar noBorder>
-								<Left>
-									<Thumbnail source={{ uri: chat.user.petPicture }} />
-								</Left>
-								<Body>
-									<Text style={{ fontFamily: 'NunitoLight' }}>
-										{chat.user.petName.toUpperCase()}
-									</Text>
-									<Text style={{ fontFamily: 'NunitoLight' }}>
-										ultimo msj:
-										{chat.text.length > 42
-											? `${chat.text.slice(0, 40)}...`
-											: chat.text}
-									</Text>
-								</Body>
-								<Right>
-									<Text style={{ fontFamily: 'NunitoLight' }} note>
-										{fecha}
-									</Text>
-								</Right>
-							</ListItem>
-						</TouchableOpacity>
-					);
-				});
-
-				break;
-		}
-	}
+		const unsubscribe = navigation.addListener('focus', async () => {
+			await loadChats();
+		});
+		return unsubscribe;
+	}, [navigation]);
 
 	return (
 		<Content>
-			<ListItem>
-				<Body>
-					<Text
-						style={{
-							color: colores.main,
-							textAlign: 'center',
-							fontFamily: 'NunitoLight',
-						}}
-					>
-						CHATS
-					</Text>
-				</Body>
-			</ListItem>
-			<List>{renderChats()}</List>
+			<List>
+				{chats ? (
+					chats.map((chat) => {
+						let fecha = getFechaChat(chat.createdAt);
+
+						return (
+							<TouchableOpacity
+								key={chat._id}
+								onPress={() => handlerChat(chat.user.petId)}
+								style={{ marginBottom: 8 }}
+							>
+								<ListItem avatar noBorder>
+									<Left>
+										<Thumbnail source={{ uri: chat.user.petPicture }} />
+									</Left>
+									<Body>
+										<Text style={{ fontFamily: 'NunitoLight' }}>
+											{chat.user.petName.toUpperCase()}
+										</Text>
+										<Text style={{ fontFamily: 'NunitoLight' }}>
+											msj:&nbsp;
+											{chat.text.length > 42
+												? `${chat.text.slice(0, 40)}...`
+												: chat.text}
+										</Text>
+									</Body>
+									<Right>
+										<Text style={{ fontFamily: 'NunitoLight' }} note>
+											{fecha}
+										</Text>
+									</Right>
+								</ListItem>
+							</TouchableOpacity>
+						);
+					})
+				) : (
+					<View>
+						<Spinner color='green' />
+					</View>
+				)}
+			</List>
 		</Content>
 	);
 };
@@ -563,65 +538,7 @@ const styles = StyleSheet.create({
 		borderRadius: 5,
 		fontFamily: 'NunitoLight',
 	},
-	imagenPet: {
-		width: null,
-		overflow: 'hidden',
-		borderWidth: 0,
-		borderBottomLeftRadius: 0,
-		borderBottomRightRadius: 0,
-		borderTopLeftRadius: 10,
-		borderTopRightRadius: 10,
-		height: '80%',
-	},
-	myPetContent: {
-		position: 'absolute',
-		bottom: 5,
-		right: 0,
-		zIndex: 100,
-	},
-	titles: {
-		marginTop: 5,
-		color: colores.light,
-		fontSize: 20,
-		flexDirection: 'row',
-		justifyContent: 'center',
-		alignSelf: 'center',
-	},
-	dogName: {
-		color: colores.main,
-		fontSize: 16,
-		paddingLeft: 5,
-		paddingTop: 2,
-	},
-	card: {
-		width: Dimensions.get('window').width - 20,
-		flexDirection: 'row',
-		backgroundColor: colores.light,
-		marginBottom: 5,
-	},
-	picture: {
-		margin: 5,
-		height: 80,
-		width: 80,
-		borderRadius: 120 / 2,
-	},
-	fotoPerfil: {},
-	textBox: {
-		margin: 5,
-		padding: 5,
-		backgroundColor: 'white',
-		borderRadius: 10,
-		width: '70%',
-		flexDirection: 'row',
-	},
-	cardF: {
-		height: 300,
-		width: Dimensions.get('window').width - 26,
-		alignItems: 'center',
-		elevation: 4,
-		borderRadius: 25,
-		borderWidth: 2,
-	},
+
 	image: {
 		flex: 1,
 		resizeMode: 'cover',
@@ -636,19 +553,10 @@ const styles = StyleSheet.create({
 	swSelector: { width: 270, marginLeft: 20, padding: 5 },
 	itemForm: {
 		marginBottom: 15,
-		borderBottomWidth: 0,
-		borderTopWidth: 0,
 		borderColor: colores.mild,
-		padding: 0,
 		paddingLeft: 10,
 		backgroundColor: '#fff',
 		borderRadius: 5,
-	},
-	textDesc: {
-		color: colores.main,
-		fontWeight: 'bold',
-		alignSelf: 'center',
-		marginBottom: 5,
 	},
 });
 

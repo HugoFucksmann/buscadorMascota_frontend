@@ -1,62 +1,67 @@
 {
-  "expo": {
-    "name": "BusCan",
-    "slug": "buscan",
-    "splash": {
-      "image": "./assets/fondos/introF.png",
-      "resizeMode": "cover",
-      "backgroundColor": "#ffffff"
-    },
-    "version": "1.19.0",
-    "orientation": "portrait",
-    "icon": "./assets/appLogo.png",
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
-    "sdkVersion": "40.0.0",
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "icon": "./assets/appLogo.png",
-      "supportsTablet": false,
-      "bundleIdentifier": "com.colodev.buscan",
-      "buildNumber": "1.19.0",
-      "config": {
-        "googleMapsApiKey": "AIzaSyBTml0ABdTXFNKVNeODlr6i2NDNyUX3kmY"
-      }
-    },
-    "android": {
-      "versionCode": 19,
-      "icon": "./assets/appLogo.png",
-      "enableDangerousExperimentalLeanBuilds": false,
-      "useNextNotificationsApi": true,
-      "package": "com.colodev.buscan",
-      "googleServicesFile": "./google-services.json",
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/appLogo.png",
-        "backgroundColor": "#FFFFFF"
-      },
-      "config": {
-        "googleSignIn": {
-          "apiKey": "AIzaSyA-FXb1ZKGIY_O-A4ZfIVe0pgX9fk6sGvY",
-          "certificateHash": "3C20343D6B621097345AD10045BE18C902579DAF67EA339841063A94A4A7D8FB"
-        },
-        "googleMaps": {
-          "apiKey": "AIzaSyA-FXb1ZKGIY_O-A4ZfIVe0pgX9fk6sGvY"
-        }
-      }
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
-    "description": "",
-    "notification": {
-      "icon": "./assets/appLogo.png",
-      "color": "#fff",
-      "iosDisplayInForeground": true,
-      "androidMode": "default",
-      "androidCollapsedTitle": "BusCan"
-    }
-  }
+	"expo": {
+		"name": "BusCan",
+		"slug": "buscan",
+		"splash": {
+			"image": "./assets/fondos/introF.png",
+			"resizeMode": "cover",
+			"backgroundColor": "#ffffff"
+		},
+		"version": "1.24.0",
+		"orientation": "portrait",
+		"icon": "./assets/appLogo.png",
+		"updates": {
+			"fallbackToCacheTimeout": 0
+		},
+		"sdkVersion": "40.0.0",
+		"assetBundlePatterns": ["**/*"],
+		"ios": {
+			"icon": "./assets/appLogo.png",
+			"supportsTablet": false,
+			"bundleIdentifier": "com.colodev.buscan",
+			"buildNumber": "1.24.0",
+			"config": {
+				"googleMapsApiKey": "AIzaSyBTml0ABdTXFNKVNeODlr6i2NDNyUX3kmY"
+			}
+		},
+		"android": {
+			"permissions": [
+				"ACCESS_COARSE_LOCATION",
+				"ACCESS_FINE_LOCATION",
+				"NOTIFICATIONS",
+				"MEDIA_LIBRARY",
+				"LOCATION"
+			],
+			"versionCode": 24,
+			"icon": "./assets/appLogo.png",
+			"enableDangerousExperimentalLeanBuilds": false,
+			"useNextNotificationsApi": true,
+			"package": "com.colodev.buscan",
+			"googleServicesFile": "./google-services.json",
+			"adaptiveIcon": {
+				"foregroundImage": "./assets/appLogo.png",
+				"backgroundColor": "#FFFFFF"
+			},
+			"config": {
+				"googleSignIn": {
+					"apiKey": "AIzaSyA-FXb1ZKGIY_O-A4ZfIVe0pgX9fk6sGvY",
+					"certificateHash": "3C20343D6B621097345AD10045BE18C902579DAF67EA339841063A94A4A7D8FB"
+				},
+				"googleMaps": {
+					"apiKey": "AIzaSyA-FXb1ZKGIY_O-A4ZfIVe0pgX9fk6sGvY"
+				}
+			}
+		},
+		"web": {
+			"favicon": "./assets/favicon.png"
+		},
+		"description": "",
+		"notification": {
+			"icon": "./assets/appLogo.png",
+			"color": "#fff",
+			"iosDisplayInForeground": true,
+			"androidMode": "default",
+			"androidCollapsedTitle": "BusCan"
+		}
+	}
 }

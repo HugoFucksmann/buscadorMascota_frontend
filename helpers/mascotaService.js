@@ -27,7 +27,7 @@ async function actualizarArchivo(file, perroId, token) {
 		}).catch((e) => console.log(e));
 
 		const data = await resp.json();
-		console.log('data ', data);
+		console.log(data);
 		if (data.ok) {
 			return data.mascota;
 		} else {
@@ -50,7 +50,7 @@ function getMyPets(mascotas, uid) {
 	return miMascotas;
 }
 
-async function getMascotas2(user) {
+export function ordenarMascotas(mascotas, user) {
 	function deg2rad(deg) {
 		return deg * (Math.PI / 180);
 	}
@@ -69,6 +69,37 @@ async function getMascotas2(user) {
 		return dist;
 	}
 
+	let mascotass = mascotas.sort((a, b) => {
+		let dist2a = distKM(user, a);
+		let dist2b = distKM(user, b);
+
+		return dist2a - dist2b;
+	});
+
+	mascotass.sort((a, b) =>
+		primerosTreinta(a.date) === primerosTreinta(b.date)
+			? 0
+			: primerosTreinta(a.date)
+			? -1
+			: 1
+	);
+
+	return mascotass.map((mascota) => {
+		let dist = distKM(mascota, user);
+		if (dist < 1) {
+			dist = dist * 1000;
+			dist = Math.round(dist);
+			dist = `${dist} mts`;
+		} else {
+			dist = dist.toFixed(1);
+			dist = `${dist} km`;
+		}
+
+		return { ...mascota, dist: dist };
+	});
+}
+
+async function getMascotas2(user) {
 	return await fetch(`${PROD_URL}/mascotas`, {
 		method: 'GET',
 		headers: {
@@ -79,34 +110,8 @@ async function getMascotas2(user) {
 		.then((response) => response.json())
 		.then((res) => {
 			if (res.ok) {
-				let mascotas = res.mascotas.sort((a, b) => {
-					let dist2a = distKM(user, a);
-					let dist2b = distKM(user, b);
-
-					return dist2a - dist2b;
-				});
-
-				mascotas.sort((a, b) =>
-					primerosTreinta(a.date) === primerosTreinta(b.date)
-						? 0
-						: primerosTreinta(a.date)
-						? -1
-						: 1
-				);
-
-				return mascotas.map((mascota) => {
-					let dist = distKM(mascota, user);
-					if (dist < 1) {
-						dist = dist * 1000;
-						dist = Math.round(dist);
-						dist = `${dist} mts`;
-					} else {
-						dist = dist.toFixed(1);
-						dist = `${dist} km`;
-					}
-
-					return { ...mascota, dist: dist };
-				});
+				let mascotas = ordenarMascotas(res.mascotas, user);
+				return mascotas;
 			} else return false;
 		})
 		.catch((error) => console.error(error));
@@ -177,6 +182,7 @@ async function eliminarMascota(idMascota) {
 
 function clearCollection(path) {
 	let ref = firebaseConfig().collection(path);
+
 	ref.onSnapshot((snapshot) => {
 		snapshot.docs.forEach((doc) => {
 			ref.doc(doc.id).delete();
