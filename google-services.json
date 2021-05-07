@@ -1,39 +1,39 @@
 {
-  "project_info": {
-    "project_number": "679096468889",
-    "project_id": "mascotasapp-f1946",
-    "storage_bucket": "mascotasapp-f1946.appspot.com"
-  },
-  "client": [
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:679096468889:android:ef9fcd213eda505eb9ff08",
-        "android_client_info": {
-          "package_name": "com.colodev.buscan"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "679096468889-i9h7n6egs4ve41okloq35n3ap4at3kip.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBvVT3qBBvUaIHBMvR_OOAqmXYbG988wco"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "679096468889-i9h7n6egs4ve41okloq35n3ap4at3kip.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    }
-  ],
-  "configuration_version": "1"
+	"project_info": {
+		"project_number": "679096468889",
+		"project_id": "mascotasapp-f1946",
+		"storage_bucket": "mascotasapp-f1946.appspot.com"
+	},
+	"client": [
+		{
+			"client_info": {
+				"mobilesdk_app_id": "1:679096468889:android:ef9fcd213eda505eb9ff08",
+				"android_client_info": {
+					"package_name": "com.colodev.buscan"
+				}
+			},
+			"oauth_client": [
+				{
+					"client_id": "679096468889-i9h7n6egs4ve41okloq35n3ap4at3kip.apps.googleusercontent.com",
+					"client_type": 3
+				}
+			],
+			"api_key": [
+				{
+					"current_key": "AIzaSyBvVT3qBBvUaIHBMvR_OOAqmXYbG988wco"
+				}
+			],
+			"services": {
+				"appinvite_service": {
+					"other_platform_oauth_client": [
+						{
+							"client_id": "679096468889-i9h7n6egs4ve41okloq35n3ap4at3kip.apps.googleusercontent.com",
+							"client_type": 3
+						}
+					]
+				}
+			}
+		}
+	],
+	"configuration_version": "1"
 }

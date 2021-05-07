@@ -79,13 +79,13 @@ const FormMascota = ({ navigation }) => {
 
 	useEffect(() => {
 		(async () => {
-			if (Platform.OS !== 'web') {
+			/* if (Platform.OS !== 'web') {
 				const {
 					status,
 				} = await ImagePicker.requestMediaLibraryPermissionsAsync();
 				if (status !== 'granted')
 					alert('ups! :( , se necesita el permiso para que funcione ');
-			}
+			} */
 
 			setLoading(false);
 		})();

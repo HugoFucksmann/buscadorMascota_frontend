@@ -124,7 +124,7 @@ export default class MapFeed extends Component {
 								>
 									<Animated.View style={[styles.markerWrap, opacityStyle]}>
 										<Animated.View style={[styles.ring, scaleStyle]} />
-										<Text style={{ height: 40 }}>
+										<Text style={styles.textH}>
 											<Image source={markerPet} style={styles.markerImage} />
 										</Text>
 									</Animated.View>
@@ -179,24 +179,16 @@ const CardFeedMap = memo(({ mascota }) => {
 			onPress={() => navigation.navigate('infoM', mascota)}
 		>
 			<Card style={styles.cardd}>
-				<View style={{ position: 'absolute', top: 4, right: 8 }}>
+				<View style={styles.floatView}>
 					<Button
 						small
 						style={styles.button}
 						onPress={() => navigation.navigate('chat', mascota)}
 					>
-						<Icon type='Entypo' name='chat' style={{ color: colores.main }} />
+						<Icon type='Entypo' name='chat' style={styles.colorMain} />
 					</Button>
 				</View>
-				<View
-					style={{
-						flexDirection: 'column',
-						width: '50%',
-						marginBottom: 3,
-						marginTop: 3,
-						marginLeft: 3,
-					}}
-				>
+				<View style={styles.imgCont}>
 					<Image
 						source={{ uri: mascota.petPicture }}
 						style={styles.cardImage}
@@ -204,44 +196,25 @@ const CardFeedMap = memo(({ mascota }) => {
 					/>
 				</View>
 				<View style={{ flexDirection: 'column-reverse' }}>
-					<View style={{ flexDirection: 'row', padding: 12 }}>
-						<Icon
-							active
-							name='date'
-							type='Fontisto'
-							style={{ color: colores.main, fontSize: 20, paddingRight: 5 }}
-						/>
-						<Text
-							style={{ color: 'grey', fontSize: 13, fontFamily: 'NunitoLight' }}
-						>
+					<View style={styles.rowView}>
+						<Icon active name='date' type='Fontisto' style={styles.iconCard} />
+						<Text style={styles.textCard}>
 							{tiempoTranscurrido(mascota.date)}
 						</Text>
 					</View>
 
-					<View style={{ flexDirection: 'row', paddingLeft: 12 }}>
+					<View style={styles.rowView}>
 						<Icon
 							active
 							name='map-marker-radius'
 							type='MaterialCommunityIcons'
-							style={{ color: colores.main, fontSize: 20, paddingRight: 5 }}
+							style={styles.iconCard}
 						/>
-						<Text style={{ color: 'grey', fontFamily: 'NunitoLight' }}>
-							{mascota.dist}
-						</Text>
+						<Text style={styles.textCard}>{mascota.dist}</Text>
 					</View>
 
-					<View
-						style={{ flexDirection: 'row', paddingLeft: 14, paddingBottom: 5 }}
-					>
-						<Text
-							style={{
-								color: colores.main,
-								fontSize: 20,
-								fontFamily: 'NunitoLight',
-							}}
-						>
-							{mascota.petName}
-						</Text>
+					<View style={styles.rowView}>
+						<Text style={styles.petName}>{mascota.petName.slice(0, 11)}</Text>
 					</View>
 				</View>
 			</Card>
@@ -250,8 +223,19 @@ const CardFeedMap = memo(({ mascota }) => {
 });
 
 const styles = StyleSheet.create({
+	colorMain: { color: colores.main },
 	container: {
 		flex: 1,
+	},
+	floatView: { position: 'absolute', top: 4, right: 8 },
+	textH: { height: 40 },
+	rowView: { flexDirection: 'row', paddingLeft: 12, paddingBottom: 12 },
+	imgCont: {
+		flexDirection: 'column',
+		width: '50%',
+		marginBottom: 3,
+		marginTop: 3,
+		marginLeft: 3,
 	},
 	scrollView: {
 		position: 'absolute',
@@ -304,5 +288,13 @@ const styles = StyleSheet.create({
 	button: {
 		color: colores.main,
 		backgroundColor: '#fff',
+	},
+	iconCard: { color: colores.main, fontSize: 20, paddingRight: 5 },
+	textCard: { color: colores.main, fontFamily: 'NunitoLight' },
+	petName: {
+		color: colores.main,
+		fontSize: 20,
+		fontFamily: 'NunitoLight',
+		marginBottom: -6,
 	},
 });

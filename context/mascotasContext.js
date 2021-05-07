@@ -50,7 +50,7 @@ class MasoctaProvider extends Component {
 
 				this.setState({ mascotas: mascotasElim });
 
-				return Alert.alert('se elimino el registro de la mascota');
+				return Alert.alert('se elimino el registro de tu mascota');
 				break;
 			default:
 				break;

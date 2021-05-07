@@ -1,14 +1,10 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { ImageBackground, StatusBar, StyleSheet } from 'react-native';
-import { Header, Text, Thumbnail, View } from 'native-base';
+import { Header } from 'native-base';
 import banner from '../assets/banner.png';
 import colores from '../Components/colorPalette';
-import { MascotaContext } from '../context/mascotasContext';
 
 const HeaderBuscan = () => {
-	const { renderTabs, renderFeed } = useContext(MascotaContext);
-
-	//if (renderTabs === 'perfil') return <></>;
 	return (
 		<Header style={styles.header}>
 			<ImageBackground source={banner} style={styles.headerBackground} />
@@ -21,8 +17,6 @@ const HeaderBuscan = () => {
 		</Header>
 	);
 };
-
-export default HeaderBuscan;
 
 const styles = StyleSheet.create({
 	image: {
@@ -69,3 +63,5 @@ const styles = StyleSheet.create({
 		width: null,
 	},
 });
+
+export default HeaderBuscan;

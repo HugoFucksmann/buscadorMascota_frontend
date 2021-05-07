@@ -37,6 +37,7 @@ const Feed = () => {
 
 const FeedTarj = () => {
 	const { mascotas } = useContext(MascotaContext);
+
 	const renderItem = ({ item }) => {
 		return <CardFeed mascota={item} />;
 	};

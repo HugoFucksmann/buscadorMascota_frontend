@@ -28,10 +28,11 @@ export function tiempoTranscurrido(horaCero) {
 	let segundos = Math.floor(tiempoPasado / segs);
 
 	if (dias === 0 && horas === 0 && minutos == 0)
-		msj = `Hace ${segundos} segundos`;
-	else if (dias === 0 && horas === 0) msj = `Hace ${minutos} minutos`;
-	else if (dias === 0 && horas > 0) msj = `Hace ${horas} horas`;
-	else msj = `Hace ${dias} dias`;
+		msj = `hace ${segundos} segundos`;
+	else if (dias === 0 && horas === 0) msj = `hace ${minutos} minutos`;
+	else if (dias === 0 && horas > 0) msj = `hace ${horas} horas`;
+	else if (dias === 1) msj = `hace ${dias} dia`;
+	else msj = `hace ${dias} dias`;
 
 	return msj;
 }

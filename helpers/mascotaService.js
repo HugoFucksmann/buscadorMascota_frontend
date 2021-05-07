@@ -27,7 +27,7 @@ async function actualizarArchivo(file, perroId, token) {
 		}).catch((e) => console.log(e));
 
 		const data = await resp.json();
-		console.log(data);
+
 		if (data.ok) {
 			return data.mascota;
 		} else {
@@ -69,14 +69,18 @@ export function ordenarMascotas(mascotas, user) {
 		return dist;
 	}
 
-	let mascotass = mascotas.sort((a, b) => {
+	let mascotaLejos = mascotas.filter(
+		(mascota) => distKM(mascota, user).toFixed(1) < 10
+	);
+
+	mascotaLejos.sort((a, b) => {
 		let dist2a = distKM(user, a);
 		let dist2b = distKM(user, b);
 
 		return dist2a - dist2b;
 	});
 
-	mascotass.sort((a, b) =>
+	mascotaLejos.sort((a, b) =>
 		primerosTreinta(a.date) === primerosTreinta(b.date)
 			? 0
 			: primerosTreinta(a.date)
@@ -84,8 +88,9 @@ export function ordenarMascotas(mascotas, user) {
 			: 1
 	);
 
-	return mascotass.map((mascota) => {
+	return mascotaLejos.map((mascota) => {
 		let dist = distKM(mascota, user);
+
 		if (dist < 1) {
 			dist = dist * 1000;
 			dist = Math.round(dist);

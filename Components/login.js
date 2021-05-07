@@ -39,22 +39,17 @@ const Login = () => {
 		>
 			<ImageBackground source={loginBackground} style={styles.BackgroundImage}>
 				<View style={styles.viewPrincipal}>
-					<Image
-						source={loginPhrase}
-						style={{ resizeMode: 'contain', width: 170 }}
-					/>
+					<Image source={loginPhrase} style={styles.loginImg} />
 				</View>
 				<View style={{ alignSelf: 'center' }}>
 					<Button
 						large
 						iconLeft
-						style={{ padding: 25, backgroundColor: '#fff' }}
+						style={styles.googleBoton}
 						onPress={() => googleAuth(usuario)}
 					>
 						<Image source={google} style={styles.googleImg} />
-						<Text style={{ fontWeight: 'bold', color: 'grey' }}>
-							Inicia sesion con Google
-						</Text>
+						<Text style={styles.googleText}>Inicia sesion con Google</Text>
 					</Button>
 				</View>
 			</ImageBackground>
@@ -80,6 +75,9 @@ const styles = StyleSheet.create({
 		marginRight: 20,
 		backgroundColor: '#fff',
 	},
+	loginImg: { resizeMode: 'contain', width: 170 },
+	googleText: { fontWeight: 'bold', color: 'grey' },
+	googleBoton: { padding: 25, backgroundColor: '#fff' },
 });
 
 export default Login;

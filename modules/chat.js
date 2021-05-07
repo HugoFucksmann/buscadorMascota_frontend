@@ -23,6 +23,7 @@ export default function Chat({ route, navigation }) {
 	const [msj, setMsj] = useState('');
 
 	const chatUser = {
+		_id: usuario._id,
 		name: usuario.name,
 		img: usuario.img,
 		notification: usuario.notification,
@@ -69,6 +70,20 @@ export default function Chat({ route, navigation }) {
 		let chatTokens = [];
 
 		await messagess.map((m) => chatsRef.add(m));
+
+		const uIdMascota = mascota.usuario;
+		const chats = await chatsRef.get();
+		chats.forEach((doc) => {
+			chatTokens = [...chatTokens, doc.data().user.notification];
+		});
+		await fetch(`${PROD_URL}/chat`, {
+			method: 'POST',
+			headers: {
+				Accept: 'application/json',
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ chatTokens, uIdMascota }),
+		}).catch((e) => console.log(e));
 
 		let userChat = await AsyncStorage.getItem('chats');
 		if (userChat) {

@@ -43,15 +43,17 @@ import { getMyChats } from '../helpers/getMyChats';
 import { getFechaChat } from '../helpers/getTimePass';
 import { MascotaContext } from '../context/mascotasContext';
 import { useNavigation } from '@react-navigation/core';
-import { mostrarFoto } from '../helpers/imageService';
 
 const Botonera2 = () => {
 	return (
 		<>
 			<HeaderUser />
 			<ImageBackground resizeMode='repeat' source={fondo} style={styles.image}>
-				<View style={{ height: '50%' }}>
+				<View style={styles.cardView}>
 					<MyPetCards />
+					<View style={styles.itemChat}>
+						<Text style={styles.itemTextChat}>CHATS</Text>
+					</View>
 				</View>
 				<ScrollView>
 					<MisChats />
@@ -63,26 +65,14 @@ const Botonera2 = () => {
 
 const HeaderUser = () => {
 	const { usuario } = useContext(MascotaContext);
-	const fotoPerfil = mostrarFoto(usuario.img);
 	return (
-		<View
-			style={{
-				height: 160,
-				paddingTop: 10,
-				backgroundColor: colores.main,
-			}}
-		>
+		<View style={styles.headerUContent}>
 			<ImageBackground source={backImg} style={styles.image}>
 				<Thumbnail
 					large
 					square
-					style={{
-						alignSelf: 'center',
-						borderWidth: 4,
-						borderColor: '#f2f2f2',
-						borderRadius: 15,
-					}}
-					source={{ uri: fotoPerfil }}
+					style={styles.backgroundHeaderU}
+					source={{ uri: usuario.img }}
 				/>
 				<Text
 					style={{
@@ -109,29 +99,13 @@ const MyPetCards = () => {
 	if (misMascotas.length === 0)
 		return <EmptyCard text='no tienes mascotas perdidas' />;
 	return (
-		<>
-			<FlatList
-				horizontal
-				showsHorizontalScrollIndicator={false}
-				data={misMascotas}
-				renderItem={RenderItem}
-				keyExtractor={(item) => item._id}
-			/>
-			<ListItem style={{ marginRight: 20 }}>
-				<Body>
-					<Text
-						style={{
-							color: colores.main,
-							textAlign: 'center',
-							fontFamily: 'NunitoLight',
-							marginLeft: 20,
-						}}
-					>
-						CHATS
-					</Text>
-				</Body>
-			</ListItem>
-		</>
+		<FlatList
+			horizontal
+			showsHorizontalScrollIndicator={false}
+			data={misMascotas}
+			renderItem={RenderItem}
+			keyExtractor={(item) => item._id}
+		/>
 	);
 };
 
@@ -161,80 +135,24 @@ const CardPet = ({ mascota, handlerMascota }) => {
 
 	return (
 		<>
-			<Card
-				key={mascota._id}
-				style={[
-					styles.myPetCard,
-					{
-						flexDirection: 'row',
-						borderRightWidth: 6,
-						borderColor: colores.main,
-					},
-				]}
-			>
+			<Card key={mascota._id} style={styles.myPetCard}>
 				<TouchableOpacity
 					onPress={() => navigation.navigate('infoM', mascota)}
-					style={{
-						borderRadius: 25,
-						height: '100%',
-						width: 160,
-						marginLeft: -10,
-					}}
+					style={styles.imageMascotaCardTouch}
 				>
 					<Image
-						style={{ borderRadius: 25, height: '100%' }}
+						style={styles.imageMascotaCard}
 						source={{ uri: mascota.petPicture }}
 					/>
 				</TouchableOpacity>
-				<View
-					style={{
-						paddingLeft: 10,
-						paddingTop: 5,
-					}}
-				>
-					<Text
-						style={{
-							color: 'black',
-							lineHeight: 22,
-							fontFamily: 'NunitoLight',
-						}}
-					>
-						Nombre: {mascota.petName}
+				<View style={styles.cardTextView}>
+					<Text style={styles.mascotaCardText}>
+						Nombre: {mascota.petName.slice(0, 15)}
 					</Text>
-					<Text
-						style={{
-							color: '#000',
-							lineHeight: 22,
-							fontFamily: 'NunitoLight',
-						}}
-					>
-						Sexo: {mascota.petSex}
-					</Text>
-					<Text
-						style={{
-							color: '#000',
-							lineHeight: 22,
-							fontFamily: 'NunitoLight',
-						}}
-					>
-						Color: {mascota.petColor}
-					</Text>
-					<Text
-						style={{
-							color: '#000',
-							lineHeight: 22,
-							fontFamily: 'NunitoLight',
-						}}
-					>
-						Tamaño: {mascota.petSize}
-					</Text>
-					<Text
-						style={{
-							color: '#000',
-							lineHeight: 22,
-							fontFamily: 'NunitoLight',
-						}}
-					>
+					<Text style={styles.mascotaCardText}>Sexo: {mascota.petSex}</Text>
+					<Text style={styles.mascotaCardText}>Color: {mascota.petColor}</Text>
+					<Text style={styles.mascotaCardText}>Tamaño: {mascota.petSize}</Text>
+					<Text style={styles.mascotaCardText}>
 						desc: {mascota.petDescription.slice(0, 18)}...
 					</Text>
 
@@ -242,62 +160,27 @@ const CardPet = ({ mascota, handlerMascota }) => {
 						<Button
 							rounded
 							small
-							style={{
-								backgroundColor: '#fff',
-								elevation: 4,
-								marginRight: 10,
-								width: 51,
-								height: 51,
-								marginTop: 4,
-							}}
+							style={styles.botonChat}
 							onPress={() => navigation.navigate('chat', mascota)}
 						>
-							<Icon
-								type='Entypo'
-								name='chat'
-								style={{
-									color: colores.main,
-								}}
-							/>
+							<Icon type='Entypo' name='chat' style={styles.colorIcon} />
 						</Button>
 						<Button
 							onPress={() => setIsModal(true)}
 							small
 							rounded
-							style={{
-								backgroundColor: '#fff',
-								elevation: 4,
-								marginRight: 10,
-								width: 51,
-								height: 51,
-								marginTop: 4,
-							}}
+							style={styles.botonEdit}
 						>
-							<Icon
-								style={{
-									color: colores.main,
-								}}
-								type='Feather'
-								name='edit'
-							/>
+							<Icon style={styles.colorIcon} type='Feather' name='edit' />
 						</Button>
 						<Button
 							onPress={() => createTwoButtonAlert()}
 							small
 							rounded
-							style={{
-								backgroundColor: '#fff',
-								elevation: 4,
-								marginRight: 10,
-								width: 51,
-								height: 51,
-								marginTop: 4,
-							}}
+							style={styles.botonEliminar}
 						>
 							<Icon
-								style={{
-									color: colores.main,
-								}}
+								style={styles.colorIcon}
 								type='Feather'
 								name='check-circle'
 							/>
@@ -359,10 +242,10 @@ const MisChats = () => {
 										<Thumbnail source={{ uri: chat.user.petPicture }} />
 									</Left>
 									<Body>
-										<Text style={{ fontFamily: 'NunitoLight' }}>
-											{chat.user.petName.toUpperCase()}
+										<Text style={styles.letraApp}>
+											{chat.user.petName.slice(0, 11).toUpperCase()}
 										</Text>
-										<Text style={{ fontFamily: 'NunitoLight' }}>
+										<Text style={styles.letraApp}>
 											msj:&nbsp;
 											{chat.text.length > 42
 												? `${chat.text.slice(0, 40)}...`
@@ -370,7 +253,7 @@ const MisChats = () => {
 										</Text>
 									</Body>
 									<Right>
-										<Text style={{ fontFamily: 'NunitoLight' }} note>
+										<Text style={styles.letraApp} note>
 											{fecha}
 										</Text>
 									</Right>
@@ -417,40 +300,26 @@ const ModalContent = ({ mascota, handlerMascota }) => {
 	}
 
 	return (
-		<View
-			style={{
-				flex: 1,
-				justifyContent: 'flex-end',
-				backgroundColor: 'rgba(0,0,0,0.7)',
-			}}
-		>
-			<View
-				style={{
-					backgroundColor: colores.light,
-					padding: 15,
-					paddingTop: 20,
-					borderTopRightRadius: 20,
-					borderTopLeftRadius: 20,
-				}}
-			>
+		<View style={styles.modalFondoAtenuado}>
+			<View style={styles.modalContent}>
 				{perro.petName !== 'Perdido!!' && (
 					<Card style={styles.itemForm}>
-						<Item picker style={{ paddingLeft: 10 }}>
+						<Item picker>
 							<Input
 								value={perro.petName}
 								onChangeText={(nombre) =>
 									setPerro({ ...perro, petName: nombre })
 								}
 								placeholder='Nombre mascota'
-								style={{ fontFamily: 'NunitoLight' }}
+								style={styles.letraApp}
 							/>
 						</Item>
 					</Card>
 				)}
 				<Card style={styles.itemForm}>
-					<Item picker style={{ paddingLeft: 10 }}>
+					<Item picker>
 						<Left>
-							<Text style={{ fontFamily: 'NunitoLight' }}>Sexo:</Text>
+							<Text style={styles.letraApp}>Sexo:</Text>
 						</Left>
 						<Picker
 							mode='dropdown'
@@ -465,9 +334,9 @@ const ModalContent = ({ mascota, handlerMascota }) => {
 				</Card>
 
 				<Card style={styles.itemForm}>
-					<Item picker style={{ paddingLeft: 10 }}>
+					<Item picker>
 						<Left>
-							<Text style={{ fontFamily: 'NunitoLight' }}>Tamaño:</Text>
+							<Text style={styles.letraApp}>Tamaño:</Text>
 						</Left>
 
 						<Picker
@@ -484,7 +353,7 @@ const ModalContent = ({ mascota, handlerMascota }) => {
 				</Card>
 
 				<Card style={styles.itemForm}>
-					<Item picker style={{ paddingLeft: 10 }}>
+					<Item picker>
 						<Left>
 							<Text style={{ fontFamily: 'NunitoLight' }}>Color:</Text>
 						</Left>
@@ -516,7 +385,7 @@ const ModalContent = ({ mascota, handlerMascota }) => {
 				</Card>
 
 				<Button block style={styles.btnFinal} onPress={() => handlerEditar()}>
-					<Label style={{ color: colores.light, fontSize: 20 }}>Editar</Label>
+					<Label style={styles.btnFinalText}>Editar</Label>
 				</Button>
 			</View>
 		</View>
@@ -524,12 +393,45 @@ const ModalContent = ({ mascota, handlerMascota }) => {
 };
 
 const styles = StyleSheet.create({
+	colorIcon: { color: colores.main },
+	letraApp: { fontFamily: 'NunitoLight' },
+	modalFondoAtenuado: {
+		flex: 1,
+		justifyContent: 'flex-end',
+		backgroundColor: 'rgba(0,0,0,0.7)',
+	},
+	backgroundHeaderU: {
+		alignSelf: 'center',
+		borderWidth: 4,
+		borderColor: '#f2f2f2',
+		borderRadius: 15,
+	},
+	headerUContent: {
+		height: 160,
+		paddingTop: 10,
+		backgroundColor: colores.main,
+	},
+	imageMascotaCard: { borderRadius: 25, height: '100%' },
+	imageMascotaCardTouch: {
+		borderRadius: 25,
+		height: '100%',
+		width: 160,
+		marginLeft: -10,
+	},
 	myPetCard: {
 		height: 150,
 		width: Dimensions.get('window').width - 50,
 		borderRadius: 25,
 		marginLeft: 20,
 		marginTop: 30,
+		flexDirection: 'row',
+		borderRightWidth: 6,
+		borderColor: colores.main,
+	},
+	mascotaCardText: {
+		color: 'black',
+		lineHeight: 22,
+		fontFamily: 'NunitoLight',
 	},
 	btnFinal: {
 		marginTop: 20,
@@ -538,7 +440,7 @@ const styles = StyleSheet.create({
 		borderRadius: 5,
 		fontFamily: 'NunitoLight',
 	},
-
+	btnFinalText: { color: colores.light, fontSize: 20 },
 	image: {
 		flex: 1,
 		resizeMode: 'cover',
@@ -557,6 +459,54 @@ const styles = StyleSheet.create({
 		paddingLeft: 10,
 		backgroundColor: '#fff',
 		borderRadius: 5,
+		paddingLeft: 10,
+	},
+	itemChat: {
+		borderBottomColor: colores.main,
+		borderBottomWidth: 1,
+		marginRight: 10,
+		marginLeft: 10,
+	},
+	itemTextChat: {
+		alignSelf: 'center',
+		letterSpacing: 1.9,
+		paddingBottom: 2,
+	},
+	cardView: { height: '50%', justifyContent: 'space-between' },
+	cardTextView: {
+		paddingLeft: 10,
+		paddingTop: 5,
+	},
+	botonChat: {
+		backgroundColor: '#fff',
+		elevation: 4,
+		marginRight: 10,
+		width: 51,
+		height: 51,
+		marginTop: 4,
+	},
+	botonEdit: {
+		backgroundColor: '#fff',
+		elevation: 4,
+		marginRight: 10,
+		width: 51,
+		height: 51,
+		marginTop: 4,
+	},
+	botonEliminar: {
+		backgroundColor: '#fff',
+		elevation: 4,
+		marginRight: 10,
+		width: 51,
+		height: 51,
+		marginTop: 4,
+	},
+	modalContent: {
+		backgroundColor: colores.light,
+		padding: 15,
+		paddingTop: 20,
+		borderTopRightRadius: 20,
+		borderTopLeftRadius: 20,
 	},
 });
 

@@ -13,3 +13,6 @@ Faltaría un Log In con Facebook. Fundamental, dado que mucha gente usa FB para 
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+
+
+     // "AIzaSyBvVT3qBBvUaIHBMvR_OOAqmXYbG988wco"
