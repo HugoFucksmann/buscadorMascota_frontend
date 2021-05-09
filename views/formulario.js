@@ -49,7 +49,7 @@ const FormMascota = ({ navigation }) => {
 		latitudeDelta: 0.0052,
 		longitudeDelta: 0.0051,
 	});
-	const [isLoading, setLoading] = useState(true);
+
 	const [perro, setPerro] = useState({
 		petName: '',
 		petPicture: '',
@@ -76,20 +76,6 @@ const FormMascota = ({ navigation }) => {
 
 		return disable;
 	}
-
-	useEffect(() => {
-		(async () => {
-			/* if (Platform.OS !== 'web') {
-				const {
-					status,
-				} = await ImagePicker.requestMediaLibraryPermissionsAsync();
-				if (status !== 'granted')
-					alert('ups! :( , se necesita el permiso para que funcione ');
-			} */
-
-			setLoading(false);
-		})();
-	}, []);
 
 	async function uploadPerro() {
 		setOnPressLoading(true);
@@ -147,8 +133,6 @@ const FormMascota = ({ navigation }) => {
 		},
 		{ label: 'Canela', value: 'canela', activeColor: '#f0eddf' },
 	];
-
-	if (isLoading) return <LoadingView />;
 
 	return (
 		<ImageBackground source={fondo} style={styles.image} resizeMode='repeat'>

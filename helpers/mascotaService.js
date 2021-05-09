@@ -124,6 +124,7 @@ async function getMascotas2(user) {
 
 async function crearMascota(perro, token, notification) {
 	let newMascota = { ...perro, date: new Date().getTime() };
+
 	const perroId = await fetch(`${PROD_URL}/mascotas/crear`, {
 		method: 'POST',
 		headers: {
@@ -135,7 +136,7 @@ async function crearMascota(perro, token, notification) {
 	})
 		.then((res) => res.json())
 		.then(({ mascota }) => mascota._id)
-		.catch((e) => console.log(e));
+		.catch((e) => console.log('el errrorrr ', e));
 
 	if (!perroId) return false;
 

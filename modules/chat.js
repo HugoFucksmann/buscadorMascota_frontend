@@ -1,4 +1,3 @@
-// @refresh reset
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState, useEffect, useCallback, useContext } from 'react';
 import {
@@ -76,13 +75,13 @@ export default function Chat({ route, navigation }) {
 		chats.forEach((doc) => {
 			chatTokens = [...chatTokens, doc.data().user.notification];
 		});
-		await fetch(`${PROD_URL}/chat`, {
+		fetch(`${PROD_URL}/chat`, {
 			method: 'POST',
 			headers: {
 				Accept: 'application/json',
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({ chatTokens, uIdMascota }),
+			body: JSON.stringify({ chatTokens, uIdMascota, mascota }),
 		}).catch((e) => console.log(e));
 
 		let userChat = await AsyncStorage.getItem('chats');

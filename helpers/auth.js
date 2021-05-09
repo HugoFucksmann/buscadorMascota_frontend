@@ -14,8 +14,14 @@ export async function getUser() {
 	let user = await AsyncStorage.getItem('user');
 
 	if (!user) user = await usuarioRandom2();
-	else user = JSON.parse(user);
+	else {
+		user = JSON.parse(user);
 
+		const token = await registerForPushNotificationsAsync();
+
+		if (token !== user.notification)
+			user = await ActualizarNotificationToken(token, user);
+	}
 	user = await actualizarLocation2(user);
 
 	return user;
@@ -106,4 +112,29 @@ export async function actualizarLocation2(user) {
 	let userLocation = { ...user, location: ubi };
 	await AsyncStorage.setItem('user', JSON.stringify(userLocation));
 	return userLocation;
+}
+
+async function ActualizarNotificationToken(newtoken, user) {
+	let headerToken = await AsyncStorage.getItem('token');
+	let newUser = user;
+	let resp = await fetch(`${PROD_URL}/usuarios/notifications`, {
+		method: 'PUT',
+		headers: {
+			Accept: 'application/json',
+			'Content-Type': 'application/json',
+			token: headerToken,
+		},
+		body: JSON.stringify({
+			uid: user._id,
+			newtoken,
+		}),
+	})
+		.then((res) => res.json())
+		.catch((e) => {
+			console.log('e al actualizar notifications ', e);
+			return false;
+		});
+	if (resp.ok) newUser = resp.usuario;
+
+	return newUser;
 }

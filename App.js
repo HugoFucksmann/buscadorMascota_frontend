@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
-import React, { Component, useContext } from 'react';
-import { StyleSheet, LogBox, Alert, SafeAreaView } from 'react-native';
+import React, { Component, useContext, useEffect } from 'react';
+import { LogBox, SafeAreaView } from 'react-native';
 import { Icon, Root } from 'native-base';
 import * as Font from 'expo-font';
 import { isAuthenticated, getUser } from './helpers/auth';
@@ -19,6 +19,7 @@ import MasoctaProvider, { MascotaContext } from './context/mascotasContext';
 import Chat from './modules/chat';
 import InfoPerro from './Components/InfoPerro';
 import { Dimensions } from 'react-native';
+import * as Notifications from 'expo-notifications';
 
 const Tab = createBottomTabNavigator();
 const ModalStack = createStackNavigator();
@@ -26,10 +27,18 @@ const ModalStack = createStackNavigator();
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
+Notifications.setNotificationHandler({
+	handleNotification: async () => ({
+		shouldShowAlert: true,
+		shouldPlaySound: false,
+		shouldSetBadge: true,
+	}),
+});
+
 export default class App extends Component {
 	constructor(props) {
 		super(props);
-		this.state = { loading: true, selectedTab: 'feed' };
+		this.state = { loading: true };
 	}
 
 	async componentDidMount() {
@@ -57,60 +66,8 @@ export default class App extends Component {
 	render() {
 		LogBox.ignoreLogs(['Remote debugger']);
 		LogBox.ignoreLogs(['Setting a timer']);
-
 		if (this.state.loading) {
 			return <LoadingView />;
-		}
-
-		function MainContent() {
-			const { isAuth } = useContext(MascotaContext);
-
-			return (
-				<>
-					<HeaderBuscan />
-					<Tab.Navigator
-						initialRouteName='feed'
-						screenOptions={({ route }) => ({
-							tabBarIcon: ({ focused, color, size }) => {
-								let iconName;
-								let iconType;
-
-								if (route.name === 'formulario') {
-									iconName = 'plus';
-									iconType = 'FontAwesome';
-									color = focused ? colores.main : colores.mild;
-								} else if (route.name === 'feed') {
-									iconName = 'paw';
-									iconType = 'FontAwesome5';
-									color = focused ? colores.main : colores.mild;
-								} else if (route.name === 'perfil') {
-									iconName = 'user';
-									iconType = 'FontAwesome';
-									color = focused ? colores.main : colores.mild;
-								}
-								return (
-									<Icon
-										type={iconType}
-										name={iconName}
-										style={{ color: color, fontSize: 25 }}
-									/>
-								);
-							},
-						})}
-						tabBarOptions={{
-							showLabel: false,
-						}}
-					>
-						{isAuth === true ? (
-							<Tab.Screen name='formulario' component={FormMascota} />
-						) : (
-							<Tab.Screen name='formulario' component={Login} />
-						)}
-						<Tab.Screen name='feed' component={Feed} />
-						<Tab.Screen name='perfil' component={Botonera2} />
-					</Tab.Navigator>
-				</>
-			);
 		}
 
 		return (
@@ -140,3 +97,62 @@ export default class App extends Component {
 		);
 	}
 }
+
+const MainContent = ({ navigation }) => {
+	const { isAuth } = useContext(MascotaContext);
+
+	useEffect(() => {
+		Notifications.addNotificationResponseReceivedListener(
+			({ notification }) => {
+				navigation.navigate('chat', notification.request.content.data);
+			}
+		);
+	}, []);
+
+	return (
+		<>
+			<HeaderBuscan />
+			<Tab.Navigator
+				initialRouteName='feed'
+				screenOptions={({ route }) => ({
+					tabBarIcon: ({ focused, color, size }) => {
+						let iconName;
+						let iconType;
+
+						if (route.name === 'formulario') {
+							iconName = 'plus';
+							iconType = 'FontAwesome';
+							color = focused ? colores.main : colores.mild;
+						} else if (route.name === 'feed') {
+							iconName = 'paw';
+							iconType = 'FontAwesome5';
+							color = focused ? colores.main : colores.mild;
+						} else if (route.name === 'perfil') {
+							iconName = 'user';
+							iconType = 'FontAwesome';
+							color = focused ? colores.main : colores.mild;
+						}
+						return (
+							<Icon
+								type={iconType}
+								name={iconName}
+								style={{ color: color, fontSize: 25 }}
+							/>
+						);
+					},
+				})}
+				tabBarOptions={{
+					showLabel: false,
+				}}
+			>
+				{isAuth === true ? (
+					<Tab.Screen name='formulario' component={FormMascota} />
+				) : (
+					<Tab.Screen name='formulario' component={Login} />
+				)}
+				<Tab.Screen name='feed' component={Feed} />
+				<Tab.Screen name='perfil' component={Botonera2} />
+			</Tab.Navigator>
+		</>
+	);
+};
