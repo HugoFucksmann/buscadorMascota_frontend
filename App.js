@@ -55,10 +55,15 @@ export default class App extends Component {
 
 		let mascotas = await getMascotas2(user);
 
+		let misMascotas;
+		if (mascotas)
+			misMascotas = mascotas.filter((masco) => masco.usuario == user._id);
+		else misMascotas = false;
 		this.setState({
 			isAuth: isAuth,
 			user: user,
 			mascotas: mascotas,
+			misMascotas: misMascotas,
 			loading: false,
 		});
 	}
@@ -77,6 +82,7 @@ export default class App extends Component {
 						user={this.state.user}
 						mascotas={this.state.mascotas}
 						isAuth={this.state.isAuth}
+						misMascotas={this.state.misMascotas}
 					>
 						<SafeAreaView style={{ height: windowHeight, width: windowWidth }}>
 							<ModalStack.Navigator

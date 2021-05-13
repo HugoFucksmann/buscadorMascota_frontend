@@ -296,6 +296,7 @@ const ModalContent = ({ mascota, handlerMascota }) => {
 
 	async function handlerEditar() {
 		let result = await editarMascota(perro);
+
 		if (result) return handlerMascota('editar', result);
 	}
 

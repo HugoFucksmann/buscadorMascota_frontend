@@ -1,6 +1,5 @@
 import React, { createContext, Component } from 'react';
 import { Alert } from 'react-native';
-import { getMyPets } from '../helpers/mascotaService';
 
 export const MascotaContext = createContext();
 
@@ -12,7 +11,7 @@ class MasoctaProvider extends Component {
 			mascota: {},
 			mascotas: props.mascotas,
 			usuario: props.user,
-			misMascotas: {},
+			misMascotas: props.misMascotas,
 			isAuth: props.isAuth,
 		};
 	}
@@ -27,8 +26,8 @@ class MasoctaProvider extends Component {
 				let newMascotas = this.state.mascotas;
 				if (newMascotas) newMascotas.unshift(mascota);
 				else newMascotas = mascota;
+				this.state.misMascotas.unshift(mascota);
 
-				this.setState({ mascotas: newMascotas });
 				return Alert.alert(
 					'mascota cargada !',
 					'duracion de la busqueda: 6 dias'
@@ -36,19 +35,31 @@ class MasoctaProvider extends Component {
 				break;
 			case 'editar':
 				let updateMascotas = this.state.mascotas;
-				updateMascotas = updateMascotas.map((masco, index) => {
-					if (masco._id === mascota._id)
-						return (updateMascotas[index] = mascota);
+				updateMascotas.map((masco, index) => {
+					if (masco._id === mascota._id) updateMascotas.splice(index, 1);
 				});
-				this.setState({ mascotas: updateMascotas });
+				updateMascotas.unshift(mascota);
+				let updateMisMascotas = this.state.misMascotas;
+				updateMisMascotas.map((masco, index) => {
+					if (masco._id === mascota._id) updateMisMascotas.splice(index, 1);
+				});
+				updateMisMascotas.unshift(mascota);
+
+				this.setState({
+					mascotas: updateMascotas,
+					misMascotas: updateMisMascotas,
+				});
 				return Alert.alert('mascota actualizada!');
 				break;
 			case 'eliminar':
 				let mascotasElim = this.state.mascotas.filter(
 					(masco) => masco._id !== mascota._id
 				);
+				let mismascotasElim = this.state.misMascotas.filter(
+					(masco) => masco._id !== mascota._id
+				);
 
-				this.setState({ mascotas: mascotasElim });
+				this.setState({ mascotas: mascotasElim, misMascotas: mismascotasElim });
 
 				return Alert.alert('se elimino el registro de tu mascota');
 				break;
@@ -62,11 +73,6 @@ class MasoctaProvider extends Component {
 	};
 
 	render() {
-		this.state.misMascotas = getMyPets(
-			this.state.mascotas,
-			this.state.usuario._id
-		);
-
 		return (
 			<MascotaContext.Provider
 				value={{

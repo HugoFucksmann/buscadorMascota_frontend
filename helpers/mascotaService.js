@@ -27,7 +27,6 @@ async function actualizarArchivo(file, perroId, token) {
 		}).catch((e) => console.log(e));
 
 		const data = await resp.json();
-
 		if (data.ok) {
 			return data.mascota;
 		} else {
@@ -44,7 +43,6 @@ function getMyPets(mascotas, uid) {
 
 	if (mascotas) {
 		miMascotas = mascotas.filter((masco) => masco.usuario == uid);
-		return miMascotas;
 	} else miMascotas = false;
 
 	return miMascotas;
@@ -122,7 +120,7 @@ async function getMascotas2(user) {
 		.catch((error) => console.error(error));
 }
 
-async function crearMascota(perro, token, notification) {
+async function crearMascota(perro, token, notification, uid) {
 	let newMascota = { ...perro, date: new Date().getTime() };
 
 	const perroId = await fetch(`${PROD_URL}/mascotas/crear`, {
@@ -132,7 +130,7 @@ async function crearMascota(perro, token, notification) {
 			'Content-Type': 'application/json',
 			token: token,
 		},
-		body: JSON.stringify({ perro: newMascota, notification }),
+		body: JSON.stringify({ perro: newMascota, notification, uid }),
 	})
 		.then((res) => res.json())
 		.then(({ mascota }) => mascota._id)
@@ -144,8 +142,10 @@ async function crearMascota(perro, token, notification) {
 }
 
 async function editarMascota(newMascota) {
+	let { dist } = newMascota;
+
 	const token = await AsyncStorage.getItem('token');
-	const url = `${PROD_URL}/${newMascota._id}`;
+	const url = `${PROD_URL}/mascotas/${newMascota._id}`;
 	const resp = await fetch(url, {
 		method: 'PUT',
 		headers: {
@@ -157,7 +157,9 @@ async function editarMascota(newMascota) {
 	}).catch((e) => console.log(e));
 
 	const data = await resp.json();
-	if (data.ok) return data.mascotaActualizado;
+	let finalM = { ...data.mascota, dist };
+
+	if (data.ok) return finalM;
 	else return false;
 }
 

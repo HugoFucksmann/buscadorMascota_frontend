@@ -42,7 +42,7 @@ const FeedTarj = () => {
 		return <CardFeed mascota={item} />;
 	};
 
-	const memorizedList = useMemo(() => renderItem);
+	//const memorizedList = useMemo(() => renderItem);
 
 	if (mascotas === false)
 		return <EmptyCard text={'no hay mascotas perdidas'} />;
@@ -52,7 +52,7 @@ const FeedTarj = () => {
 			initialNumToRender={8}
 			maxToRenderPerBatch={8}
 			data={mascotas}
-			renderItem={memorizedList}
+			renderItem={renderItem}
 			keyExtractor={(item) => item._id}
 		/>
 	);

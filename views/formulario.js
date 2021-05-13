@@ -81,7 +81,12 @@ const FormMascota = ({ navigation }) => {
 		setOnPressLoading(true);
 		const token = await AsyncStorage.getItem('token');
 
-		let perroId = await crearMascota(perro, token, usuario.notification);
+		let perroId = await crearMascota(
+			perro,
+			token,
+			usuario.notification,
+			usuario._id
+		);
 
 		if (!perroId) {
 			setOnPressLoading(false);
