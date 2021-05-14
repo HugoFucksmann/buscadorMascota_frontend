@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import {
 	View,
 	Image,
-	Platform,
 	Text,
 	ScrollView,
 	StyleSheet,
@@ -16,22 +15,16 @@ import {
 	Label,
 	Input,
 	Textarea,
-	Form,
 	Left,
 	Card,
 	Button,
-	H3,
 	Right,
-	Body,
-	CardItem,
 	Spinner,
 } from 'native-base';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SwitchSelector from 'react-native-switch-selector';
 import noImagen from '../assets/default_plus.png';
-import { myLocation } from '../helpers/getLocation';
 import { crearMascota, actualizarArchivo } from '../helpers/mascotaService';
-import LoadingView from '../views/pagCarga';
 import colores from '../Components/colorPalette';
 import { Dimensions } from 'react-native';
 import markerPet from '../assets/iconos/marker_paw.png';
@@ -152,8 +145,8 @@ const FormMascota = ({ navigation }) => {
 							buttonColor={colores.mainFill}
 							hasPadding
 							fontSize={15}
-							textStyle={{ fontFamily: 'NunitoLight' }}
-							selectedTextStyle={{ fontFamily: 'NunitoLight' }}
+							textStyle={styles.letra}
+							selectedTextStyle={styles.letra}
 							borderWidth={0}
 							options={[
 								{ label: 'Se perdió mi mascota', value: '' },
@@ -323,13 +316,7 @@ const FormMascota = ({ navigation }) => {
 						{onPressLoading ? (
 							<Spinner color='green' />
 						) : (
-							<Label
-								style={{
-									color: colores.light,
-									fontSize: 20,
-									fontFamily: 'NunitoLight',
-								}}
-							>
+							<Label style={styles.botonfText}>
 								{topCargas() === true ? 'maximo de carga alcanzado' : 'CARGAR'}
 							</Label>
 						)}
@@ -341,6 +328,7 @@ const FormMascota = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+	letra: { fontFamily: 'NunitoLight' },
 	state: { marginTop: 20, marginBottom: 5 },
 	itemForm: {
 		marginBottom: 15,
@@ -388,6 +376,11 @@ const styles = StyleSheet.create({
 		backgroundColor: '#fff',
 		borderColor: 'transparent',
 		borderRadius: 5,
+		fontFamily: 'NunitoLight',
+	},
+	botonfText: {
+		color: colores.light,
+		fontSize: 20,
 		fontFamily: 'NunitoLight',
 	},
 });

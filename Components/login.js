@@ -11,10 +11,8 @@ import google from '../assets/iconos/google.png';
 import loginPhrase from '../assets/login_phrase.png';
 import loginBackground from '../assets/fondos/log_in_curi.png';
 import { Button } from 'native-base';
-import { StatusBar } from 'expo-status-bar';
 import { actualizarLocation2, googleLogin } from '../helpers/auth';
 import { MascotaContext } from '../context/mascotasContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = () => {
 	const { usuario, handlerAuth } = useContext(MascotaContext);

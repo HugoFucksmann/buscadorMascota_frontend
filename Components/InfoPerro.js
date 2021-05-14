@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import MapView, { Marker } from 'react-native-maps';
 import { View, StyleSheet, Dimensions, Image, BackHandler } from 'react-native';
 import { getMapLocation } from '../helpers/getLocation';
-import { Button, Card, Text, CardItem, Icon, Thumbnail } from 'native-base';
+import { Button, Card, Text, Icon, Thumbnail } from 'native-base';
 import { mostrarFoto } from '../helpers/imageService';
 import colores from '../Components/colorPalette';
 import markerPet from '../assets/iconos/marker_paw.png';
@@ -59,12 +59,11 @@ export default function InfoPerro({ route, navigation }) {
 					</Text>
 				</View>
 				<Card style={styles.cardDescrip}>
-					<CardItem>
-						<Text style={styles.descriptionPet}>Descripción:</Text>
-					</CardItem>
-					<CardItem>
-						<Text style={styles.textPet}>{mascota.petDescription}</Text>
-					</CardItem>
+					<Text style={styles.descriptionPet}>Descripción:</Text>
+
+					<Text style={styles.textPet}>
+						{mascota.petDescription.slice(0, 105)}
+					</Text>
 				</Card>
 				<View style={styles.rowCard}>
 					<Card style={styles.charCard}>
@@ -139,7 +138,6 @@ const styles = StyleSheet.create({
 	descriptionPet: {
 		color: colores.main,
 		fontFamily: 'NunitoLight',
-		marginBottom: -10,
 	},
 	rowCard: { flexDirection: 'row', justifyContent: 'center' },
 	cardContent: {
@@ -168,9 +166,10 @@ const styles = StyleSheet.create({
 	},
 	cardDescrip: {
 		marginBottom: 10,
-		padding: 5,
+		padding: 10,
 		borderRadius: 15,
 		width: '96%',
 		alignSelf: 'center',
+		maxHeight: 100,
 	},
 });

@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firebaseConfig from '../firebaseConfig';
 import { primerosTreinta } from './getTimePass';
-import { PROD_URL } from '@env';
+import { PROD_URL3 } from '@env';
 
 async function actualizarArchivo(file, perroId, token) {
 	try {
@@ -11,7 +11,7 @@ async function actualizarArchivo(file, perroId, token) {
 		let match = /\.(\w+)$/.exec(filename);
 		let type = match ? `image/${match[1]}` : `image`;
 
-		const url = `${PROD_URL}/upload/${perroId}`;
+		const url = `${PROD_URL3}/upload/${perroId}`;
 		let formData = new FormData();
 
 		formData.append('imgMascota', { uri: localUri, name: filename, type });
@@ -103,7 +103,7 @@ export function ordenarMascotas(mascotas, user) {
 }
 
 async function getMascotas2(user) {
-	return await fetch(`${PROD_URL}/mascotas`, {
+	return await fetch(`${PROD_URL3}/mascotas`, {
 		method: 'GET',
 		headers: {
 			Accept: 'application/json',
@@ -123,7 +123,7 @@ async function getMascotas2(user) {
 async function crearMascota(perro, token, notification, uid) {
 	let newMascota = { ...perro, date: new Date().getTime() };
 
-	const perroId = await fetch(`${PROD_URL}/mascotas/crear`, {
+	const perroId = await fetch(`${PROD_URL3}/mascotas/crear`, {
 		method: 'POST',
 		headers: {
 			Accept: 'application/json',
@@ -145,7 +145,7 @@ async function editarMascota(newMascota) {
 	let { dist } = newMascota;
 
 	const token = await AsyncStorage.getItem('token');
-	const url = `${PROD_URL}/mascotas/${newMascota._id}`;
+	const url = `${PROD_URL3}/mascotas/${newMascota._id}`;
 	const resp = await fetch(url, {
 		method: 'PUT',
 		headers: {
@@ -166,7 +166,7 @@ async function editarMascota(newMascota) {
 async function eliminarMascota(idMascota) {
 	let result;
 	const token = await AsyncStorage.getItem('token');
-	const url = `${PROD_URL}/mascotas/${idMascota}`;
+	const url = `${PROD_URL3}/mascotas/${idMascota}`;
 	const resp = await fetch(url, {
 		method: 'DELETE',
 		headers: {

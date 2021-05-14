@@ -7,7 +7,7 @@
 			"resizeMode": "cover",
 			"backgroundColor": "#ffffff"
 		},
-		"version": "1.29.0",
+		"version": "1.33.0",
 		"orientation": "portrait",
 		"icon": "./assets/appLogo.png",
 		"updates": {
@@ -19,7 +19,7 @@
 			"icon": "./assets/appLogo.png",
 			"supportsTablet": false,
 			"bundleIdentifier": "com.colodev.buscan",
-			"buildNumber": "1.29.0",
+			"buildNumber": "1.33.0",
 			"config": {
 				"googleMapsApiKey": "AIzaSyBTml0ABdTXFNKVNeODlr6i2NDNyUX3kmY"
 			}
@@ -33,7 +33,7 @@
 				"LOCATION",
 				"RECEIVE_BOOT_COMPLETED"
 			],
-			"versionCode": 29,
+			"versionCode": 33,
 			"icon": "./assets/appLogo.png",
 			"enableDangerousExperimentalLeanBuilds": false,
 			"useNextNotificationsApi": true,

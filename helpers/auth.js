@@ -7,7 +7,7 @@ import {
 	AUTH2_BUSCAN_PRODUCTION,
 	AUTH2_MASCOTAS_IOS,
 	AUTH2_BUSCAN_WEB,
-	PROD_URL,
+	PROD_URL3,
 } from '@env';
 
 export async function getUser() {
@@ -37,7 +37,7 @@ export async function googleLogin(user) {
 		}).catch((err) => console.log(err));
 
 		if (type === 'success') {
-			let authh = await fetch(`${PROD_URL}/login/google`, {
+			let authh = await fetch(`${PROD_URL3}/login/google`, {
 				method: 'POST',
 				headers: {
 					Accept: 'application/json',
@@ -67,7 +67,7 @@ export async function googleLogin(user) {
 }
 
 export async function isAuthenticated(user) {
-	let authh = await fetch(`${PROD_URL}/login/renew`, {
+	let authh = await fetch(`${PROD_URL3}/login/renew`, {
 		method: 'POST',
 		headers: {
 			Accept: 'application/json',
@@ -117,7 +117,7 @@ export async function actualizarLocation2(user) {
 async function ActualizarNotificationToken(newtoken, user) {
 	let headerToken = await AsyncStorage.getItem('token');
 	let newUser = user;
-	let resp = await fetch(`${PROD_URL}/usuarios/notifications`, {
+	let resp = await fetch(`${PROD_URL3}/usuarios/notifications`, {
 		method: 'PUT',
 		headers: {
 			Accept: 'application/json',

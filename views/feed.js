@@ -1,9 +1,10 @@
-import React, { useMemo, useContext } from 'react';
+import React, { useContext, useState, useCallback } from 'react';
+import { RefreshControl, Text, View, FlatList } from 'react-native';
 import colores from '../Components/colorPalette';
 import MapFeed from '../Components/mapFeed';
 import CardFeed from '../Components/card';
 import { MascotaContext } from '../context/mascotasContext';
-import { FlatList } from 'react-native-gesture-handler';
+
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import EmptyCard from '../Components/EmptyCard';
 
@@ -36,18 +37,41 @@ const Feed = () => {
 };
 
 const FeedTarj = () => {
-	const { mascotas } = useContext(MascotaContext);
+	const { mascotas, handlerMascotasGet } = useContext(MascotaContext);
+	const [refreshing, setRefreshing] = useState(false);
+
+	const wait = (timeout) => {
+		return new Promise((resolve) => {
+			setTimeout(resolve, timeout);
+		});
+	};
+
+	const onRefresh = useCallback(async () => {
+		setRefreshing(true);
+
+		await handlerMascotasGet();
+
+		wait(300).then(() => setRefreshing(false));
+	}, []);
 
 	const renderItem = ({ item }) => {
 		return <CardFeed mascota={item} />;
 	};
 
-	//const memorizedList = useMemo(() => renderItem);
-
 	if (mascotas === false)
 		return <EmptyCard text={'no hay mascotas perdidas'} />;
 	return (
 		<FlatList
+			//
+			bounces={false}
+			refreshControl={
+				<RefreshControl
+					refreshing={refreshing}
+					onRefresh={onRefresh}
+					colors={['green']}
+				/>
+			}
+			scrollToOverflowEnabled={true}
 			windowSize={3}
 			initialNumToRender={8}
 			maxToRenderPerBatch={8}

@@ -239,7 +239,12 @@ const MisChats = () => {
 							>
 								<ListItem avatar noBorder>
 									<Left>
-										<Thumbnail source={{ uri: chat.user.petPicture }} />
+										<Thumbnail
+											source={{
+												uri: chat.user.petPicture,
+											}}
+											style={styles.fotochat}
+										/>
 									</Left>
 									<Body>
 										<Text style={styles.letraApp}>
@@ -401,6 +406,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'flex-end',
 		backgroundColor: 'rgba(0,0,0,0.7)',
 	},
+	fotochat: { borderWidth: 1, borderColor: colores.main },
 	backgroundHeaderU: {
 		alignSelf: 'center',
 		borderWidth: 4,

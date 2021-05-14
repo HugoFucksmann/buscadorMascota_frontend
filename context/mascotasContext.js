@@ -1,5 +1,6 @@
 import React, { createContext, Component } from 'react';
 import { Alert } from 'react-native';
+import { getMascotas2 } from '../helpers/mascotaService';
 
 export const MascotaContext = createContext();
 
@@ -20,13 +21,24 @@ class MasoctaProvider extends Component {
 		this.setState({ isAuth: auth, usuario: user });
 	};
 
+	handlerMascotasGet = async () => {
+		let newMascotas = await getMascotas2(this.state.usuario);
+		this.setState({ mascotas: newMascotas });
+	};
+
 	handlerMascota = (action, mascota) => {
 		switch (action) {
 			case 'crear':
 				let newMascotas = this.state.mascotas;
 				if (newMascotas) newMascotas.unshift(mascota);
 				else newMascotas = mascota;
-				this.state.misMascotas.unshift(mascota);
+				let newMis = this.state.misMascotas;
+				newMis.unshift(mascota);
+
+				this.setState({
+					mascotas: newMascotas,
+					misMascotas: newMis,
+				});
 
 				return Alert.alert(
 					'mascota cargada !',
@@ -80,6 +92,7 @@ class MasoctaProvider extends Component {
 					handlerAuth: this.handlerAuth,
 					handlerMascota: this.handlerMascota,
 					handlerMyChats: this.handlerMyChats,
+					handlerMascotasGet: this.handlerMascotasGet,
 				}}
 			>
 				{this.props.children}

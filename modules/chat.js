@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat';
 import firebaseConfig from '../firebaseConfig';
-import { PROD_URL } from '@env';
+import { PROD_URL3 } from '@env';
 import { MascotaContext } from '../context/mascotasContext';
 import { Button, Content, Icon, Input, Item, Spinner, View } from 'native-base';
 import EmptyCard from '../Components/EmptyCard';
@@ -75,7 +75,7 @@ export default function Chat({ route, navigation }) {
 		chats.forEach((doc) => {
 			chatTokens = [...chatTokens, doc.data().user.notification];
 		});
-		fetch(`${PROD_URL}/chat`, {
+		fetch(`${PROD_URL3}/chat`, {
 			method: 'POST',
 			headers: {
 				Accept: 'application/json',
