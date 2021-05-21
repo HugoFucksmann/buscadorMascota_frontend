@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
 		elevation: 8,
 	},
 	mapView: { height: 430, width: null },
-	mapContent: { height: 430, width: null },
+	mapContent: { height: '55%', width: null },
 	textBotonMsj: { fontFamily: 'NunitoLight', letterSpacing: 3 },
 	textPet: { color: colores.main, fontFamily: 'NunitoLight' },
 	descriptionPet: {
@@ -141,8 +141,8 @@ const styles = StyleSheet.create({
 	},
 	rowCard: { flexDirection: 'row', justifyContent: 'center' },
 	cardContent: {
-		borderTopRightRadius: 40,
-		borderTopLeftRadius: 40,
+		borderTopRightRadius: 35,
+		borderTopLeftRadius: 35,
 		marginTop: -50,
 		height: '100%',
 		backgroundColor: colores.light,

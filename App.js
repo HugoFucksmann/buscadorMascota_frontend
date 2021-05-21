@@ -20,6 +20,8 @@ import Chat from './modules/chat';
 import InfoPerro from './Components/InfoPerro';
 import { Dimensions } from 'react-native';
 import * as Notifications from 'expo-notifications';
+import FeedAdop from './views/feedAdop';
+import InfoAdop from './views/infoAdop';
 
 const Tab = createBottomTabNavigator();
 const ModalStack = createStackNavigator();
@@ -52,13 +54,12 @@ export default class App extends Component {
 		let user = await getUser();
 
 		if (user.google) isAuth = await isAuthenticated(user);
-
+		let misMascotas = false;
 		let mascotas = await getMascotas2(user);
 
-		let misMascotas;
 		if (mascotas)
 			misMascotas = mascotas.filter((masco) => masco.usuario == user._id);
-		else misMascotas = false;
+
 		this.setState({
 			isAuth: isAuth,
 			user: user,
@@ -95,6 +96,7 @@ export default class App extends Component {
 								<ModalStack.Screen name='main' component={MainContent} />
 								<ModalStack.Screen name='chat' component={Chat} />
 								<ModalStack.Screen name='infoM' component={InfoPerro} />
+								<ModalStack.Screen name='infoAdop' component={InfoAdop} />
 							</ModalStack.Navigator>
 						</SafeAreaView>
 					</MasoctaProvider>
@@ -125,19 +127,35 @@ const MainContent = ({ navigation }) => {
 						let iconName;
 						let iconType;
 
-						if (route.name === 'formulario') {
-							iconName = 'plus';
-							iconType = 'FontAwesome';
-							color = focused ? colores.main : colores.mild;
-						} else if (route.name === 'feed') {
-							iconName = 'paw';
-							iconType = 'FontAwesome5';
-							color = focused ? colores.main : colores.mild;
-						} else if (route.name === 'perfil') {
-							iconName = 'user';
-							iconType = 'FontAwesome';
-							color = focused ? colores.main : colores.mild;
+						switch (route.name) {
+							case 'formulario':
+								iconName = 'plus';
+								iconType = 'FontAwesome';
+								color = focused ? colores.main : colores.mild;
+								break;
+							case 'feed':
+								iconName = 'paw';
+								iconType = 'FontAwesome5';
+								color = focused ? colores.main : colores.mild;
+								break;
+							case 'perfil':
+								iconName = 'user';
+								iconType = 'FontAwesome';
+								color = focused ? colores.main : colores.mild;
+								break;
+							case 'adop':
+								iconName = 'home';
+								iconType = 'Ionicons';
+								color = focused ? colores.main : colores.mild;
+								break;
+
+							default:
+								iconName = 'paw';
+								iconType = 'FontAwesome5';
+								color = focused ? colores.main : colores.mild;
+								break;
 						}
+
 						return (
 							<Icon
 								type={iconType}
@@ -149,6 +167,7 @@ const MainContent = ({ navigation }) => {
 				})}
 				tabBarOptions={{
 					showLabel: false,
+					style: { height: 42 },
 				}}
 			>
 				{isAuth === true ? (
@@ -157,6 +176,12 @@ const MainContent = ({ navigation }) => {
 					<Tab.Screen name='formulario' component={Login} />
 				)}
 				<Tab.Screen name='feed' component={Feed} />
+				{isAuth === true ? (
+					<Tab.Screen name='adop' component={FeedAdop} />
+				) : (
+					<Tab.Screen name='adop' component={Login} />
+				)}
+
 				<Tab.Screen name='perfil' component={Botonera2} />
 			</Tab.Navigator>
 		</>

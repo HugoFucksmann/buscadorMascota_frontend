@@ -1,6 +1,6 @@
 import React, { createContext, Component } from 'react';
 import { Alert } from 'react-native';
-import { getMascotas2 } from '../helpers/mascotaService';
+import { getMascotas2, addReport } from '../helpers/mascotaService';
 
 export const MascotaContext = createContext();
 
@@ -14,6 +14,8 @@ class MasoctaProvider extends Component {
 			usuario: props.user,
 			misMascotas: props.misMascotas,
 			isAuth: props.isAuth,
+			//adopAuth: props.user.adopAuth,
+			adopAuth: false,
 		};
 	}
 
@@ -33,7 +35,8 @@ class MasoctaProvider extends Component {
 				if (newMascotas) newMascotas.unshift(mascota);
 				else newMascotas = mascota;
 				let newMis = this.state.misMascotas;
-				newMis.unshift(mascota);
+				if (newMis) newMis.unshift(mascota);
+				else newMis = mascota;
 
 				this.setState({
 					mascotas: newMascotas,
@@ -84,6 +87,15 @@ class MasoctaProvider extends Component {
 		return;
 	};
 
+	handlerUsuarioAdop = (newUser) => {
+		this.setState({ usuario: newUser });
+	};
+
+	handlerReport = async (mid) => {
+		let result = await addReport(this.state.usuario._id, mid);
+		Alert.alert('', result);
+	};
+
 	render() {
 		return (
 			<MascotaContext.Provider
@@ -93,6 +105,8 @@ class MasoctaProvider extends Component {
 					handlerMascota: this.handlerMascota,
 					handlerMyChats: this.handlerMyChats,
 					handlerMascotasGet: this.handlerMascotasGet,
+					handlerUsuarioAdop: this.handlerUsuarioAdop,
+					handlerReport: this.handlerReport,
 				}}
 			>
 				{this.props.children}

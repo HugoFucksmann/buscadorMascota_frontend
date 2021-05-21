@@ -1,9 +1,25 @@
 import React, { memo } from 'react';
-import { StyleSheet, Image, Dimensions, TouchableOpacity } from 'react-native';
-import { Card, CardItem, Right, Left, Button, Icon, Text } from 'native-base';
+import {
+	StyleSheet,
+	Image,
+	Dimensions,
+	TouchableOpacity,
+	Alert,
+} from 'react-native';
+import {
+	Card,
+	CardItem,
+	Right,
+	Left,
+	Button,
+	Icon,
+	Text,
+	View,
+} from 'native-base';
 import colores from '../Components/colorPalette';
 import { tiempoTranscurrido } from '../helpers/getTimePass';
 import { useNavigation } from '@react-navigation/native';
+import Report from './report';
 
 function CardFeed({ mascota }) {
 	const navigation = useNavigation();
@@ -41,10 +57,14 @@ function CardFeed({ mascota }) {
 						</Button>
 					</Right>
 				</CardItem>
+				<View style={{ position: 'absolute', top: 5, left: cardWidth - 30 }}>
+					<Report mid={mascota._id} />
+				</View>
 			</Card>
 		</TouchableOpacity>
 	);
 }
+
 const cardWidth = Dimensions.get('window').width - 20;
 
 const styles = StyleSheet.create({

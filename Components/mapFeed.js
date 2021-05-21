@@ -17,6 +17,7 @@ import { tiempoTranscurrido } from '../helpers/getTimePass';
 import EmptyCard from './EmptyCard';
 import { MascotaContext } from '../context/mascotasContext';
 import { useNavigation } from '@react-navigation/native';
+import Report from './report';
 const { width } = Dimensions.get('window');
 const CARD_HEIGHT = 130;
 const CARD_WIDTH = width - 100;
@@ -65,10 +66,16 @@ export default class MapFeed extends Component {
 	renderItem = ({ item }) => <CardFeedMap mascota={item} />;
 
 	render() {
-		let iniReg;
+		let iniReg = {
+			latitude: 0,
+			longitude: 0,
+			latitudeDelta: 0.0052,
+			longitudeDelta: 0.0051,
+		};
 		let interpolations;
 		let mascotas = this.context.mascotas;
-		if (mascotas !== false) {
+
+		if (mascotas.length > 0) {
 			iniReg = generateInitialRegion(mascotas[0].location);
 			interpolations = mascotas.map((mascota, index) => {
 				const inputRange = [
@@ -89,13 +96,7 @@ export default class MapFeed extends Component {
 				});
 				return { scale, opacity };
 			});
-		} else
-			iniReg = {
-				latitude: 0,
-				longitude: 0,
-				latitudeDelta: 0.0052,
-				longitudeDelta: 0.0051,
-			};
+		}
 
 		return (
 			<View style={styles.container}>
@@ -133,37 +134,35 @@ export default class MapFeed extends Component {
 						})}
 					</MapView>
 				)}
-				{mascotas !== false ? (
-					<Animated.FlatList
-						windowSize={3}
-						contentContainerStyle={styles.endPadding}
-						scrollEventThrottle={1}
-						showsHorizontalScrollIndicator={false}
-						snapToInterval={CARD_WIDTH + 15}
-						onScroll={Animated.event(
-							[
-								{
-									nativeEvent: {
-										contentOffset: {
-											x: this.animation,
-										},
+
+				<Animated.FlatList
+					ListEmptyComponent={<EmptyCard text={'no hay mascotas perdidas'} />}
+					windowSize={3}
+					contentContainerStyle={styles.endPadding}
+					scrollEventThrottle={1}
+					showsHorizontalScrollIndicator={false}
+					snapToInterval={CARD_WIDTH + 15}
+					onScroll={Animated.event(
+						[
+							{
+								nativeEvent: {
+									contentOffset: {
+										x: this.animation,
 									},
 								},
-							],
-							{ useNativeDriver: true }
-						)}
-						style={styles.scrollView}
-						contentContainerStyle={styles.endPadding}
-						horizontal
-						data={mascotas}
-						renderItem={this.renderItem}
-						keyExtractor={(item) => item._id}
-						initialNumToRender={8}
-						maxToRenderPerBatch={8}
-					/>
-				) : (
-					<EmptyCard text={'no hay mascotas perdidas'} />
-				)}
+							},
+						],
+						{ useNativeDriver: true }
+					)}
+					style={styles.scrollView}
+					contentContainerStyle={styles.endPadding}
+					horizontal
+					data={mascotas}
+					renderItem={this.renderItem}
+					keyExtractor={(item) => item._id}
+					initialNumToRender={8}
+					maxToRenderPerBatch={8}
+				/>
 			</View>
 		);
 	}
@@ -187,7 +186,9 @@ const CardFeedMap = memo(({ mascota }) => {
 					>
 						<Icon type='Entypo' name='chat' style={styles.colorMain} />
 					</Button>
+					<Report />
 				</View>
+
 				<View style={styles.imgCont}>
 					<Image
 						source={{ uri: mascota.petPicture }}
@@ -223,11 +224,11 @@ const CardFeedMap = memo(({ mascota }) => {
 });
 
 const styles = StyleSheet.create({
-	colorMain: { color: colores.main },
+	colorMain: { color: colores.main, fontSize: 18 },
 	container: {
 		flex: 1,
 	},
-	floatView: { position: 'absolute', top: 4, right: 8 },
+	floatView: { position: 'absolute', top: 4, right: 8, flexDirection: 'row' },
 	textH: { height: 40 },
 	rowView: { flexDirection: 'row', paddingLeft: 12, paddingBottom: 12 },
 	imgCont: {
@@ -271,13 +272,13 @@ const styles = StyleSheet.create({
 		width: 65,
 	},
 	ring: {
-		width: 16,
-		height: 16,
-		borderRadius: 8,
-		backgroundColor: colores.mainTenueUno,
+		width: 14,
+		height: 14,
+		borderRadius: 7,
+		backgroundColor: colores.tenueOp,
 		position: 'absolute',
 		bottom: 7,
-		borderWidth: 2,
+		borderWidth: 1.5,
 		borderColor: colores.main,
 	},
 	markerImage: {
@@ -288,6 +289,8 @@ const styles = StyleSheet.create({
 	button: {
 		color: colores.main,
 		backgroundColor: '#fff',
+		marginRight: 20,
+		height: 25,
 	},
 	iconCard: { color: colores.main, fontSize: 20, paddingRight: 5 },
 	textCard: { color: colores.main, fontFamily: 'NunitoLight' },

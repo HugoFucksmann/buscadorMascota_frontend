@@ -7,28 +7,64 @@ import { MascotaContext } from '../context/mascotasContext';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import EmptyCard from '../Components/EmptyCard';
+import { Icon } from 'native-base';
 
 const Tab2 = createBottomTabNavigator();
 
 const Feed = () => {
 	return (
 		<Tab2.Navigator
-			tabBarOptions={{
-				activeTintColor: colores.main,
-				tabStyle: { height: 35 },
-				style: { height: 35 },
-				indicatorStyle: {
-					backgroundColor: 'red',
-				},
-				labelStyle: {
-					fontFamily: 'NunitoLight',
-					fontSize: 14,
-					letterSpacing: 1.4,
-					marginBottom: 7,
-				},
-			}}
+			screenOptions={({ route }) => ({
+				tabBarIcon: ({ focused, color, size }) => {
+					let iconName;
+					let iconType;
 
-			//screenOptions={}
+					switch (route.name) {
+						case 'tarjFeed':
+							iconName = 'images';
+							iconType = 'FontAwesome5';
+							color = focused ? colores.main : colores.mild;
+							act = focused ? 1 : 0;
+							break;
+						case 'mapFeed':
+							iconName = 'map-marked-alt';
+							iconType = 'FontAwesome5';
+							color = focused ? colores.main : colores.mild;
+							act = focused ? 1 : 0;
+							break;
+
+						default:
+							iconName = 'dynamic-feed';
+							iconType = 'MaterialIcons';
+							color = focused ? colores.main : colores.mild;
+							act = focused ? 1 : 0;
+							break;
+					}
+
+					return (
+						<>
+							<Icon
+								type={iconType}
+								name={iconName}
+								style={{ color: color, fontSize: 22 }}
+							/>
+							<View
+								style={{
+									width: '100%',
+									borderBottomColor: colores.main,
+									paddingBottom: 6,
+									borderBottomWidth: act,
+								}}
+							></View>
+						</>
+					);
+				},
+			})}
+			tabBarOptions={{
+				showLabel: false,
+				style: { height: 32 },
+			}}
+			cust
 		>
 			<Tab2.Screen name='tarjFeed' component={FeedTarj} />
 			<Tab2.Screen name='mapFeed' component={MapFeed} />
@@ -58,11 +94,9 @@ const FeedTarj = () => {
 		return <CardFeed mascota={item} />;
 	};
 
-	if (mascotas === false)
-		return <EmptyCard text={'no hay mascotas perdidas'} />;
 	return (
 		<FlatList
-			//
+			ListEmptyComponent={<EmptyCard text={'no hay mascotas perdidas'} />}
 			bounces={false}
 			refreshControl={
 				<RefreshControl

@@ -140,9 +140,8 @@ const FormMascota = ({ navigation }) => {
 						<SwitchSelector
 							initial={0}
 							onPress={(value) => setPerro({ ...perro, petName: value })}
-							textColor={colores.mainFill}
-							selectedColor={colores.light}
-							buttonColor={colores.mainFill}
+							textColor={'grey'}
+							buttonColor={colores.main}
 							hasPadding
 							fontSize={15}
 							textStyle={styles.letra}
@@ -348,7 +347,7 @@ const styles = StyleSheet.create({
 	btnFinal: {
 		marginTop: 20,
 		elevation: 10,
-		backgroundColor: colores.mainFill,
+		backgroundColor: colores.main,
 		borderRadius: 5,
 	},
 	map: {

@@ -1,11 +1,13 @@
 import React from 'react';
 import { Card, CardItem, View } from 'native-base';
-import { Text } from 'react-native';
+import { Dimensions, Text } from 'react-native';
 import colores from '../Components/colorPalette';
+
+const width = Dimensions.get('window').width;
 
 const EmptyCard = ({ text }) => {
 	return (
-		<View style={{ padding: 10 }}>
+		<View style={{ width: width, padding: 10 }}>
 			<Card
 				style={{
 					alignSelf: 'center',

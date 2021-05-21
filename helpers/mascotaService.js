@@ -113,9 +113,10 @@ async function getMascotas2(user) {
 		.then((response) => response.json())
 		.then((res) => {
 			if (res.ok) {
-				let mascotas = ordenarMascotas(res.mascotas, user);
+				let mascotasT = ordenarMascotas(res.mascotas, user);
+				let mascotas = mascotasT.filter((masco) => masco.report.count < 2);
 				return mascotas;
-			} else return false;
+			} else return [];
 		})
 		.catch((error) => console.error(error));
 }
@@ -145,7 +146,7 @@ async function editarMascota(newMascota) {
 	let { dist } = newMascota;
 
 	const token = await AsyncStorage.getItem('token');
-	const url = `${PROD_URL3}/mascotas/${newMascota._id}`;
+	const url = `${PROD_URL3}/mascotas/actualizar/${newMascota._id}`;
 	const resp = await fetch(url, {
 		method: 'PUT',
 		headers: {
@@ -198,6 +199,24 @@ function clearCollection(path) {
 	});
 }
 
+async function addReport(uid, mid) {
+	const token = await AsyncStorage.getItem('token');
+	const url = `${PROD_URL3}/mascotas/report`;
+	const resp = await fetch(url, {
+		method: 'PUT',
+		headers: {
+			Accept: 'application/json',
+			'Content-Type': 'application/json',
+			token,
+		},
+		body: JSON.stringify({ uid, mid }),
+	}).catch((e) => console.log(e));
+
+	const data = await resp.json();
+
+	return data.msg;
+}
+
 module.exports = {
 	actualizarArchivo,
 	crearMascota,
@@ -205,4 +224,5 @@ module.exports = {
 	editarMascota,
 	eliminarMascota,
 	getMascotas2,
+	addReport,
 };
