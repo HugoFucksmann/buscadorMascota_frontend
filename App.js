@@ -1,15 +1,12 @@
 import 'react-native-gesture-handler';
 import React, { Component, useContext, useEffect } from 'react';
 import { LogBox, SafeAreaView } from 'react-native';
-import { Icon, Root } from 'native-base';
+import { Icon, Root, View } from 'native-base';
 import * as Font from 'expo-font';
-import { isAuthenticated, getUser } from './helpers/auth';
 import Feed from './views/feed';
-import LoadingView from './views/pagCarga';
 import FormMascota from './views/formulario';
 import HeaderBuscan from './Components/headerBusCan';
 import Login from './Components/login';
-import { getMascotas2 } from './helpers/mascotaService';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import colores from './Components/colorPalette';
@@ -18,16 +15,13 @@ import Botonera2 from './views/botonera2';
 import MasoctaProvider, { MascotaContext } from './context/mascotasContext';
 import Chat from './modules/chat';
 import InfoPerro from './Components/InfoPerro';
-import { Dimensions } from 'react-native';
+
 import * as Notifications from 'expo-notifications';
 import FeedAdop from './views/feedAdop';
 import InfoAdop from './views/infoAdop';
 
 const Tab = createBottomTabNavigator();
 const ModalStack = createStackNavigator();
-
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
 
 Notifications.setNotificationHandler({
 	handleNotification: async () => ({
@@ -40,52 +34,25 @@ Notifications.setNotificationHandler({
 export default class App extends Component {
 	constructor(props) {
 		super(props);
-		this.state = { loading: true };
 	}
 
 	async componentDidMount() {
-		let isAuth = false;
 		await Font.loadAsync({
 			Roboto: require('native-base/Fonts/Roboto.ttf'),
 			Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
 			NunitoLight: require('./assets/fonts/Nunito-Light.ttf'),
-		});
-
-		let user = await getUser();
-
-		if (user.google) isAuth = await isAuthenticated(user);
-		let misMascotas = false;
-		let mascotas = await getMascotas2(user);
-
-		if (mascotas)
-			misMascotas = mascotas.filter((masco) => masco.usuario == user._id);
-
-		this.setState({
-			isAuth: isAuth,
-			user: user,
-			mascotas: mascotas,
-			misMascotas: misMascotas,
-			loading: false,
 		});
 	}
 
 	render() {
 		LogBox.ignoreLogs(['Remote debugger']);
 		LogBox.ignoreLogs(['Setting a timer']);
-		if (this.state.loading) {
-			return <LoadingView />;
-		}
 
 		return (
 			<Root>
 				<NavigationContainer>
-					<MasoctaProvider
-						user={this.state.user}
-						mascotas={this.state.mascotas}
-						isAuth={this.state.isAuth}
-						misMascotas={this.state.misMascotas}
-					>
-						<SafeAreaView style={{ height: windowHeight, width: windowWidth }}>
+					<MasoctaProvider>
+						<SafeAreaView style={{ flex: 1 }}>
 							<ModalStack.Navigator
 								mode='modal'
 								initialRouteName='main'

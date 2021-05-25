@@ -1,6 +1,8 @@
 import React, { createContext, Component } from 'react';
 import { Alert } from 'react-native';
-import { getMascotas2, addReport } from '../helpers/mascotaService';
+import { getUser, isAuthenticated } from '../helpers/auth';
+import { getMascotas2, addReport, getAdop } from '../helpers/mascotaService';
+import LoadingView from '../views/pagCarga';
 
 export const MascotaContext = createContext();
 
@@ -10,13 +12,31 @@ class MasoctaProvider extends Component {
 
 		this.state = {
 			mascota: {},
-			mascotas: props.mascotas,
-			usuario: props.user,
-			misMascotas: props.misMascotas,
-			isAuth: props.isAuth,
-			//adopAuth: props.user.adopAuth,
-			adopAuth: false,
+			loading: true,
 		};
+	}
+
+	async componentDidMount() {
+		let user = await getUser();
+		let isAuth = false;
+		if (user.google) isAuth = await isAuthenticated(user);
+		let misMascotass = false;
+
+		let mascotas = await getMascotas2(user);
+
+		if (mascotas.lenght > 0)
+			misMascotass = mascotas.filter((masco) => masco.usuario == user._id);
+
+		let mascotasAdop = await getAdop();
+
+		this.setState({
+			isAuth: isAuth,
+			usuario: user,
+			mascotas: mascotas,
+			misMascotas: misMascotass,
+			mascotasAdop: mascotasAdop,
+			loading: false,
+		});
 	}
 
 	handlerAuth = (auth, user) => {
@@ -96,7 +116,12 @@ class MasoctaProvider extends Component {
 		Alert.alert('', result);
 	};
 
+	handlerAdop = async (mid) => {
+		return;
+	};
+
 	render() {
+		if (this.state.loading) return <LoadingView />;
 		return (
 			<MascotaContext.Provider
 				value={{
@@ -107,6 +132,7 @@ class MasoctaProvider extends Component {
 					handlerMascotasGet: this.handlerMascotasGet,
 					handlerUsuarioAdop: this.handlerUsuarioAdop,
 					handlerReport: this.handlerReport,
+					handlerAdop: this.handlerAdop,
 				}}
 			>
 				{this.props.children}

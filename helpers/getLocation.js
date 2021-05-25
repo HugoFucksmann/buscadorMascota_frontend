@@ -83,3 +83,32 @@ export function generateInitialRegion(location) {
 		longitudeDelta: 0.040142817690068,
 	};
 }
+
+export function getDistSantaFe(user) {
+	const santaFe = {
+		location: {
+			latitude: -31.632186259979758,
+			longitude: -60.705567451973366,
+		},
+	};
+
+	function deg2rad(deg) {
+		return deg * (Math.PI / 180);
+	}
+
+	function distKM(A, B) {
+		const R = 6371;
+		let aLat = parseFloat(A.location.latitude);
+		let aLon = parseFloat(A.location.longitude);
+		let bLat = parseFloat(B.location.latitude);
+		let bLon = parseFloat(B.location.longitude);
+
+		var dLat = 2 * R * Math.sin(deg2rad(aLat - bLat) / 2);
+		var dLon = 2 * R * Math.sin(deg2rad(aLon - bLon) / 2);
+		var dist = Math.sqrt(dLat ** 2 + dLon ** 2);
+
+		return dist;
+	}
+
+	return distKM(user, santaFe);
+}

@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firebaseConfig from '../firebaseConfig';
 import { primerosTreinta } from './getTimePass';
-import { PROD_URL3 } from '@env';
+import { PROD_URL2 } from '@env';
+import { Alert } from 'react-native';
 
 async function actualizarArchivo(file, perroId, token) {
 	try {
@@ -11,7 +12,7 @@ async function actualizarArchivo(file, perroId, token) {
 		let match = /\.(\w+)$/.exec(filename);
 		let type = match ? `image/${match[1]}` : `image`;
 
-		const url = `${PROD_URL3}/upload/${perroId}`;
+		const url = `${PROD_URL2}/upload/perdido${perroId}`;
 		let formData = new FormData();
 
 		formData.append('imgMascota', { uri: localUri, name: filename, type });
@@ -103,7 +104,7 @@ export function ordenarMascotas(mascotas, user) {
 }
 
 async function getMascotas2(user) {
-	return await fetch(`${PROD_URL3}/mascotas`, {
+	return await fetch(`${PROD_URL2}/mascotas`, {
 		method: 'GET',
 		headers: {
 			Accept: 'application/json',
@@ -112,6 +113,7 @@ async function getMascotas2(user) {
 	})
 		.then((response) => response.json())
 		.then((res) => {
+			console.log('res ', res);
 			if (res.ok) {
 				let mascotasT = ordenarMascotas(res.mascotas, user);
 				let mascotas = mascotasT.filter((masco) => masco.report.count < 2);
@@ -124,7 +126,7 @@ async function getMascotas2(user) {
 async function crearMascota(perro, token, notification, uid) {
 	let newMascota = { ...perro, date: new Date().getTime() };
 
-	const perroId = await fetch(`${PROD_URL3}/mascotas/crear`, {
+	const perroId = await fetch(`${PROD_URL2}/mascotas/crear`, {
 		method: 'POST',
 		headers: {
 			Accept: 'application/json',
@@ -146,7 +148,7 @@ async function editarMascota(newMascota) {
 	let { dist } = newMascota;
 
 	const token = await AsyncStorage.getItem('token');
-	const url = `${PROD_URL3}/mascotas/actualizar/${newMascota._id}`;
+	const url = `${PROD_URL2}/mascotas/actualizar/${newMascota._id}`;
 	const resp = await fetch(url, {
 		method: 'PUT',
 		headers: {
@@ -167,7 +169,7 @@ async function editarMascota(newMascota) {
 async function eliminarMascota(idMascota) {
 	let result;
 	const token = await AsyncStorage.getItem('token');
-	const url = `${PROD_URL3}/mascotas/${idMascota}`;
+	const url = `${PROD_URL2}/mascotas/${idMascota}`;
 	const resp = await fetch(url, {
 		method: 'DELETE',
 		headers: {
@@ -201,7 +203,7 @@ function clearCollection(path) {
 
 async function addReport(uid, mid) {
 	const token = await AsyncStorage.getItem('token');
-	const url = `${PROD_URL3}/mascotas/report`;
+	const url = `${PROD_URL2}/mascotas/report`;
 	const resp = await fetch(url, {
 		method: 'PUT',
 		headers: {
@@ -217,6 +219,42 @@ async function addReport(uid, mid) {
 	return data.msg;
 }
 
+async function getAdop() {
+	return await fetch(`${PROD_URL2}/mascotasAdop`, {
+		method: 'GET',
+		headers: {
+			Accept: 'application/json',
+			'Content-Type': 'multipart/form-data',
+		},
+	})
+		.then((res) => res.json())
+		.then((res) => {
+			if (res.ok) return res.mascotasAdop;
+			else return [];
+		})
+		.catch((e) => {
+			console.log(e);
+			return [];
+		});
+}
+
+async function adoptar(mid) {
+	return await fetch(`${PROD_URL2}/mascotasAdop/adoptar/${mid}`, {
+		method: 'GET',
+		headers: {
+			Accept: 'application/json',
+			'Content-Type': 'multipart/form-data',
+		},
+	})
+		.then((res) => res.json())
+		.then((res) => console.log(res))
+		.then((res) => Alert.alert(res.msj))
+		.catch((e) => {
+			console.log(e);
+			Alert.alert('error al intentar enviar la peticion :(');
+		});
+}
+
 module.exports = {
 	actualizarArchivo,
 	crearMascota,
@@ -225,4 +263,6 @@ module.exports = {
 	eliminarMascota,
 	getMascotas2,
 	addReport,
+	getAdop,
+	adoptar,
 };

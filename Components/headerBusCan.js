@@ -10,7 +10,7 @@ const HeaderBuscan = () => {
 			<ImageBackground source={banner} style={styles.headerBackground} />
 			<StatusBar
 				style='auto'
-				backgroundColor='#fff'
+				backgroundColor={'#fff'}
 				animated={true}
 				barStyle='dark-content'
 			/>

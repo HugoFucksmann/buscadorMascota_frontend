@@ -99,14 +99,14 @@ const styles = StyleSheet.create({
 		resizeMode: 'contain',
 	},
 	charCard: {
-		height: 40,
+		height: 60,
 		width: 110,
 		elevation: 10,
 		borderRadius: 5,
 		marginLeft: 8,
 		marginRight: 8,
-		shadowColor: 'rgba(255,255,255,255)',
-		borderColor: 'rgba(255,255,255,255)',
+		borderBottomWidth: 4,
+		borderBottomColor: colores.main,
 	},
 	cardText: {
 		textAlign: 'center',
@@ -131,8 +131,8 @@ const styles = StyleSheet.create({
 		shadowRadius: 4.65,
 		elevation: 8,
 	},
-	mapView: { height: 430, width: null },
-	mapContent: { height: '55%', width: null },
+
+	mapContent: { height: '50%', width: null },
 	textBotonMsj: { fontFamily: 'NunitoLight', letterSpacing: 3 },
 	textPet: { color: colores.main, fontFamily: 'NunitoLight' },
 	descriptionPet: {
@@ -150,13 +150,13 @@ const styles = StyleSheet.create({
 		borderTopColor: colores.main,
 	},
 	fotoMascota: {
-		marginLeft: windowWidth / 2 - 90,
-		marginTop: -90,
-		height: 180,
-		width: 180,
-		borderRadius: 180 / 2,
+		marginLeft: windowWidth / 2 - 70,
+		marginTop: -70,
+		height: 140,
+		width: 140,
+		borderRadius: 140 / 2,
 		borderWidth: 3,
-		borderColor: '#f2f2f2',
+		borderColor: colores.light,
 	},
 	mascotaName: {
 		color: colores.main,
@@ -170,6 +170,8 @@ const styles = StyleSheet.create({
 		borderRadius: 15,
 		width: '96%',
 		alignSelf: 'center',
-		maxHeight: 100,
+		height: 100,
+		borderBottomWidth: 4,
+		borderBottomColor: colores.main,
 	},
 });

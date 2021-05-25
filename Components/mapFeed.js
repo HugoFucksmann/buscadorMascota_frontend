@@ -100,7 +100,7 @@ export default class MapFeed extends Component {
 
 		return (
 			<View style={styles.container}>
-				{mascotas !== false && (
+				{mascotas.length > 0 && (
 					<MapView
 						ref={(map) => (this.map = map)}
 						initialRegion={iniReg}
