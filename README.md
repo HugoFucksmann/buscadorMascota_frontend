@@ -1,5 +1,4 @@
-![buscan](https://github.com/HugoFucksmann/buscadorMascota_frontend/blob/master/assets/banner.png)
-# BusCan
+# ![buscan](https://github.com/HugoFucksmann/buscadorMascota_frontend/blob/master/assets/banner.png)
 
 desarrollada con React Native & Node
 
