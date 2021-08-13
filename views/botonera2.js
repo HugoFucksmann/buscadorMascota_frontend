@@ -35,6 +35,7 @@ const Botonera2 = () => {
 
 const HeaderUser = () => {
 	const { usuario } = useContext(MascotaContext);
+
 	return (
 		<View style={styles.headerUContent}>
 			<ImageBackground source={backImg} style={styles.image}>

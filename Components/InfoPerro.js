@@ -58,6 +58,21 @@ export default function InfoPerro({ route, navigation }) {
 						{mascota.petName.toUpperCase()}
 					</Text>
 				</View>
+
+				<View style={styles.rowCard}>
+					<Card style={styles.charCard}>
+						<Text style={styles.letraT}>Sexo</Text>
+						<Text style={styles.letraB}>{mascota.petSex}</Text>
+					</Card>
+					<Card style={styles.charCard}>
+						<Text style={styles.letraT}>Tamaño</Text>
+						<Text style={styles.letraB}>{mascota.petSize}</Text>
+					</Card>
+					<Card style={styles.charCard}>
+						<Text style={styles.letraT}>Color</Text>
+						<Text style={styles.letraB}>{mascota.petColor}</Text>
+					</Card>
+				</View>
 				<Card style={styles.cardDescrip}>
 					<Text style={styles.descriptionPet}>Descripción:</Text>
 
@@ -65,18 +80,6 @@ export default function InfoPerro({ route, navigation }) {
 						{mascota.petDescription.slice(0, 105)}
 					</Text>
 				</Card>
-				<View style={styles.rowCard}>
-					<Card style={styles.charCard}>
-						<Text style={styles.cardText}>{mascota.petSex}</Text>
-					</Card>
-					<Card style={styles.charCard}>
-						<Text style={styles.cardText}>{mascota.petSize}</Text>
-					</Card>
-					<Card style={styles.charCard}>
-						<Text style={styles.cardText}>{mascota.petColor}</Text>
-					</Card>
-				</View>
-
 				<Button
 					info
 					block
@@ -93,20 +96,34 @@ export default function InfoPerro({ route, navigation }) {
 
 const windowWidth = Dimensions.get('window').width;
 const styles = StyleSheet.create({
+	letraT: {
+		fontFamily: 'NunitoLight',
+		letterSpacing: 1.4,
+		color: colores.main,
+		fontSize: 13,
+	},
+	letraB: {
+		fontFamily: 'NunitoLight',
+		letterSpacing: 1.6,
+		color: colores.main,
+		fontSize: 24,
+	},
 	market: {
 		height: 30,
 		width: 30,
 		resizeMode: 'contain',
 	},
 	charCard: {
-		height: 60,
+		height: 80,
 		width: 110,
-		elevation: 10,
-		borderRadius: 5,
+		elevation: 8,
+		borderRadius: 6,
 		marginLeft: 8,
 		marginRight: 8,
+		padding: 10,
 		borderBottomWidth: 4,
 		borderBottomColor: colores.main,
+		alignItems: 'center',
 	},
 	cardText: {
 		textAlign: 'center',
@@ -117,29 +134,21 @@ const styles = StyleSheet.create({
 		fontFamily: 'NunitoLight',
 	},
 	mainButtons: {
-		borderRadius: 5,
-		marginLeft: 20,
-		marginRight: 20,
-		marginTop: 30,
+		borderRadius: 6,
+		marginTop: 20,
 		shadowColor: '#000',
-		backgroundColor: colores.mainFill,
-		shadowOffset: {
-			width: 0,
-			height: 4,
-		},
-		shadowOpacity: 0.3,
-		shadowRadius: 4.65,
+		backgroundColor: colores.main,
+
 		elevation: 8,
 	},
-
-	mapContent: { height: '50%', width: null },
+	mapContent: { height: '45%', width: null },
 	textBotonMsj: { fontFamily: 'NunitoLight', letterSpacing: 3 },
 	textPet: { color: colores.main, fontFamily: 'NunitoLight' },
 	descriptionPet: {
 		color: colores.main,
 		fontFamily: 'NunitoLight',
 	},
-	rowCard: { flexDirection: 'row', justifyContent: 'center' },
+	rowCard: { flexDirection: 'row', justifyContent: 'center', marginBottom: 12 },
 	cardContent: {
 		borderTopRightRadius: 35,
 		borderTopLeftRadius: 35,
@@ -148,15 +157,16 @@ const styles = StyleSheet.create({
 		backgroundColor: colores.light,
 		borderTopWidth: 6,
 		borderTopColor: colores.main,
+		padding: 25,
 	},
 	fotoMascota: {
-		marginLeft: windowWidth / 2 - 70,
-		marginTop: -70,
-		height: 140,
-		width: 140,
-		borderRadius: 140 / 2,
-		borderWidth: 3,
-		borderColor: colores.light,
+		marginLeft: windowWidth / 2 - 105,
+		marginTop: -105,
+		height: 150,
+		width: 150,
+		borderRadius: 150 / 2,
+		borderWidth: 2,
+		borderColor: colores.main,
 	},
 	mascotaName: {
 		color: colores.main,
@@ -165,12 +175,12 @@ const styles = StyleSheet.create({
 		fontFamily: 'NunitoLight',
 	},
 	cardDescrip: {
-		marginBottom: 10,
 		padding: 10,
-		borderRadius: 15,
-		width: '96%',
+		borderRadius: 6,
+		width: '100%',
 		alignSelf: 'center',
-		height: 100,
+		maxHeight: 100,
+		minHeight: 80,
 		borderBottomWidth: 4,
 		borderBottomColor: colores.main,
 	},

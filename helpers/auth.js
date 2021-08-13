@@ -101,7 +101,7 @@ export async function usuarioRandom2() {
 		google: false,
 		name: 'usuario no registrado',
 		notification: notificationToken,
-		img: '',
+		img: ' ',
 	};
 	await AsyncStorage.setItem('user', JSON.stringify(user));
 	return user;

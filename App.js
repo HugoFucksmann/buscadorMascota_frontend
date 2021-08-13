@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import React, { Component, useContext, useEffect } from 'react';
-import { LogBox, SafeAreaView } from 'react-native';
+import { Dimensions, LogBox, SafeAreaView } from 'react-native';
 import { Icon, Root, View } from 'native-base';
 import * as Font from 'expo-font';
 import Feed from './views/feed';
@@ -19,6 +19,7 @@ import InfoPerro from './Components/InfoPerro';
 import * as Notifications from 'expo-notifications';
 import FeedAdop from './views/feedAdop';
 import InfoAdop from './views/infoAdop';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Tab = createBottomTabNavigator();
 const ModalStack = createStackNavigator();
@@ -30,7 +31,8 @@ Notifications.setNotificationHandler({
 		shouldSetBadge: true,
 	}),
 });
-
+const width = Dimensions.get('window').width;
+const height = Dimensions.get('window').height;
 export default class App extends Component {
 	constructor(props) {
 		super(props);
@@ -52,7 +54,7 @@ export default class App extends Component {
 			<Root>
 				<NavigationContainer>
 					<MasoctaProvider>
-						<SafeAreaView style={{ flex: 1 }}>
+						<SafeAreaView style={{ width: width, height: height }}>
 							<ModalStack.Navigator
 								mode='modal'
 								initialRouteName='main'
@@ -96,8 +98,8 @@ const MainContent = ({ navigation }) => {
 
 						switch (route.name) {
 							case 'formulario':
-								iconName = 'plus';
-								iconType = 'FontAwesome';
+								iconName = 'map-marker-alt';
+								iconType = 'Fontisto';
 								color = focused ? colores.main : colores.mild;
 								break;
 							case 'feed':
@@ -111,8 +113,8 @@ const MainContent = ({ navigation }) => {
 								color = focused ? colores.main : colores.mild;
 								break;
 							case 'adop':
-								iconName = 'home';
-								iconType = 'Ionicons';
+								iconName = 'heart-plus';
+								iconType = 'MaterialCommunityIcons';
 								color = focused ? colores.main : colores.mild;
 								break;
 

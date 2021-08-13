@@ -3,6 +3,8 @@ import { Alert } from 'react-native';
 import { getUser, isAuthenticated } from '../helpers/auth';
 import { getMascotas2, addReport, getAdop } from '../helpers/mascotaService';
 import LoadingView from '../views/pagCarga';
+import { adoptar } from '../helpers/mascotaService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const MascotaContext = createContext();
 
@@ -24,7 +26,7 @@ class MasoctaProvider extends Component {
 
 		let mascotas = await getMascotas2(user);
 
-		if (mascotas.lenght > 0)
+		if (mascotas.length > 0)
 			misMascotass = mascotas.filter((masco) => masco.usuario == user._id);
 
 		let mascotasAdop = await getAdop();
@@ -117,7 +119,18 @@ class MasoctaProvider extends Component {
 	};
 
 	handlerAdop = async (mid) => {
-		return;
+		let result = await adoptar(mid);
+		if (result.ok) {
+			await AsyncStorage.setItem('user', result.usuario);
+			let newMascotasAdop = this.state.mascotasAdop;
+			let finalAdop = newMascotasAdop.filter((masco) => masco._id !== mid);
+			finalAdop.push(result.mascota);
+			this.setState({ mascotasAdop: finalAdop, usuario: result.usuario });
+
+			return Alert.alert(
+				'¡Felicidades por adoptar a tu mascota! En breve te llegará un email para seguir los trámites con la institución correspondiente'
+			);
+		} else return Alert.alert('ocurrio un error :(');
 	};
 
 	render() {

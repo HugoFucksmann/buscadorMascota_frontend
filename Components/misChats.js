@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Alert, StyleSheet, Text, View } from 'react-native';
 import { getMyChats } from '../helpers/getMyChats';
 import colores from '../Components/colorPalette';
 import { getFechaChat } from '../helpers/getTimePass';
@@ -29,6 +29,8 @@ const MisChats = () => {
 
 	function handlerChat(petId) {
 		let [laMascota] = mascotas.filter((mascota) => mascota._id === petId);
+
+		if (!laMascota) return Alert.alert('esta publicacion fue reportada :(');
 		navigation.navigate('chat', laMascota);
 	}
 

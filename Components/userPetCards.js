@@ -27,10 +27,10 @@ const MyPetCards = () => {
 	const RenderItem = ({ item }) => {
 		return <CardPet mascota={item} handlerMascota={handlerMascota} />;
 	};
-	if (misMascotas.length === 0)
-		return <EmptyCard text='no tienes mascotas perdidas' />;
+
 	return (
 		<FlatList
+			ListEmptyComponent={<EmptyCard text='no tienes mascotas perdidas' />}
 			horizontal
 			showsHorizontalScrollIndicator={false}
 			data={misMascotas}

@@ -17,6 +17,7 @@ import fondo from '../assets/fondos/app_background.png';
 export default function Chat({ route, navigation }) {
 	const { usuario, handlerMyChats } = useContext(MascotaContext);
 	let mascota = route.params;
+	console.log(mascota._id);
 	const chatsRef = firebaseConfig().collection(mascota._id);
 	const [messages, setMessages] = useState([]);
 	const [msj, setMsj] = useState('');

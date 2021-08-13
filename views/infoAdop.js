@@ -8,26 +8,29 @@ import {
 	Dimensions,
 	Alert,
 } from 'react-native';
-import { adoptar } from '../helpers/mascotaService';
+
 import colores from '../Components/colorPalette';
 import { MascotaContext } from '../context/mascotasContext';
 
 const InfoAdop = ({ route, navigation }) => {
-	const { handlerAdop } = useContext(MascotaContext);
-	let { _id, petPicture, refugio, descripcion, estado, ...mascotaAdop } =
-		route.params;
+	const { handlerAdop, usuario } = useContext(MascotaContext);
+	let { _id, petPicture, refugio, descripcion, estado, ...rest } = route.params;
 
 	const createTwoButtonAlert = () =>
-		Alert.alert('ten en cuenta:', 'Si aceptas le enviaremos una noti', [
-			{
-				text: 'todavia no',
-				style: 'cancel',
-			},
-			{
-				text: 'si, ya la recupere',
-				onPress: () => adoptar(_id),
-			},
-		]);
+		Alert.alert(
+			'Importante',
+			'Si estas seguro a de esta adopción notificaremos/a la institución para que se pongan en contacto, luego no podras realizar otra adopcion hasta concluir con la misma',
+			[
+				{
+					text: 'todavia no',
+					style: 'cancel',
+				},
+				{
+					text: 'Si, quiero adoptar !!',
+					onPress: () => handlerAdop(_id, usuario._id),
+				},
+			]
+		);
 
 	const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
 		navigation.navigate('main');
@@ -49,12 +52,12 @@ const InfoAdop = ({ route, navigation }) => {
 					<Icon name='heart-plus-outline' type='MaterialCommunityIcons' />
 				</Button>
 				<Card style={styles.cardContent}>
-					{Object.keys(mascotaAdop).map((key) => {
+					{Object.keys(rest).map((key) => {
 						return (
 							<Card key={`${key}`} style={styles.cardCuatro}>
 								<CardItem header style={styles.cuatroItem}>
 									<Text style={styles.letraT}>{key}</Text>
-									<Text style={styles.letraB}>{mascotaAdop[key]}</Text>
+									<Text style={styles.letraB}>{rest[key]}</Text>
 								</CardItem>
 							</Card>
 						);
@@ -91,7 +94,7 @@ const styles = StyleSheet.create({
 		alignSelf: 'center',
 		marginTop: 15,
 		fontFamily: 'NunitoLight',
-		letterSpacing: 1.4,
+		letterSpacing: 4,
 		color: colores.main,
 	},
 	cardDesc: {
@@ -107,7 +110,7 @@ const styles = StyleSheet.create({
 		height: 100,
 	},
 	cardCuatro: {
-		width: 160,
+		width: '46%',
 		borderRadius: 6,
 		borderBottomWidth: 4,
 		borderBottomColor: colores.main,
@@ -153,8 +156,6 @@ const styles = StyleSheet.create({
 		borderRadius: 5,
 		marginLeft: 25,
 		marginRight: 25,
-		//marginTop: 30,
-
 		backgroundColor: colores.mainFill,
 	},
 });
