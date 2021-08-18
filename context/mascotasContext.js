@@ -1,7 +1,11 @@
 import React, { createContext, Component } from 'react';
 import { Alert } from 'react-native';
 import { getUser, isAuthenticated } from '../helpers/auth';
-import { getMascotas2, addReport, getAdop } from '../helpers/mascotaService';
+import {
+	getMascotas2,
+	addReport,
+	getAdop,
+} from '../helpers/mascotaService';
 import LoadingView from '../views/pagCarga';
 import { adoptar } from '../helpers/mascotaService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -15,21 +19,34 @@ class MasoctaProvider extends Component {
 		this.state = {
 			mascota: {},
 			loading: true,
+			firstLaunch: null,
 		};
 	}
 
 	async componentDidMount() {
 		let user = await getUser();
 		let isAuth = false;
+		let firstLaunch = null;
 		if (user.google) isAuth = await isAuthenticated(user);
 		let misMascotass = false;
 
 		let mascotas = await getMascotas2(user);
 
 		if (mascotas.length > 0)
-			misMascotass = mascotas.filter((masco) => masco.usuario == user._id);
+			misMascotass = mascotas.filter(
+				(masco) => masco.usuario == user._id
+			);
 
 		let mascotasAdop = await getAdop();
+
+		await AsyncStorage.getItem('alreadyLaunched').then((value) => {
+			if (value === null) {
+				AsyncStorage.setItem('alreadyLaunched', JSON.stringify(true));
+				firstLaunch = true;
+			} else {
+				firstLaunch = false;
+			}
+		});
 
 		this.setState({
 			isAuth: isAuth,
@@ -37,6 +54,7 @@ class MasoctaProvider extends Component {
 			mascotas: mascotas,
 			misMascotas: misMascotass,
 			mascotasAdop: mascotasAdop,
+			firstLaunch: firstLaunch,
 			loading: false,
 		});
 	}
@@ -73,12 +91,14 @@ class MasoctaProvider extends Component {
 			case 'editar':
 				let updateMascotas = this.state.mascotas;
 				updateMascotas.map((masco, index) => {
-					if (masco._id === mascota._id) updateMascotas.splice(index, 1);
+					if (masco._id === mascota._id)
+						updateMascotas.splice(index, 1);
 				});
 				updateMascotas.unshift(mascota);
 				let updateMisMascotas = this.state.misMascotas;
 				updateMisMascotas.map((masco, index) => {
-					if (masco._id === mascota._id) updateMisMascotas.splice(index, 1);
+					if (masco._id === mascota._id)
+						updateMisMascotas.splice(index, 1);
 				});
 				updateMisMascotas.unshift(mascota);
 
@@ -96,7 +116,10 @@ class MasoctaProvider extends Component {
 					(masco) => masco._id !== mascota._id
 				);
 
-				this.setState({ mascotas: mascotasElim, misMascotas: mismascotasElim });
+				this.setState({
+					mascotas: mascotasElim,
+					misMascotas: mismascotasElim,
+				});
 
 				return Alert.alert('se elimino el registro de tu mascota');
 				break;
@@ -123,9 +146,14 @@ class MasoctaProvider extends Component {
 		if (result.ok) {
 			await AsyncStorage.setItem('user', result.usuario);
 			let newMascotasAdop = this.state.mascotasAdop;
-			let finalAdop = newMascotasAdop.filter((masco) => masco._id !== mid);
+			let finalAdop = newMascotasAdop.filter(
+				(masco) => masco._id !== mid
+			);
 			finalAdop.push(result.mascota);
-			this.setState({ mascotasAdop: finalAdop, usuario: result.usuario });
+			this.setState({
+				mascotasAdop: finalAdop,
+				usuario: result.usuario,
+			});
 
 			return Alert.alert(
 				'¡Felicidades por adoptar a tu mascota! En breve te llegará un email para seguir los trámites con la institución correspondiente'
@@ -133,8 +161,11 @@ class MasoctaProvider extends Component {
 		} else return Alert.alert('ocurrio un error :(');
 	};
 
+	handlerFirstLaunch = () => this.setState({ firstLaunch: true });
+
 	render() {
-		if (this.state.loading) return <LoadingView />;
+		if (this.state.loading || this.state.firstLaunch === null)
+			return <LoadingView />;
 		return (
 			<MascotaContext.Provider
 				value={{
@@ -146,6 +177,7 @@ class MasoctaProvider extends Component {
 					handlerUsuarioAdop: this.handlerUsuarioAdop,
 					handlerReport: this.handlerReport,
 					handlerAdop: this.handlerAdop,
+					handlerFirstLaunch: this.handlerFirstLaunch,
 				}}
 			>
 				{this.props.children}

@@ -1,17 +1,64 @@
 import { Body, Card, CardItem, View } from 'native-base';
-import React, { memo, useContext } from 'react';
+import React, { memo, useContext, useState } from 'react';
 import { Image, Modal, StyleSheet, Text } from 'react-native';
-import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
+import {
+	FlatList,
+	TouchableOpacity,
+} from 'react-native-gesture-handler';
 import EmptyCard from '../Components/EmptyCard';
-
+import AppIntroSlider from 'react-native-app-intro-slider';
 import { useNavigation } from '@react-navigation/native';
 import colores from '../Components/colorPalette';
 import { MascotaContext } from '../context/mascotasContext';
 import { getDistSantaFe } from '../helpers/getLocation';
 import colorPalette from '../Components/colorPalette';
+import buscanlogo from '../assets/iconos/appLogo.png';
+import bellring from '../assets/bellring.png';
+
+const coloresFondoSlider = ['#7ecc78', '#59c3e3', '#e283fc'];
 
 const FeedAdop = () => {
 	const { usuario, mascotasAdop } = useContext(MascotaContext);
+	const [showRealApp, setshowRealApp] = useState(false);
+
+	const slides = [
+		{
+			key: 1,
+			title: 'Adopciones Responsables',
+			text: 'Description.\nSay something cool',
+			image: bellring,
+			backgroundColor: '#59b2ab',
+		},
+		{
+			key: 2,
+			title: 'Ten en cuenta',
+			text: 'el proceso de adopcion no es inmediato, luego de que te contacte la institucion deberas continuar con el formularo de adopcion',
+			image: '',
+			backgroundColor: '#febe29',
+		},
+		{
+			key: 3,
+			title: 'Ante cualquier duda',
+			text: 'Recuerda siempre ser educado y dale noma',
+			image: '',
+			backgroundColor: '#22bcb5',
+		},
+	];
+
+	const _renderItem = ({ item, index }) => {
+		return (
+			<View
+				style={[
+					styles.sliderView,
+					{ backgroundColor: coloresFondoSlider[index] },
+				]}
+			>
+				<Text style={styles.titleSlider}>{item.title}</Text>
+				<Image style={styles.sliderImg} source={item.image} />
+				<Text style={styles.textSlider}>{item.text}</Text>
+			</View>
+		);
+	};
 
 	const renderItem = ({ item, index }) => {
 		let wid = '32%';
@@ -28,11 +75,26 @@ const FeedAdop = () => {
 		return <CardAdop mascotaAdop={item} wid={wid} hei={hei} />;
 	};
 
+	if (!showRealApp)
+		return (
+			<AppIntroSlider
+				renderItem={_renderItem}
+				data={slides}
+				showSkipButton
+				skipLabel='saltar'
+				doneLabel='vamos !'
+				nextLabel='siguiente'
+				onDone={() => setshowRealApp(true)}
+			/>
+		);
+
 	return (
 		<>
 			<FlatList
 				ListHeaderComponent={() => <HeaderCardFeedAdop />}
-				ListEmptyComponent={<EmptyCard text={'no hay mascotas en adopcion'} />}
+				ListEmptyComponent={
+					<EmptyCard text={'no hay mascotas en adopcion'} />
+				}
 				numColumns={3}
 				columnWrapperStyle={{ flexWrap: 'wrap' }}
 				contentContainerStyle={{ margin: '1%' }}
@@ -54,8 +116,8 @@ const FeedAdop = () => {
 							}}
 						>
 							<Text style={styles.letraA}>
-								En breve te enviaran un email desde la institucion, estate
-								atento
+								En breve te enviaran un email desde la institucion,
+								estate atento
 							</Text>
 						</CardItem>
 					</Card>
@@ -70,8 +132,8 @@ const FeedAdop = () => {
 							}}
 						>
 							<Text style={styles.letraA}>
-								Lo sentimos, no hay refugios ni rescatistas en tu zona aderidos
-								a las adopciones de BusCan
+								Lo sentimos, no hay refugios ni rescatistas en tu zona
+								aderidos a las adopciones de BusCan
 							</Text>
 						</CardItem>
 					</Card>
@@ -96,10 +158,8 @@ const HeaderCardFeedAdop = () => {
 			</CardItem>
 			<CardItem>
 				<Text style={styles.letraT}>
-					Adoptar es un acto de amor pero también de responsabilidad, tu
-					paciencia y dedicación hacia ellos será recompensada con ladridos y
-					saltos de felicidad, si deseas acerlo te pondremos en contacto con la
-					institucion respectiva
+					Adoptar es un acto de amor pero también de responsabilidad,
+					recuerda que
 				</Text>
 			</CardItem>
 		</Card>
@@ -139,6 +199,25 @@ const CardAdop = memo(({ mascotaAdop, wid, hei }) => {
 
 const styles = StyleSheet.create({
 	imagg: { flex: 1 },
+	sliderView: {
+		flex: 1,
+		flexDirection: 'column',
+		justifyContent: 'space-around',
+		alignItems: 'center',
+		paddingTop: '15%',
+		paddingBottom: '15%',
+	},
+	sliderImg: {
+		height: 240,
+		width: 240,
+		borderRadius: 120,
+	},
+	titleSlider: {
+		fontSize: 24,
+	},
+	textSlider: {
+		fontSize: 20,
+	},
 	letraT: {
 		fontFamily: 'NunitoLight',
 		letterSpacing: 1.2,

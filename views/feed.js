@@ -42,27 +42,20 @@ const Feed = () => {
 					}
 
 					return (
-						<>
-							<Icon
-								type={iconType}
-								name={iconName}
-								style={{ color: color, fontSize: 22 }}
-							/>
-							<View
-								style={{
-									width: '100%',
-									borderBottomColor: colores.main,
-									paddingBottom: 6,
-									borderBottomWidth: act,
-								}}
-							></View>
-						</>
+						<Icon
+							type={iconType}
+							name={iconName}
+							style={{
+								color: color,
+								fontSize: 22,
+							}}
+						/>
 					);
 				},
 			})}
 			tabBarOptions={{
 				showLabel: false,
-				style: { height: 32 },
+				style: { height: 34 },
 			}}
 			cust
 		>
@@ -96,7 +89,9 @@ const FeedTarj = () => {
 
 	return (
 		<FlatList
-			ListEmptyComponent={<EmptyCard text={'no hay mascotas perdidas'} />}
+			ListEmptyComponent={
+				<EmptyCard text={'no hay mascotas perdidas'} />
+			}
 			bounces={false}
 			refreshControl={
 				<RefreshControl

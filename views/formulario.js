@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import {
 	View,
 	Image,
@@ -24,7 +24,10 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SwitchSelector from 'react-native-switch-selector';
 import noImagen from '../assets/default_plus.png';
-import { crearMascota, actualizarArchivo } from '../helpers/mascotaService';
+import {
+	crearMascota,
+	actualizarArchivo,
+} from '../helpers/mascotaService';
 import colores from '../Components/colorPalette';
 import { Dimensions } from 'react-native';
 import markerPet from '../assets/iconos/marker_paw.png';
@@ -32,7 +35,8 @@ import fondo from '../assets/fondos/form_background.png';
 import { MascotaContext } from '../context/mascotasContext';
 
 const FormMascota = ({ navigation }) => {
-	const { usuario, misMascotas, handlerMascota } = useContext(MascotaContext);
+	const { usuario, misMascotas, handlerMascota } =
+		useContext(MascotaContext);
 	const [image, setImage] = useState(null);
 	const [file, setFile] = useState(null);
 	const [onPressLoading, setOnPressLoading] = useState(false);
@@ -58,7 +62,9 @@ const FormMascota = ({ navigation }) => {
 
 	function validateForm() {
 		return (
-			file !== null && perro.location.latitude !== 0 && perro.petName.length > 0
+			file !== null &&
+			perro.location.latitude !== 0 &&
+			perro.petName.length > 0
 		);
 	}
 
@@ -86,10 +92,11 @@ const FormMascota = ({ navigation }) => {
 			return alert('error al crear perro');
 		} else {
 			let mascota = await actualizarArchivo(file, perroId, token);
+
 			if (!mascota) alert('Error al cargar la imagen del perro!');
 			handlerMascota('crear', mascota);
 
-			setOnPressLoading(false);
+			await setOnPressLoading(false);
 			return navigation.navigate('perfil');
 		}
 	}
@@ -133,13 +140,19 @@ const FormMascota = ({ navigation }) => {
 	];
 
 	return (
-		<ImageBackground source={fondo} style={styles.image} resizeMode='repeat'>
+		<ImageBackground
+			source={fondo}
+			style={styles.image}
+			resizeMode='repeat'
+		>
 			<ScrollView>
 				<View style={{ padding: 20 }}>
 					<Card style={{ borderRadius: 20 }}>
 						<SwitchSelector
 							initial={0}
-							onPress={(value) => setPerro({ ...perro, petName: value })}
+							onPress={(value) =>
+								setPerro({ ...perro, petName: value })
+							}
 							textColor={'grey'}
 							buttonColor={colores.main}
 							hasPadding
@@ -174,7 +187,10 @@ const FormMascota = ({ navigation }) => {
 							style={styles.map}
 							initialRegion={ubi}
 							onPress={(e) =>
-								setPerro({ ...perro, location: e.nativeEvent.coordinate })
+								setPerro({
+									...perro,
+									location: e.nativeEvent.coordinate,
+								})
 							}
 						>
 							<Marker pinColor='#1c241b' coordinate={perro.location}>
@@ -228,12 +244,16 @@ const FormMascota = ({ navigation }) => {
 					<Card style={styles.itemForm}>
 						<Item picker style={{ paddingLeft: 10 }}>
 							<Left>
-								<Text style={{ fontFamily: 'NunitoLight' }}>Sexo:</Text>
+								<Text style={{ fontFamily: 'NunitoLight' }}>
+									Sexo:
+								</Text>
 							</Left>
 							<Picker
 								mode='dropdown'
 								selectedValue={perro.petSex}
-								onValueChange={(value) => setPerro({ ...perro, petSex: value })}
+								onValueChange={(value) =>
+									setPerro({ ...perro, petSex: value })
+								}
 								itemTextStyle={{ fontFamily: 'NunitoLight' }}
 							>
 								<Picker.Item label='macho' value='macho' />
@@ -245,7 +265,9 @@ const FormMascota = ({ navigation }) => {
 					<Card style={styles.itemForm}>
 						<Item picker style={{ paddingLeft: 10 }}>
 							<Left>
-								<Text style={{ fontFamily: 'NunitoLight' }}>Tamaño:</Text>
+								<Text style={{ fontFamily: 'NunitoLight' }}>
+									Tamaño:
+								</Text>
 							</Left>
 
 							<Picker
@@ -266,7 +288,9 @@ const FormMascota = ({ navigation }) => {
 					<Card style={styles.itemForm}>
 						<Item picker style={{ paddingLeft: 10 }}>
 							<Left>
-								<Text style={{ fontFamily: 'NunitoLight' }}>Color:</Text>
+								<Text style={{ fontFamily: 'NunitoLight' }}>
+									Color:
+								</Text>
 							</Left>
 							<Right>
 								<SwitchSelector
@@ -276,7 +300,9 @@ const FormMascota = ({ navigation }) => {
 									hasPadding
 									borderWidth={0}
 									options={switchOptions}
-									onPress={(value) => setPerro({ ...perro, petColor: value })}
+									onPress={(value) =>
+										setPerro({ ...perro, petColor: value })
+									}
 									style={styles.swSelector}
 								/>
 							</Right>
@@ -310,13 +336,17 @@ const FormMascota = ({ navigation }) => {
 							},
 						]}
 						onPress={async () => await uploadPerro()}
-						disabled={!validateForm() || topCargas() || onPressLoading}
+						disabled={
+							!validateForm() || topCargas() || onPressLoading
+						}
 					>
 						{onPressLoading ? (
 							<Spinner color='green' />
 						) : (
 							<Label style={styles.botonfText}>
-								{topCargas() === true ? 'maximo de carga alcanzado' : 'CARGAR'}
+								{topCargas() === true
+									? 'maximo de carga alcanzado'
+									: 'CARGAR'}
 							</Label>
 						)}
 					</Button>

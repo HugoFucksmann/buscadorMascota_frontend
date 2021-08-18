@@ -1,6 +1,12 @@
 import React, { useContext, useState } from 'react';
 import MapView, { Marker } from 'react-native-maps';
-import { View, StyleSheet, Dimensions, Image, BackHandler } from 'react-native';
+import {
+	View,
+	StyleSheet,
+	Dimensions,
+	Image,
+	BackHandler,
+} from 'react-native';
 import { getMapLocation } from '../helpers/getLocation';
 import { Button, Card, Text, Icon, Thumbnail } from 'native-base';
 import { mostrarFoto } from '../helpers/imageService';
@@ -14,10 +20,13 @@ export default function InfoPerro({ route, navigation }) {
 	const { usuario } = useContext(MascotaContext);
 	const [foto] = useState(mostrarFoto(mascota.petPicture));
 
-	const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-		navigation.navigate('main');
-		return true;
-	});
+	const backHandler = BackHandler.addEventListener(
+		'hardwareBackPress',
+		() => {
+			navigation.navigate('main');
+			return true;
+		}
+	);
 
 	return (
 		<>
@@ -52,7 +61,10 @@ export default function InfoPerro({ route, navigation }) {
 			</MapView>
 
 			<Card style={styles.cardContent}>
-				<Thumbnail source={{ uri: foto }} style={styles.fotoMascota} />
+				<Thumbnail
+					source={{ uri: foto }}
+					style={styles.fotoMascota}
+				/>
 				<View style={styles.rowCard}>
 					<Text style={styles.mascotaName}>
 						{mascota.petName.toUpperCase()}
@@ -100,13 +112,12 @@ const styles = StyleSheet.create({
 		fontFamily: 'NunitoLight',
 		letterSpacing: 1.4,
 		color: colores.main,
-		fontSize: 13,
+		fontSize: 12,
 	},
 	letraB: {
 		fontFamily: 'NunitoLight',
-		letterSpacing: 1.6,
 		color: colores.main,
-		fontSize: 24,
+		fontSize: 22,
 	},
 	market: {
 		height: 30,
@@ -147,8 +158,13 @@ const styles = StyleSheet.create({
 	descriptionPet: {
 		color: colores.main,
 		fontFamily: 'NunitoLight',
+		fontSize: 12,
 	},
-	rowCard: { flexDirection: 'row', justifyContent: 'center', marginBottom: 12 },
+	rowCard: {
+		flexDirection: 'row',
+		justifyContent: 'center',
+		marginBottom: 12,
+	},
 	cardContent: {
 		borderTopRightRadius: 35,
 		borderTopLeftRadius: 35,
