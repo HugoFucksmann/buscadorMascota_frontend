@@ -87,7 +87,6 @@ class MasoctaProvider extends Component {
 					'mascota cargada !',
 					'duracion de la busqueda: 6 dias'
 				);
-				break;
 			case 'editar':
 				let updateMascotas = this.state.mascotas;
 				updateMascotas.map((masco, index) => {
@@ -107,7 +106,6 @@ class MasoctaProvider extends Component {
 					misMascotas: updateMisMascotas,
 				});
 				return Alert.alert('mascota actualizada!');
-				break;
 			case 'eliminar':
 				let mascotasElim = this.state.mascotas.filter(
 					(masco) => masco._id !== mascota._id
@@ -122,7 +120,6 @@ class MasoctaProvider extends Component {
 				});
 
 				return Alert.alert('se elimino el registro de tu mascota');
-				break;
 			default:
 				break;
 		}
@@ -161,7 +158,7 @@ class MasoctaProvider extends Component {
 		} else return Alert.alert('ocurrio un error :(');
 	};
 
-	handlerFirstLaunch = () => this.setState({ firstLaunch: true });
+	handlerFirstLaunch = () => this.setState({ firstLaunch: false });
 
 	render() {
 		if (this.state.loading || this.state.firstLaunch === null)

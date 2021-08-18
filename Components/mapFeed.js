@@ -20,7 +20,7 @@ import { useNavigation } from "@react-navigation/native";
 import Report from "./report";
 const { width } = Dimensions.get("window");
 const CARD_HEIGHT = 130;
-const CARD_WIDTH = width - 100;
+const CARD_WIDTH = width - 95;
 
 export default class MapFeed extends Component {
   static contextType = MascotaContext;
@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
     height: 25,
   },
   iconCard: { color: colores.main, fontSize: 20, paddingRight: 5 },
-  textCard: { color: colores.main, fontFamily: "NunitoLight" },
+  textCard: { color: colores.main, fontFamily: "NunitoLight", fontSize: 14 },
   petName: {
     color: colores.main,
     fontSize: 20,

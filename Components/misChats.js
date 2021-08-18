@@ -85,7 +85,7 @@ const MisChats = () => {
 					})
 				) : (
 					<View>
-						<Spinner color='green' />
+						
 					</View>
 				)}
 			</List>

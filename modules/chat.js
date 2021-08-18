@@ -2,9 +2,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState, useEffect, useCallback, useContext } from 'react';
 import {
 	BackHandler,
+	Dimensions,
 	ImageBackground,
 	KeyboardAvoidingView,
 	Platform,
+	SafeAreaView,
 } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat';
 import firebaseConfig from '../firebaseConfig';
@@ -13,11 +15,20 @@ import { MascotaContext } from '../context/mascotasContext';
 import { Button, Content, Icon, Input, Item, Spinner, View } from 'native-base';
 import EmptyCard from '../Components/EmptyCard';
 import fondo from '../assets/fondos/app_background.png';
+import Login from '../Components/login';
+
+
+
+const width = Dimensions.get('window').width;
+const height = Dimensions.get('window').height;
 
 export default function Chat({ route, navigation }) {
-	const { usuario, handlerMyChats } = useContext(MascotaContext);
+	const { usuario, handlerMyChats, isAuth } = useContext(MascotaContext);
+
+	if(!isAuth) return <Login/>
+
 	let mascota = route.params;
-	console.log(mascota._id);
+	
 	const chatsRef = firebaseConfig().collection(mascota._id);
 	const [messages, setMessages] = useState([]);
 	const [msj, setMsj] = useState('');
@@ -103,6 +114,7 @@ export default function Chat({ route, navigation }) {
 	}
 
 	return (
+		<SafeAreaView style={{ height: height, width: width }}>
 		<ImageBackground
 			resizeMode='repeat'
 			source={fondo}
@@ -116,13 +128,15 @@ export default function Chat({ route, navigation }) {
 				placeholder='escribe aqui...'
 				renderUsernameOnMessage
 				isLoadingEarlier
+				
 				messages={messages}
 				user={chatUser}
 				isLoadingEarlier
 				onSend={handleSend}
 				scrollToBottom={true}
 				renderLoading={() => <Spinner color='green' />}
-				minInputToolbarHeight={80}
+				
+				minInputToolbarHeight={95}
 				messagesContainerStyle={{
 					transform: [{ scaleY: messages.length !== 0 ? 1 : -1 }],
 				}}
@@ -131,7 +145,7 @@ export default function Chat({ route, navigation }) {
 					<View
 						style={{
 							flexDirection: 'row',
-							marginTop: 15,
+							paddingTop: 10
 						}}
 					>
 						{props.renderComposer()}
@@ -188,5 +202,6 @@ export default function Chat({ route, navigation }) {
 			/>
 			{Platform.OS === 'android' && <KeyboardAvoidingView behavior='padding' />}
 		</ImageBackground>
+		</SafeAreaView>
 	);
 }

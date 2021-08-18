@@ -21,9 +21,9 @@ const Botonera2 = () => {
 			<ImageBackground resizeMode='repeat' source={fondo} style={styles.image}>
 				<View style={styles.cardView}>
 					<MyPetCards />
-					<View style={styles.itemChat}>
-						<Text style={styles.itemTextChat}>CHATS</Text>
-					</View>
+					<View style={styles.itemChat}/>
+						
+				
 				</View>
 				<ScrollView>
 					<MisChats />

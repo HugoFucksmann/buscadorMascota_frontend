@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
 	},
 	headCard: { height: 40 },
 	imagePet: { height: 220, width: null, flex: 1 },
-	textCard: { color: 'grey', fontFamily: 'NunitoLight' },
+	textCard: { color: 'grey', fontFamily: 'NunitoLight', fontSize: 14 },
 });
 
 export default memo(CardFeed);
