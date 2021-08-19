@@ -14,7 +14,11 @@ async function actualizarArchivo(file, perroId, token) {
 		const url = `${PROD_URL3}/upload/perdido/${perroId}`;
 		let formData = new FormData();
 
-		formData.append('imgMascota', { uri: localUri, name: filename, type });
+		formData.append('imgMascota', {
+			uri: localUri,
+			name: filename,
+			type,
+		});
 
 		const resp = await fetch(url, {
 			method: 'PUT',
@@ -115,7 +119,9 @@ async function getMascotas2(user) {
 		.then((res) => {
 			if (res.ok) {
 				let mascotasT = ordenarMascotas(res.mascotas, user);
-				let mascotas = mascotasT.filter((masco) => masco.report.count < 2);
+				let mascotas = mascotasT.filter(
+					(masco) => masco.report.count < 2
+				);
 				return mascotas;
 			} else return [];
 		})
@@ -240,17 +246,28 @@ async function getAdop() {
 		});
 }
 
-async function adoptar(mid, uid) {
+async function adoptar(mid) {
+	const usuario = await AsyncStorage.getItem('user');
 	const token = await AsyncStorage.getItem('token');
-	return await fetch(`${PROD_URL3}/mascotasAdop/adoptar/${mid}/${uid}`, {
-		method: 'GET',
-		headers: {
-			Accept: 'application/json',
-			'Content-Type': 'multipart/form-data',
-			token: token,
-		},
-	})
+	const body = {
+		mid: mid,
+		uid: JSON.parse(usuario)._id,
+	};
+	return await fetch(
+		`${PROD_URL3}/mascotasAdop/adoptar/${mid}/${
+			JSON.parse(usuario)._id
+		}`,
+		{
+			method: 'POST',
+			headers: {
+				Accept: 'application/json',
+				'Content-Type': 'multipart/form-data',
+				token: token,
+			},
+		}
+	)
 		.then((res) => res.json())
+		.then((res) => res)
 		.catch((e) => {
 			console.log(e);
 			return { ok: false };

@@ -140,8 +140,12 @@ class MasoctaProvider extends Component {
 
 	handlerAdop = async (mid) => {
 		let result = await adoptar(mid);
+		console.log('result ', result.ok);
 		if (result.ok) {
-			await AsyncStorage.setItem('user', result.usuario);
+			await AsyncStorage.setItem(
+				'user',
+				JSON.stringify(result.usuario)
+			);
 			let newMascotasAdop = this.state.mascotasAdop;
 			let finalAdop = newMascotasAdop.filter(
 				(masco) => masco._id !== mid
@@ -152,9 +156,7 @@ class MasoctaProvider extends Component {
 				usuario: result.usuario,
 			});
 
-			return Alert.alert(
-				'¡Felicidades por adoptar a tu mascota! En breve te llegará un email para seguir los trámites con la institución correspondiente'
-			);
+			return Alert.alert(result.msj);
 		} else return Alert.alert('ocurrio un error :(');
 	};
 
