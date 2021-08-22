@@ -4,6 +4,7 @@ import {
 	StyleSheet,
 	Text,
 	Image,
+	ImageBackground,
 } from 'react-native';
 import { Icon, View } from 'native-base';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -20,7 +21,14 @@ import  {
 	MascotaContext,
 } from '../context/mascotasContext';
 
-const coloresFondoSlider = ['#7ecc78', '#59c3e3', '#e283fc'];
+import fondo1 from '../assets/fondos/fondocolor1.jpeg'
+import fondo2 from '../assets/fondos/fondocolor2.jpeg'
+import fondo3 from '../assets/fondos/fondocolor3.jpeg'
+import fondo4 from '../assets/fondos/fondocolor4.jpeg'
+import jorLogo from '../assets/jor/jorLogo.png'
+import jorico from '../assets/jor/jorP.jpeg'
+import buscanlog from '../assets/banner2.png'
+const coloresFondoSlider = [fondo2, fondo3,  fondo3];
 const Tab = createBottomTabNavigator();
 
 const MainContent = ({ navigation }) => {
@@ -32,30 +40,47 @@ const MainContent = ({ navigation }) => {
 	const slides = [
 		{
 			key: 1,
-			title: 'Adopciones Responsables',
-			text: 'Description.\nSay something cool',
-			image: '',
+			title: 'BUSCAN',
+			text: 'App desarrollada a partir de la iniciativa del la concejala Jorgelina Mudallel',
+			image: buscanlog,
+			jorlogo: jorLogo,
 			backgroundColor: '#59b2ab',
 		},
 		{
 			key: 2,
-			title: 'Ten en cuenta',
-			text: 'el proceso de adopcion no es inmediato, luego de que te contacte la institucion deberas continuar con el formularo de adopcion',
+			title: 'Recuerda:',
+			text: 'se educado al hablar con otros usuarios y no dudes en reportar una publicacion si crees que no es adecuada',
 			image: '',
 			backgroundColor: '#febe29',
 		},
-		{
-			key: 3,
-			title: 'Ante cualquier duda',
-			text: 'Recuerda siempre ser educado y dale noma',
-			image: '',
-			backgroundColor: '#22bcb5',
-		},
+		
 	];
 
 	const _renderItem = ({ item, index }) => {
+
+		if(index === 0) return <ImageBackground
+		source={coloresFondoSlider[index]}
+			style={[
+				styles.sliderView,
+				{ backgroundColor: coloresFondoSlider[index] },
+			]}
+		>
+		
+			
+			<Image style={{
+				height: 60,
+				width: '80%'
+			}} 
+			source={item.image}
+			 />
+			<Text style={styles.textSlider}>{item.text}</Text>
+		<Image style={{ height: 100, width: 260}} source={item.jorlogo} />
+	
+		</ImageBackground>
+
 		return (
-			<View
+			<ImageBackground
+			source={coloresFondoSlider[index]}
 				style={[
 					styles.sliderView,
 					{ backgroundColor: coloresFondoSlider[index] },
@@ -64,7 +89,8 @@ const MainContent = ({ navigation }) => {
 				<Text style={styles.titleSlider}>{item.title}</Text>
 				<Image style={styles.sliderImg} source={item.image} />
 				<Text style={styles.textSlider}>{item.text}</Text>
-			</View>
+		
+			</ImageBackground>
 		);
 	};
 
@@ -159,8 +185,8 @@ const styles = StyleSheet.create({
 		flexDirection: 'column',
 		justifyContent: 'space-around',
 		alignItems: 'center',
-		paddingTop: '15%',
-		paddingBottom: '15%',
+		
+		padding: '12%'
 	},
 	sliderImg: {
 		height: 240,
@@ -168,10 +194,16 @@ const styles = StyleSheet.create({
 		borderRadius: 120,
 	},
 	titleSlider: {
-		fontSize: 24,
+		fontSize: 26,
+		letterSpacing: 4,
+		textAlign: 'center',
+		color: '#f2f2f2',
 	},
 	textSlider: {
 		fontSize: 20,
+		letterSpacing: 1.6,
+		textAlign: 'center',
+		color: '#f2f2f2',
 	},
 	
 });

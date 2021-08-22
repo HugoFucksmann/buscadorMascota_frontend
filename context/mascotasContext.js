@@ -20,6 +20,7 @@ class MasoctaProvider extends Component {
 			mascota: {},
 			loading: true,
 			firstLaunch: null,
+			slideradop: null,
 		};
 	}
 
@@ -27,6 +28,7 @@ class MasoctaProvider extends Component {
 		let user = await getUser();
 		let isAuth = false;
 		let firstLaunch = null;
+		let slideradop = null;
 		if (user.google) isAuth = await isAuthenticated(user);
 		let misMascotass = false;
 
@@ -48,6 +50,15 @@ class MasoctaProvider extends Component {
 			}
 		});
 
+		await AsyncStorage.getItem('slideradop').then((value) => {
+			if (value === null) {
+				AsyncStorage.setItem('slideradop', JSON.stringify(true));
+				slideradop = true;
+			} else {
+				slideradop = false;
+			}
+		});
+
 		this.setState({
 			isAuth: isAuth,
 			usuario: user,
@@ -55,6 +66,7 @@ class MasoctaProvider extends Component {
 			misMascotas: misMascotass,
 			mascotasAdop: mascotasAdop,
 			firstLaunch: firstLaunch,
+			slideradop: slideradop,
 			loading: false,
 		});
 	}
@@ -140,7 +152,7 @@ class MasoctaProvider extends Component {
 
 	handlerAdop = async (mid) => {
 		let result = await adoptar(mid);
-		console.log('result ', result.ok);
+	
 		if (result.ok) {
 			await AsyncStorage.setItem(
 				'user',
@@ -162,6 +174,8 @@ class MasoctaProvider extends Component {
 
 	handlerFirstLaunch = () => this.setState({ firstLaunch: false });
 
+	handlerSliderAdop = () => this.setState({ slideradop: false });
+
 	render() {
 		if (this.state.loading || this.state.firstLaunch === null)
 			return <LoadingView />;
@@ -177,6 +191,7 @@ class MasoctaProvider extends Component {
 					handlerReport: this.handlerReport,
 					handlerAdop: this.handlerAdop,
 					handlerFirstLaunch: this.handlerFirstLaunch,
+					handlerSliderAdop: this.handlerSliderAdop,
 				}}
 			>
 				{this.props.children}

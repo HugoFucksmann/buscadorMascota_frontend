@@ -18,9 +18,9 @@ import bellring from '../assets/bellring.png';
 const coloresFondoSlider = ['#7ecc78', '#59c3e3', '#e283fc'];
 
 const FeedAdop = () => {
-	const { usuario, mascotasAdop } = useContext(MascotaContext);
-	const [showRealApp, setshowRealApp] = useState(false);
+	const { usuario, mascotasAdop, handlerSliderAdop, slideradop } = useContext(MascotaContext);
 
+	console.log(slideradop);
 	const slides = [
 		{
 			key: 1,
@@ -75,7 +75,7 @@ const FeedAdop = () => {
 		return <CardAdop mascotaAdop={item} wid={wid} hei={hei} />;
 	};
 
-	if (!showRealApp)
+	if (slideradop)
 		return (
 			<AppIntroSlider
 				renderItem={_renderItem}
@@ -84,7 +84,7 @@ const FeedAdop = () => {
 				skipLabel='saltar'
 				doneLabel='vamos !'
 				nextLabel='siguiente'
-				onDone={() => setshowRealApp(true)}
+				onDone={() => handlerSliderAdop()}
 			/>
 		);
 
