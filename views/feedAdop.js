@@ -18,21 +18,21 @@ const FeedAdop = () => {
     {
       key: 1,
       title: "Adopciones Responsables",
-      text: "Bienvenido !!, estas a punto de ingresar al sistema de adopciones responsables, los siguientes animalitos que se muestran pertenecen a distintas instituciones/refugios de la ciudad",
+      text: "Bienvenido !! estas a punto de ingresar al sistema de adopciones responsables, los siguientes animalitos que se muestran pertenecen a distintas instituciones/refugios de la ciudad, recuerda que adoptar es un acto de amor pero tambien de responsabilidad",
       image: "",
       background: patitasMosaico,
     },
     {
       key: 2,
-      title: "Contacto",
+      title: " te pondremos en contacto !!",
       text: "en caso de querer realizar una adopcion, te pondremos en contacto con la institucion respectiva, ellos te enviaran un correo electronico para contactarse con tigo",
       image: "",
       background: patitasMosaico,
     },
     {
       key: 3,
-      title: "Ten en cuenta",
-      text: "el proceso de adopcion no es inmediato, luego de que te contacten, deberas continuar con el formularo de adopcion y los requisitos planteados por la institucion responsable, ahora si, ya estas listo !!",
+      title: "Ten en cuenta:",
+      text: "el proceso de adopcion no es inmediato, luego de que te contacten, deberas continuar con los requisitos planteados por la institucion responsable, ahora si, ya estas listo !!",
       image: "",
       background: patitasMosaico,
     },
@@ -65,11 +65,37 @@ const FeedAdop = () => {
     }
     return <CardAdop mascotaAdop={item} wid={wid} hei={hei} />;
   };
+  const _renderNextBtn = () => {
+    return (
+      <View>
+        <Text style={styles.sliderBtn}>Siguente</Text>
+      </View>
+    );
+  };
+  const _renderSkipBtn = () => {
+    return (
+      <View>
+        <Text style={styles.sliderBtn}>Saltar</Text>
+      </View>
+    );
+  };
+  const _renderDoneBtn = () => {
+    return (
+      <View>
+        <Text style={styles.sliderBtn}>Comienza !!</Text>
+      </View>
+    );
+  };
 
   if (slideradop)
     return (
       <AppIntroSlider
         renderItem={_renderItem}
+        renderNextButton={_renderNextBtn}
+        renderSkipButton={_renderSkipBtn}
+        renderDoneButton={_renderDoneBtn}
+        dotStyle={styles.dots}
+        activeDotStyle={styles.dotsAct}
         data={slides}
         showSkipButton
         skipLabel="saltar"
@@ -96,7 +122,7 @@ const FeedAdop = () => {
         renderItem={renderItem}
         keyExtractor={(item) => item._id}
       />
-      {usuario.adopAuth && (
+      {usuario.adopAuth === true && (
         <View style={styles.viewFiltro}>
           <Card style={styles.cardFiltro}>
             <CardItem
@@ -146,7 +172,9 @@ const HeaderCardFeedAdop = () => {
       </CardItem>
       <CardItem>
         <Text style={styles.letraT}>
-          Adoptar es un acto de amor pero también de responsabilidad, recuerda que
+          Adoptar es un acto de amor pero tambien de responsabilidad, recuerda que si deseas
+          concretar una adopcion, le enviaremos tu correo a la institucion respectiva para que se
+          pongan en contacto con tigo
         </Text>
       </CardItem>
     </Card>
@@ -180,6 +208,17 @@ const CardAdop = memo(({ mascotaAdop, wid, hei }) => {
 
 const styles = StyleSheet.create({
   imagg: { flex: 1 },
+  sliderBtn: {
+    margin: 15,
+    color: colores.main,
+  },
+  dots: {
+    backgroundColor: "rgba(125, 168, 113,.5)",
+  },
+  dotsAct: {
+    backgroundColor: "rgba(125, 168, 113,.9)",
+    color: "black",
+  },
   sliderView: {
     height: "100%",
     width: "100%",
@@ -193,10 +232,10 @@ const styles = StyleSheet.create({
     paddingLeft: 40,
   },
   textSlider2: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: "bold",
     lineHeight: 30,
-    letterSpacing: 3,
+    letterSpacing: 1.4,
     textAlign: "center",
     color: "#000",
   },

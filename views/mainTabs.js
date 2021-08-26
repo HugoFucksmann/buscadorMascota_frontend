@@ -26,7 +26,8 @@ const MainContent = () => {
     {
       key: 1,
       title: "BUSCAN",
-      text: "APP DESARROLLADA A PARTIR DE LA INICIATIVA DE LA CONCEJALA",
+      textStyle: styles.dotsAct,
+      text: "APP DESARROLLADA A PARTIR DE LA INICIATIVA DE LA CONCEJALA DE LA CIUDAD DE SANTA FE",
       text2: "JORGELINA MUDALLEL",
       image: buscanlog,
       jorlogo: jorLogo,
@@ -37,7 +38,7 @@ const MainContent = () => {
       title: "RECUERDA:",
       text: "se educado al interactuar con otros usuarios y no dudes en reportar una publicacion si crees que el contenido no es adecuado",
       image: "",
-      background: fondoslider3,
+      background: patitasMosaico,
     },
   ];
 
@@ -73,13 +74,35 @@ const MainContent = () => {
     return (
       <ImageBackground resizeMode="repeat" source={item.background} style={{ flex: 1 }}>
         <View style={styles.sliderView}>
-          <Card style={{ padding: 20, borderRadius: 10, backgroundColor: "rgba(255,255,255,.2)" }}>
+          <Card style={{ padding: 20, borderRadius: 10 }}>
             <Text style={styles.titleSlider}>{item.title}</Text>
             <Text></Text>
-            <Text style={styles.textSlider2}>{item.text}</Text>
+            <Text style={styles.textSlider}>{item.text}</Text>
           </Card>
         </View>
       </ImageBackground>
+    );
+  };
+
+  const _renderNextBtn = () => {
+    return (
+      <View>
+        <Text style={styles.sliderBtn}>Siguente</Text>
+      </View>
+    );
+  };
+  const _renderSkipBtn = () => {
+    return (
+      <View>
+        <Text style={styles.sliderBtn}>Saltar</Text>
+      </View>
+    );
+  };
+  const _renderDoneBtn = () => {
+    return (
+      <View>
+        <Text style={styles.sliderBtn}>Comienza !!</Text>
+      </View>
     );
   };
 
@@ -87,8 +110,13 @@ const MainContent = () => {
     return (
       <AppIntroSlider
         renderItem={_renderItem}
+        renderNextButton={_renderNextBtn}
+        renderSkipButton={_renderSkipBtn}
+        renderDoneButton={_renderDoneBtn}
         data={slides}
         showSkipButton
+        dotStyle={styles.dots}
+        activeDotStyle={styles.dotsAct}
         skipLabel="saltar"
         doneLabel="vamos !"
         nextLabel="siguiente"
@@ -162,6 +190,17 @@ const MainContent = () => {
 };
 
 const styles = StyleSheet.create({
+  sliderBtn: {
+    margin: 15,
+    color: colores.main,
+  },
+  dots: {
+    backgroundColor: "rgba(125, 168, 113,.5)",
+  },
+  dotsAct: {
+    backgroundColor: "rgba(125, 168, 113,.9)",
+    color: "black",
+  },
   sliderView: {
     height: "100%",
     width: "100%",
@@ -182,7 +221,7 @@ const styles = StyleSheet.create({
     fontSize: 26,
     letterSpacing: 4,
     textAlign: "center",
-    color: "#f2f2f2",
+    color: "#000",
   },
   textSlider: {
     fontSize: 20,
